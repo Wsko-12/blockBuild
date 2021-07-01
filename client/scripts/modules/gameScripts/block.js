@@ -114,67 +114,68 @@ function get(name){
 
   self.updateShadow = function(firstUpdate,lastBlock,map){
     const that = this;
-    function update(){
-      const mapCeil = that.mapCeil;
-      if(that.config.geometry === 0){
-        const originalMaterial = MESHES_BASE.getMeshMaterial(that.name);
+    if(!this.light){
+      function update(){
+        const mapCeil = that.mapCeil;
+        if(that.config.geometry === 0){
+          const originalMaterial = MESHES_BASE.getMeshMaterial(that.name);
 
-        that.mesh.material.forEach((side, sideIndex) => {
-          //если сторона есть
-          if(side != null){
-            const sideImage = originalMaterial[sideIndex].map.image;
+          that.mesh.material.forEach((side, sideIndex) => {
+            //если сторона есть
+            if(side != null){
+              const sideImage = originalMaterial[sideIndex].map.image;
 
-            // console.log(sideImage);
-            //затемнения углов
-            const cornersValues = [0,0,0,0];
-            let sideGlobalLightValue = 0;
-            //проходимся по соседям по часовой
-            mapCeil.neighborsBySide[sideIndex].forEach((neighbor, neighborIndex) => {
-              //если не вышли за пределы карты
-              if(neighbor != null){
-                //центр,его не должно быть, но в будущем для прозрачных блоков нужен
-                if(neighborIndex === 8){
-                  sideGlobalLightValue = neighbor.lightValue;
+              // console.log(sideImage);
+              //затемнения углов
+              const cornersValues = [0,0,0,0];
+              let sideGlobalLightValue = 0;
+              //проходимся по соседям по часовой
+              mapCeil.neighborsBySide[sideIndex].forEach((neighbor, neighborIndex) => {
+                //если не вышли за пределы карты
+                if(neighbor != null){
+                  //центр,его не должно быть, но в будущем для прозрачных блоков нужен
+                  if(neighborIndex === 8){
+                    sideGlobalLightValue = neighbor.lightValue;
+                  };
+                  //верхний левый
+                  if(neighborIndex === 7 || neighborIndex === 0 || neighborIndex === 1){
+                    if(mapCeil.neighborsBySide[sideIndex][neighborIndex].contant){
+                      cornersValues[0]++;
+                    }
+                  };
+                  //верхний правый
+                  if(neighborIndex === 1 || neighborIndex === 2 || neighborIndex === 3){
+                    if(mapCeil.neighborsBySide[sideIndex][neighborIndex].contant){
+                      cornersValues[1]++;
+                    }
+                  };
+                  //нижний правый
+                  if(neighborIndex === 3 || neighborIndex === 4 || neighborIndex === 5){
+                    if(mapCeil.neighborsBySide[sideIndex][neighborIndex].contant){
+                      cornersValues[2]++;
+                    }
+                  };
+                  //нижний левый
+                  if(neighborIndex === 5 || neighborIndex === 6 || neighborIndex === 7){
+                    if(mapCeil.neighborsBySide[sideIndex][neighborIndex].contant){
+                      cornersValues[3]++;
+                    }
+                  };
                 };
-                //верхний левый
-                if(neighborIndex === 7 || neighborIndex === 0 || neighborIndex === 1){
-                  if(mapCeil.neighborsBySide[sideIndex][neighborIndex].contant){
-                    cornersValues[0]++;
-                  }
-                };
-                //верхний правый
-                if(neighborIndex === 1 || neighborIndex === 2 || neighborIndex === 3){
-                  if(mapCeil.neighborsBySide[sideIndex][neighborIndex].contant){
-                    cornersValues[1]++;
-                  }
-                };
-                //нижний правый
-                if(neighborIndex === 3 || neighborIndex === 4 || neighborIndex === 5){
-                  if(mapCeil.neighborsBySide[sideIndex][neighborIndex].contant){
-                    cornersValues[2]++;
-                  }
-                };
-                //нижний левый
-                if(neighborIndex === 5 || neighborIndex === 6 || neighborIndex === 7){
-                  if(mapCeil.neighborsBySide[sideIndex][neighborIndex].contant){
-                    cornersValues[3]++;
-                  }
-                };
-              };
-            });
-            that.updateTexture(side,sideImage,sideGlobalLightValue,cornersValues,lastBlock,map);
-          };
+              });
+              that.updateTexture(side,sideImage,sideGlobalLightValue,cornersValues,lastBlock,map);
+            };
+          });
+        };
+      }
+      if(firstUpdate){
+        setTimeout(function(){
+          update();
         });
-      };
-    }
-    if(firstUpdate){
-      setTimeout(function(){
+      }else{
         update();
-      });
-    }else{
-      update();
-    }
-
+      };
+    };
   };
 
   self.updateInvisibleFaces = function() {

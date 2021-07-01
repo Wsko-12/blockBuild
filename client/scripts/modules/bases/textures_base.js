@@ -4,7 +4,23 @@ const textures = [
   {
     textureName:'test',
     file:'test.png',
-  }
+  },
+  {
+    textureName:'stone',
+    file:'stone.png',
+  },
+  {
+    textureName:'ground',
+    file:'ground.png',
+  },
+  {
+    textureName:'sand',
+    file:'sand.png',
+  },
+  {
+    textureName:'snow',
+    file:'snow.png',
+  },
 ];
 
 const atlas = {};

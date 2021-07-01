@@ -8,7 +8,7 @@ import {BLOCK} from './block.js';
 
 const size = {
   width: 24,
-  height: 128,
+  height: 64,
 }
 
 
@@ -425,11 +425,13 @@ function mapCeil(x, y, z) {
     if(this.contant === null){
       if(line){
         let maxNeighbourLightValue = 0;
+        let maxNeighbourLightValueIndex = null;
         this.crossNeighbors.forEach((neighbour, i) => {
           if(neighbour && neighbour.contant === null){
             if(maxNeighbourLightValue < neighbour.lightValue){
               maxNeighbourLightValue = neighbour.lightValue;
             };
+            maxNeighbourLightValueIndex = i;
           };
         });
         if(this.lightValue > maxNeighbourLightValue){
@@ -443,10 +445,9 @@ function mapCeil(x, y, z) {
           });
           this.updateNeighbourBlockTexture();
         }else{
-          this.findLightValue();
-        }
-
-
+          //bugFix
+          this.crossNeighbors[maxNeighbourLightValueIndex].findLightValue();
+        };
         return;
       };
 
@@ -544,12 +545,12 @@ function updateAmbientLight(helpers) {
 function generateLandscape(seed){
   PERLIN_NOISE.init(seed);
   const mapHeight = size.height;
-  const landHeightMax = mapHeight - 10;
+  const landHeightMax = Math.round(mapHeight * 0.68);
 
+  const mountainHeightMin =  Math.round(mapHeight * 0.26);
+  const snowLevel = Math.round(mapHeight * 0.23);
+  const onlySnowLevel =  Math.round(mapHeight * 0.38);
 
-  const snowLevel = mapHeight - 20;
-  const onlySnowLevel = mapHeight - 15;
-  const mountainHeightMin = mapHeight - 17;
 
   const groundLayer = 3;
   const waterLine = 4;
@@ -635,17 +636,15 @@ function generateLandscape(seed){
         const caveValue = PERLIN_NOISE.Worm(x, z, y);
         if(caveValue < 0.5){
           // GAME.blocks.addBlock({x,y,z},blockType,null,true);
-          let block = BLOCK.get('test');
-          block.setPosition({
-            x,
-            y,
-            z
-          });
-          map.addBlock(block,true);
-
-        }else{
-          if(blockType === 'snow' || blockType === 'sand' || blockType === 'water' || y === 0){
-            // GAME.blocks.addBlock({x,y,z},blockType,null,true);
+          if(blockType === 'stone' || blockType === 'ground' ||  blockType === 'sand' || blockType === 'snow'){
+            let block = BLOCK.get(blockType);
+            block.setPosition({
+              x,
+              y,
+              z
+            });
+            map.addBlock(block,true);
+          }else{
             let block = BLOCK.get('test');
             block.setPosition({
               x,
@@ -653,6 +652,29 @@ function generateLandscape(seed){
               z
             });
             map.addBlock(block,true);
+          }
+
+
+        }else{
+          if(blockType === 'snow' || blockType === 'sand' || blockType === 'water' || y === 0){
+            // GAME.blocks.addBlock({x,y,z},blockType,null,true);
+            if(blockType === 'stone' || blockType === 'ground' || blockType === 'sand' || blockType === 'snow'){
+              let block = BLOCK.get(blockType);
+              block.setPosition({
+                x,
+                y,
+                z
+              });
+              map.addBlock(block,true);
+            }else{
+              let block = BLOCK.get('test');
+              block.setPosition({
+                x,
+                y,
+                z
+              });
+              map.addBlock(block,true);
+            }
           };
         };
       };

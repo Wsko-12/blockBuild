@@ -20,8 +20,15 @@ const BLOCKS_BASE = {
 //geometry:
 // 0 - полный блок;
 
+//light
+//bool
+
 //transparent:
 // 0 - не прозрачный;
+
+//rotation:
+//0 - не крутится
+//1 - крутится текстура
 
 
 
@@ -33,7 +40,29 @@ BLOCKS_BASE.test = {
   meshBase:'test',
   geometry:0,
   transparent:0,
+};
 
+BLOCKS_BASE.stone = {
+  meshBase:'stone',
+  geometry:0,
+  transparent:0,
+};
+
+BLOCKS_BASE.ground = {
+  meshBase:'ground',
+  geometry:0,
+  transparent:0,
+};
+BLOCKS_BASE.sand = {
+  meshBase:'sand',
+  geometry:0,
+  transparent:0,
+  gravity:true,
+};
+BLOCKS_BASE.snow = {
+  meshBase:'sand',
+  geometry:0,
+  transparent:0,
 };
 
 export {BLOCKS_BASE};

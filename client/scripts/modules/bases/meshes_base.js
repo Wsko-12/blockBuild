@@ -33,6 +33,105 @@ function init(){
     ],
   };
 
+  MESHES_BASE.stone = {
+    G:standardBlockGeometry,
+    M:[
+      //ewtbsn
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.stone,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.stone,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.stone,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.stone,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.stone,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.stone,
+      }),
+    ],
+  };
+  MESHES_BASE.ground = {
+    G:standardBlockGeometry,
+    M:[
+      //ewtbsn
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.ground,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.ground,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.ground,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.ground,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.ground,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.ground,
+      }),
+    ],
+  };
+
+  MESHES_BASE.sand = {
+    G:standardBlockGeometry,
+    M:[
+      //ewtbsn
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.sand,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.sand,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.sand,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.sand,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.sand,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.sand,
+      }),
+    ],
+  };
+
+  MESHES_BASE.snow = {
+    G:standardBlockGeometry,
+    M:[
+      //ewtbsn
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.snow,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.snow,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.snow,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.snow,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.snow,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.snow,
+      }),
+    ],
+  };
+
   //newBlockHere
 
 
