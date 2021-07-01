@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>all game blocks</title>
+  </head>
+  <body style="position:fixed;width:100vw;height:100vh;margin:0">
+
+  </body>
+  <script type="module">
+    import * as THREE from './ThreeJsLib/build/three.module.js';
+    import {MAIN} from './scripts/main.js';
+    import {TEXTURES_BASE} from './scripts/modules/bases/textures_base.js';
+    import {MESHES_BASE} from './scripts/modules/bases/meshes_base.js';
+    import {BLOCKS_BASE} from './scripts/modules/bases/blocks_base.js';
+    MAIN.render.init();
+
+    TEXTURES_BASE.init().then(result => {
+      MESHES_BASE.init();
+      BLOCKS_BASE.init();
+
+
+
+
+
+      const loader = new THREE.ObjectLoader();
+      // MAIN.render.scene.add(loader.parse(BLOCKS_BASE.test.mesh.toJSON()));
+        // MAIN.render.scene.add(BLOCKS_BASE.test.getMesh())
+        MAIN.render.scene.add(MESHES_BASE.getMesh('test'));
+        const block2 =  MESHES_BASE.getMesh('test');
+        block2.material[0] = null;
+        block2.position.x = 1.5;
+        MAIN.render.scene.add(block2);
+
+    });
+
+
+
+
+
+  </script>
+</html>
