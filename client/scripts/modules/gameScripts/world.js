@@ -76,9 +76,6 @@ map.removeBlock = function(block) {
       neighbor.updateBlockInvisibleFaces()
     };
   });
-
-  // map[position.x][position.z][position.y].findLightValue();
-  // map[position.x][position.z][position.y].updateNeighbourBlockTexture();
 };
 
 
@@ -692,7 +689,7 @@ function generateLandscape(seed) {
         const caveValue = PERLIN_NOISE.Worm(x, z, y);
         if (caveValue < 0.5) {
           // GAME.blocks.addBlock({x,y,z},blockType,null,true);
-          if (blockType === 'stone' || blockType === 'ground' || blockType === 'sand' || blockType === 'snow') {
+          if (blockType === 'stone' || blockType === 'ground' || blockType === 'sand' || blockType === 'snow'|| blockType === 'grass') {
             let block = BLOCK.get(blockType);
             block.setPosition({
               x,

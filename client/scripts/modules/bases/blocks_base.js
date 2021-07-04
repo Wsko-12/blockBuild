@@ -64,5 +64,10 @@ BLOCKS_BASE.snow = {
   geometry:0,
   transparent:0,
 };
+BLOCKS_BASE.grass = {
+  meshBase:'grass',
+  geometry:0,
+  transparent:0,
+};
 
 export {BLOCKS_BASE};

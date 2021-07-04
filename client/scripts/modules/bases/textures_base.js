@@ -21,6 +21,14 @@ const textures = [
     textureName:'snow',
     file:'snow.png',
   },
+  {
+    textureName:'grass_top',
+    file:'grass_top.png',
+  },
+  {
+    textureName:'grass_side',
+    file:'grass_side.png',
+  },
 ];
 
 const atlas = {};
