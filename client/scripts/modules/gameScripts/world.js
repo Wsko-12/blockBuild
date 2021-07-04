@@ -2,8 +2,12 @@ import {
   MAIN
 } from '../../main.js';
 
-import {PERLIN_NOISE} from '../libs/perlin.js';
-import {BLOCK} from './block.js';
+import {
+  PERLIN_NOISE
+} from '../libs/perlin.js';
+import {
+  BLOCK
+} from './block.js';
 
 
 const size = {
@@ -22,47 +26,7 @@ map.initMapCeils = function() {
     };
   };
 };
-map.addBlock = function(block,generation) {
-  const position = block.position;
-  map[position.x][position.z][position.y].contant = block;
-  map[position.x][position.z][position.y].lightValue = 0;
-  map[position.x][position.z][position.y].seeSky = false;
-  block.mapCeil = map[position.x][position.z][position.y];
-  block.addMeshToScene();
-  if(!generation){
-    MAIN.game.world.map[position.x][position.z][position.y].updateBlockInvisibleFaces();
-    MAIN.game.world.map[position.x][position.z][position.y].crossNeighbors.forEach((neighbour, i) => {
-      if(neighbour != null){
-        setTimeout(function(){
-          neighbour.findLightValueWhenAddBlock();
-        },1)
-      }
-    });
-    MAIN.game.world.map[position.x][position.z][position.y].closeNeighbors.forEach((neighbour, i) => {
-      if(neighbour != null){
-        if(neighbour.contant){
-          neighbour.contant.updateShadow();
-        }
-      }
-    });
-    MAIN.game.world.map[position.x][position.z][position.y].contant.updateShadow();
-  };
-};
-map.removeBlock = function(block){
-  const position = block.position;
-  map[position.x][position.z][position.y].contant = null;
-  block.removeMeshFromScene();
-
-  map[position.x][position.z][position.y].crossNeighbors.forEach((neighbor, i) => {
-    if(neighbor != null){
-      neighbor.updateBlockInvisibleFaces()
-    };
-  });
-
-  map[position.x][position.z][position.y].findLightValue();
-  map[position.x][position.z][position.y].updateNeighbourBlockTexture();
-};
-map.updateAllInvisibleFaces = function(){
+map.updateAllInvisibleFaces = function() {
   for (let x = 0; x < size.width; x++) {
     for (let z = 0; z < size.width; z++) {
       for (let y = 0; y < size.height; y++) {
@@ -74,16 +38,67 @@ map.updateAllInvisibleFaces = function(){
   };
 };
 
+
+
+map.addBlock = function(block, generation) {
+  const position = block.position;
+  map[position.x][position.z][position.y].contant = block;
+  map[position.x][position.z][position.y].lightValue = 0;
+  map[position.x][position.z][position.y].seeSky = false;
+  block.mapCeil = map[position.x][position.z][position.y];
+  block.addMeshToScene();
+  if (!generation) {
+    MAIN.game.world.map[position.x][position.z][position.y].updateBlockInvisibleFaces();
+    MAIN.game.world.map[position.x][position.z][position.y].crossNeighbors.forEach((neighbour, i) => {
+      if (neighbour != null && neighbour.contant === null) {
+        setTimeout(function() {
+          // neighbour.calculateLight();
+        }, 1)
+      }
+    });
+    MAIN.game.world.map[position.x][position.z][position.y].closeNeighbors.forEach((neighbour, i) => {
+      if (neighbour != null) {
+        if (neighbour.contant) {
+          neighbour.contant.updateShadow();
+        }
+      }
+    });
+    MAIN.game.world.map[position.x][position.z][position.y].contant.updateShadow();
+  };
+};
+map.removeBlock = function(block) {
+  const position = block.position;
+  map[position.x][position.z][position.y].contant = null;
+  block.removeMeshFromScene();
+
+  map[position.x][position.z][position.y].crossNeighbors.forEach((neighbor, i) => {
+    if (neighbor != null) {
+      neighbor.updateBlockInvisibleFaces()
+    };
+  });
+
+  // map[position.x][position.z][position.y].findLightValue();
+  // map[position.x][position.z][position.y].updateNeighbourBlockTexture();
+};
+
+
+
+map.wasUpdated = {};
+
+
+
 function mapCeil(x, y, z) {
   const ceil = {};
   ceil.shadowsDate = {
-    updated:false,
+    updated: false,
   };
   ceil.position = {
     x,
     y,
     z,
   };
+  ceil.id = `X${x}Y${y}Z${z}`;
+
   //!!!!!
   ceil.findCrossNeighbors = function() {
     const crossNeighborsIndex = [
@@ -290,16 +305,16 @@ function mapCeil(x, y, z) {
     this.findNeighborsBySide();
   };
 
-  ceil.updateBlockInvisibleFaces = function(){
-    if(this.contant){
+  ceil.updateBlockInvisibleFaces = function() {
+    if (this.contant) {
       this.contant.updateInvisibleFaces();
     };
   };
 
-  ceil.updateNeighbourBlockTexture = function(){
+  ceil.updateNeighbourBlockTexture = function() {
     this.closeNeighbors.forEach((neighbor, i) => {
-      if(neighbor != null){
-        if(neighbor.contant){
+      if (neighbor != null) {
+        if (neighbor.contant) {
           neighbor.contant.updateShadow();
         };
       };
@@ -344,56 +359,105 @@ function mapCeil(x, y, z) {
     });
   };
 
-  ceil.findLightValue = function(){
+
+  ceil.calculateLight = function() {
+    const startLightValue = this.lightValue;
+    let changed = false;
+    this.crossNeighbors.forEach((neighbour, i) => {
+      if (neighbour) {
+        if (neighbour.contant === null && neighbour.lightValue != 0) {
+          if (neighbour.lightValue > startLightValue) {
+
+          } else {
+            if (neighbour.position.y < this.position.y) {
+              this.lightValue = 0;
+              changed = true
+              setTimeout(function() {
+                neighbour.calculateLight();
+              });
+            } else if (neighbour.position.y === this.position.y) {
+              if (neighbour.lightValue < startLightValue) {
+                this.lightValue = 0;
+                changed = true
+                setTimeout(function() {
+                  neighbour.calculateLight();
+                });
+              }
+            }
+          };
+        };
+      };
+    });
+
+    if(!changed){
+      let maxNeighbourLightValue
+      this.crossNeighbors.forEach((neighbour, i) => {
+        if(neighbour && neighbour.contant === null){
+          if(neighbour.lightValue > maxNeighbourLightValue){
+            maxNeighbourLightValue = neighbour.lightValue
+          };
+        };
+      });
+      if(this.lightValue > maxNeighbourLightValue){
+        this.lightValue = 0;
+      }
+
+    }
+    this.updateNeighbourBlockTexture();
+
+  };
+
+
+  ceil.findLightValue = function() {
     //смотрим верхнего соседа
     const oldLightValue = this.lightValue;
-    if(this.contant === null){
-      if(this.crossNeighbors[2]){
-        if(this.crossNeighbors[2].seeSky){
+    if (this.contant === null) {
+      if (this.crossNeighbors[2]) {
+        if (this.crossNeighbors[2].seeSky) {
           this.seeSky = true;
           this.lightValue = this.crossNeighbors[2].lightValue;
-          for(let y = this.position.y-1; y>=0;y--){
-            if(!map[this.position.x][this.position.z][y].contant){
+          for (let y = this.position.y - 1; y >= 0; y--) {
+            if (!map[this.position.x][this.position.z][y].contant) {
               map[this.position.x][this.position.z][y].findLightValue();
-            }else{
+            } else {
               break;
             }
           };
-        }else{
+        } else {
           //если сверху нет блока, то ищем вокруг
           //соеседа, который видит небо, кроме нижнего;
           let maxNeighbourLightValue = 0;
-          for(let i = 0;i<6;i++){
+          for (let i = 0; i < 6; i++) {
             const neighbour = this.crossNeighbors[i];
-            if(neighbour != null){
-              if(i != 3){
-                if(neighbour != null){
-                  if(neighbour.seeSky){
+            if (neighbour != null) {
+              if (i != 3) {
+                if (neighbour != null) {
+                  if (neighbour.seeSky) {
                     this.seeSky = false;
                     this.lightValue = neighbour.lightValue - 1;
                     break;
-                  }else{
+                  } else {
                     this.seeSky = false;
-                    if(neighbour.lightValue >= maxNeighbourLightValue){
+                    if (neighbour.lightValue >= maxNeighbourLightValue) {
                       maxNeighbourLightValue = neighbour.lightValue;
-                      this.lightValue = maxNeighbourLightValue-1;
-                      if(this.lightValue < 0){
+                      this.lightValue = maxNeighbourLightValue - 1;
+                      if (this.lightValue < 0) {
                         this.lightValue = 0;
                       }
                     };
                   };
                 };
-              }else{
+              } else {
                 //но если нижний сосед светящийся блок
-                if(neighbour.lightBlock){
+                if (neighbour.lightBlock) {
 
                 };
-                if(neighbour.lightValue != 15){
-                  if(neighbour.lightValue >= maxNeighbourLightValue){
+                if (neighbour.lightValue != 15) {
+                  if (neighbour.lightValue >= maxNeighbourLightValue) {
                     maxNeighbourLightValue = neighbour.lightValue;
-                    if(maxNeighbourLightValue != 0){
-                      this.lightValue = maxNeighbourLightValue-1;
-                    }else{
+                    if (maxNeighbourLightValue != 0) {
+                      this.lightValue = maxNeighbourLightValue - 1;
+                    } else {
                       this.lightValue = 0;
                     }
                   };
@@ -402,87 +466,73 @@ function mapCeil(x, y, z) {
             };
           };
         };
-      }else{
+      } else {
         //самый верхний блок
         this.lightValue = 15;
         this.seeSky = true;
       };
 
-      if(oldLightValue != this.lightValue){
+      if (oldLightValue != this.lightValue) {
         this.crossNeighbors.forEach((neighbour, i) => {
-          if(neighbour != null){
-            setTimeout(function(){
+          if (neighbour != null) {
+            setTimeout(function() {
               neighbour.findLightValue();
-            },1)
+            }, 1)
           }
         });
         this.updateNeighbourBlockTexture();
       };
     };
   };
-  ceil.findLightValueWhenAddBlock = function(line){
 
-    if(this.contant === null){
-      if(line){
-        let maxNeighbourLightValue = 0;
-        let maxNeighbourLightValueIndex = null;
-        this.crossNeighbors.forEach((neighbour, i) => {
-          if(neighbour && neighbour.contant === null){
-            if(maxNeighbourLightValue < neighbour.lightValue){
-              maxNeighbourLightValue = neighbour.lightValue;
-            };
-            maxNeighbourLightValueIndex = i;
-          };
-        });
-        if(this.lightValue > maxNeighbourLightValue){
-          this.lightValue = 0;
+  ceil.findLightValueWhenAddBlock = function() {
+    //сначала проверяем блок сверху
+    if (this.contant === null || this.lightBlock) {
+      if (this.crossNeighbors[2] != null) {
+        //если блок сверху видит небо, то и этот видит небо
+        if (this.crossNeighbors[2].seeSky) {
           this.crossNeighbors.forEach((neighbour, i) => {
-            if(neighbour && neighbour.contant === null){
-              setTimeout(function(){
-                neighbour.findLightValueWhenAddBlock(true);
-              },1);
+            if (neighbour) {
+              if (!neighbour.seeSky) {
+                if (neighbour.contant === null) {
+                  console.log(neighbour);
+                  neighbour.findLightValue();
+                }
+              };
             };
           });
+
+        } else {
+          this.seeSky = false;
+          this.lightValue = 0;
           this.updateNeighbourBlockTexture();
-        }else{
-          //bugFix
-          this.crossNeighbors[maxNeighbourLightValueIndex].findLightValue();
-        };
-        return;
-      };
-
-
-
-
-      let maxNeighbourLightValue = 0;
-      this.crossNeighbors.forEach((neighbour, i) => {
-        if(neighbour && neighbour.contant === null && i!=3){
-          if(maxNeighbourLightValue < neighbour.lightValue){
-            maxNeighbourLightValue = neighbour.lightValue;
-          }
-        };
-      });
-
-
-      if(this.lightValue < maxNeighbourLightValue){
-        this.lightValue = maxNeighbourLightValue - 1;
-        if(this.lightValue < 0 ){
-          this.lightValue = 0;
-        }
-      }else{
-        if(this.lightValue != maxNeighbourLightValue){
-          this.lightValue = 0;
           this.crossNeighbors.forEach((neighbour, i) => {
-            if(neighbour && neighbour.contant === null){
-              setTimeout(function(){
-                neighbour.findLightValueWhenAddBlock(true);
-              },1);
+            if (neighbour) {
+              if (neighbour.contant === null && neighbour.lightValue != 0) {
+                // console.log(neighbour)
+                neighbour.findLightValueWhenAddBlock();
+              } else if (neighbour.lightBlock) {
+
+              }
             };
           });
-        };
+
+
+        }
+      } else {
+        //если блока сверху нет, значит этот блок финальный
+        this.seeSky = true;
+        this.lightValue = 15;
+        const that = this;
+        setTimeout(function() {
+          that.updateNeighbourBlockTexture();
+        }, 1000);
       };
-      this.updateNeighbourBlockTexture();
     };
+
+
+
+
   };
 
 
@@ -491,65 +541,69 @@ function mapCeil(x, y, z) {
   return ceil;
 };
 
+
 function updateAmbientLight(helpers) {
   // if(!map.onUpdateAmbientLight){
-    // map.onUpdateAmbientLight = true;
-    const updateID = Math.random();
-    const airBlocks = [];
-    const blocks = [];
+  // map.onUpdateAmbientLight = true;
+  const updateID = Math.random();
+  const airBlocks = [];
+  const blocks = [];
 
-    for (let x = 0; x < size.width; x++) {
-      for (let z = 0; z < size.width; z++) {
-        let lightValue = 15;
-        for (let y = size.height - 1; y >= 0; y--) {
-          const mapCeil = map[x][z][y];
-          mapCeil.lightUpdateId = updateID;
-          if (mapCeil.contant != null) {
-            lightValue = 0;
-            blocks.push(mapCeil.contant);
-          } else {
-            airBlocks.push(mapCeil);
-          }
-          mapCeil.lightValue = lightValue;
-          mapCeil.seeSky = false;
-          if(lightValue === 15){
-            mapCeil.seeSky = true;
-          };
+  for (let x = 0; x < size.width; x++) {
+    for (let z = 0; z < size.width; z++) {
+      let lightValue = 15;
+      for (let y = size.height - 1; y >= 0; y--) {
+        const mapCeil = map[x][z][y];
+        mapCeil.lightUpdateId = updateID;
+        if (mapCeil.contant != null) {
+          lightValue = 0;
+          blocks.push(mapCeil.contant);
+        } else {
+          airBlocks.push(mapCeil);
+        }
+        mapCeil.lightValue = lightValue;
+        mapCeil.seeSky = false;
+        if (lightValue === 15) {
+          mapCeil.seeSky = true;
         };
       };
     };
+  };
 
-    let updatedMapCeilIndex = 0;
-    let updatedBlockIndex = 0;
+  let updatedMapCeilIndex = 0;
+  let updatedBlockIndex = 0;
 
 
-    airBlocks.forEach((mapCeil, i) => {
-      mapCeil.updateLight();
-    });
+  airBlocks.forEach((mapCeil, i) => {
+    mapCeil.updateLight();
+  });
 
-    blocks.forEach((thisBlock, i) => {
-      let lastBlock = false;
-      if(i === blocks.length-1){
-        lastBlock=true;
-      }
-      thisBlock.updateShadow(true,lastBlock,map);
-    });
-  // }else{
-  //   console.log('onUpdate!');
-  // }
-  // setTimeout(function(){
-  //   // map.updateAmbientLight();
-  // },2000)
+
+  let blockIndex = -1;
+  async function updateBlockTexture(){
+    blockIndex++;
+    if(blockIndex < blocks.length){
+      if(blocks[blockIndex].meshAddedToScene){
+        blocks[blockIndex].updateShadow().then(function(){
+          updateBlockTexture();
+        });
+      }else{
+        updateBlockTexture();
+      };
+    };
+  };
+  updateBlockTexture();
+
 };
 
-function generateLandscape(seed){
+function generateLandscape(seed) {
   PERLIN_NOISE.init(seed);
   const mapHeight = size.height;
   const landHeightMax = Math.round(mapHeight * 0.68);
 
-  const mountainHeightMin =  Math.round(mapHeight * 0.26);
+  const mountainHeightMin = Math.round(mapHeight * 0.26);
   const snowLevel = Math.round(mapHeight * 0.23);
-  const onlySnowLevel =  Math.round(mapHeight * 0.38);
+  const onlySnowLevel = Math.round(mapHeight * 0.38);
 
 
   const groundLayer = 3;
@@ -565,18 +619,18 @@ function generateLandscape(seed){
       let perlinHeight = PERLIN_NOISE.Noise('land', x, z);
       //узнаем [0,1] воды;
       let perlinWater = PERLIN_NOISE.Noise('water', x, z);
-      const waterValue = 1-Math.abs(perlinWater - 0.5)/0.5;
-      const heightValue = Math.round(perlinHeight*landHeightMax);
-      let landHeight = heightValue - Math.round(heightValue*waterValue);
+      const waterValue = 1 - Math.abs(perlinWater - 0.5) / 0.5;
+      const heightValue = Math.round(perlinHeight * landHeightMax);
+      let landHeight = heightValue - Math.round(heightValue * waterValue);
 
       let landType = 'stone'
 
-      if(waterValue >= 0.8){
+      if (waterValue >= 0.8) {
         landType = 'water';
       };
 
 
-      landHeight < 4 ? landHeight = 4:false;
+      landHeight < 4 ? landHeight = 4 : false;
 
 
 
@@ -585,95 +639,95 @@ function generateLandscape(seed){
 
         let blockType = landType
         //обработка воды
-        if(blockType === 'water'){
-          if(y === 0){
+        if (blockType === 'water') {
+          if (y === 0) {
             //самое дно
             blockType = 'sand';
-          }else{
+          } else {
             //плавное дно
-            const waterDepth = 1-(waterValue - 0.9)*10;
-            if(y < Math.round(waterDepth*waterLine)){
+            const waterDepth = 1 - (waterValue - 0.9) * 10;
+            if (y < Math.round(waterDepth * waterLine)) {
               blockType = 'sand';
             };
           };
           //берег
-          if(waterValue < 0.9){
+          if (waterValue < 0.9) {
             blockType = 'sand';
           };
         };
 
 
         //обработка земли
-        if(blockType === 'stone'){
-          if(landHeight < mountainHeightMin){
+        if (blockType === 'stone') {
+          if (landHeight < mountainHeightMin) {
             //просто земля
-            if(y === landHeight){
+            if (y === landHeight) {
               blockType = 'grass';
             }
-            if(y === landHeight-1){
+            if (y === landHeight - 1) {
               //второй слой земли
               blockType = 'ground';
             }
-            if(y === landHeight-2){
-              Math.random() > 0.5 ? blockType = 'ground':false;
+            if (y === landHeight - 2) {
+              Math.random() > 0.5 ? blockType = 'ground' : false;
             }
-            if(y > snowLevel && y === landHeight){
+            if (y > snowLevel && y === landHeight) {
               //шапка из снега
               // Math.random() > 0.5? GAME.blocks.addBlock({x,y:y+1,z},'snowCarpet') :false;
             }
 
-          }else{
+          } else {
             //тут горы
-            if(y === landHeight){
+            if (y === landHeight) {
               // Math.random() > 0.1? GAME.blocks.addBlock({x,y:y+1,z},'snowCarpet',null,true) :false;
             };
-            if(y > onlySnowLevel){
+            if (y > onlySnowLevel) {
               blockType = 'snow'
             };
           };
         };
 
         const caveValue = PERLIN_NOISE.Worm(x, z, y);
-        if(caveValue < 0.5){
+        if (caveValue < 0.5) {
           // GAME.blocks.addBlock({x,y,z},blockType,null,true);
-          if(blockType === 'stone' || blockType === 'ground' ||  blockType === 'sand' || blockType === 'snow'){
+          if (blockType === 'stone' || blockType === 'ground' || blockType === 'sand' || blockType === 'snow') {
             let block = BLOCK.get(blockType);
             block.setPosition({
               x,
               y,
               z
             });
-            map.addBlock(block,true);
-          }else{
+            map.addBlock(block, true);
+          } else {
             let block = BLOCK.get('test');
             block.setPosition({
               x,
               y,
               z
             });
-            map.addBlock(block,true);
+            map.addBlock(block, true);
           }
 
 
-        }else{
-          if(blockType === 'snow' || blockType === 'sand' || blockType === 'water' || y === 0){
+        } else {
+          if (blockType === 'snow' || blockType === 'sand' || blockType === 'water' || y === 0) {
             // GAME.blocks.addBlock({x,y,z},blockType,null,true);
-            if(blockType === 'stone' || blockType === 'ground' || blockType === 'sand' || blockType === 'snow'){
+            if (blockType === 'stone' || blockType === 'ground' || blockType === 'sand' || blockType === 'snow') {
               let block = BLOCK.get(blockType);
               block.setPosition({
                 x,
                 y,
                 z
               });
-              map.addBlock(block,true);
-            }else{
+              map.addBlock(block, true);
+            } else {
               let block = BLOCK.get('test');
               block.setPosition({
                 x,
                 y,
                 z
               });
-              map.addBlock(block,true);
+              map.addBlock(block, true);
             }
           };
         };
@@ -682,7 +736,7 @@ function generateLandscape(seed){
   };
 };
 
-function parse(){
+function parse() {
 
 };
 

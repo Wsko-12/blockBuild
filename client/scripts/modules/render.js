@@ -3,11 +3,11 @@ import {
   MAIN
 } from '../main.js';
 
-
 // import {OrbitControls} from '../../ThreeJsLib/examples/jsm/controls/OrbitControls.js';
 // const controls = new OrbitControls( camera, renderer.domElement );
-
-
+import Stats from '../../ThreeJsLib/examples/jsm/libs/stats.module.js';
+const stats = new Stats();
+let renderStarted = false;
 const mouseBoxes = new THREE.Group();
 const blocks = new THREE.Group();
 const renderer = new THREE.WebGLRenderer();
@@ -60,6 +60,20 @@ const setSizes = function(){
 const init = function() {
   scene.add(mouseBoxes);
   scene.add(blocks);
+
+
+	document.body.appendChild( stats.dom );
+  if(document.body.clientWidth < document.body.clientHeight){
+    stats.domElement.childNodes.forEach((canvas, i) => {
+      canvas.style.width = '20vw';
+      canvas.style.height = '12vw';
+        console.log(canvas)
+    });
+  };
+
+
+
+
   document.querySelector('body').appendChild(renderer.domElement);
   camera.position.set(50,20,50);
   camera.lookAt(0,0,0);
@@ -67,12 +81,13 @@ const init = function() {
   scene.background = new THREE.Color(0xb8d6ff);
   window.addEventListener("resize", setSizes);
   setSizes();
-  render();
 };
 
 
 const render = function(){
   // controls.update();
+  renderStarted = true;
+  stats.update();
   renderer.render(scene, camera);
   requestAnimationFrame(render);
 };
