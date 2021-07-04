@@ -16,9 +16,6 @@ const init = function(){
     WORLD.map.updateAllInvisibleFaces();
     WORLD.updateAmbientLight();
     USER_ACTIONS.init();
-    MAIN.render.render();
-
-
   });
 };
 

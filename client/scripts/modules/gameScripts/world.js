@@ -590,7 +590,9 @@ function updateAmbientLight(helpers) {
       }else{
         updateBlockTexture();
       };
-    };
+    }else{
+      MAIN.render.render();
+    }
   };
   updateBlockTexture();
 

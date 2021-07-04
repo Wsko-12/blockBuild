@@ -12,7 +12,7 @@ let MAIN = {
 function init(){
   MAIN.render.init();
   MAIN.game.init();
-  // console.log(MAIN);
+  console.log(MAIN);
   // MAIN.render.render();
 
 };
