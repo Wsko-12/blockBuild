@@ -40,55 +40,40 @@ map.updateAllInvisibleFaces = function() {
 
 
 
-map.addBlock = function(block, generation) {
+map.addBlock = async function(block, generation) {
   const position = block.position;
   map[position.x][position.z][position.y].contant = block;
-  map[position.x][position.z][position.y].lightValue = 0;
-  map[position.x][position.z][position.y].seeSky = false;
   block.mapCeil = map[position.x][position.z][position.y];
   block.addMeshToScene();
   if (!generation) {
-    MAIN.game.world.map[position.x][position.z][position.y].updateBlockInvisibleFaces();
-    MAIN.game.world.map[position.x][position.z][position.y].crossNeighbors.forEach((neighbour, i) => {
-      if (neighbour != null && neighbour.contant === null) {
-        setTimeout(function() {
-          // neighbour.calculateLight();
-        }, 1)
-      }
+
+    map[position.x][position.z][position.y].crossNeighbors.forEach((neighbor, i) => {
+      if (neighbor != null) {
+        neighbor.updateBlockInvisibleFaces()
+      };
     });
-    MAIN.game.world.map[position.x][position.z][position.y].closeNeighbors.forEach((neighbour, i) => {
-      if (neighbour != null) {
-        if (neighbour.contant) {
-          neighbour.contant.updateShadow();
-        }
-      }
+    recalculateAmbientLight().then(function(){
+        map[position.x][position.z][position.y].updateNeighbourBlockTexture();
     });
-    MAIN.game.world.map[position.x][position.z][position.y].contant.updateShadow();
   };
 };
-map.removeBlock = function(block) {
+map.removeBlock = async function(block) {
   const position = block.position;
   map[position.x][position.z][position.y].contant = null;
   block.removeMeshFromScene();
-
   map[position.x][position.z][position.y].crossNeighbors.forEach((neighbor, i) => {
     if (neighbor != null) {
       neighbor.updateBlockInvisibleFaces()
     };
   });
+  recalculateAmbientLight().then(function(){
+      map[position.x][position.z][position.y].updateNeighbourBlockTexture();
+  });
 };
-
-
-
-map.wasUpdated = {};
-
 
 
 function mapCeil(x, y, z) {
   const ceil = {};
-  ceil.shadowsDate = {
-    updated: false,
-  };
   ceil.position = {
     x,
     y,
@@ -318,27 +303,8 @@ function mapCeil(x, y, z) {
     });
   };
 
-  ceil.updateLight = function(helpers) {
-    if (helpers) {
-      if (!MAIN.render.config.helpers.lightHelpers) {
-        MAIN.render.config.helpers.lightHelpers = new THREE.Group();
-        MAIN.render.scene.add(MAIN.render.config.helpers.lightHelpers);
-      };
-      const geom = new THREE.BoxGeometry(0.15, 0.15, 0.15);
-      const material = new THREE.MeshBasicMaterial({
-        color: `rgb(${Math.round(255*this.lightValue/15)},${Math.round(255*this.lightValue/15)},${Math.round(255*this.lightValue/15)})`,
-        transparent: true,
-        opacity: 1,
-      });
+  ceil.updateLight = function(generation) {
 
-
-      const mesh = new THREE.Mesh(geom, material);
-      mesh.position.x = this.position.x;
-      mesh.position.y = this.position.y;
-      mesh.position.z = this.position.z;
-
-      MAIN.render.config.helpers.lightHelpers.add(mesh);
-    }
     this.crossNeighbors.forEach((neighbor, i) => {
       //если не вышли за пределы карты
       if (neighbor != null) {
@@ -348,191 +314,17 @@ function mapCeil(x, y, z) {
         } else {
           //если нет, то
           if (neighbor.lightValue < this.lightValue - 1) {
+
             neighbor.lightValue = this.lightValue - 1;
-            neighbor.updateLight(helpers);
+            if(generation){
+              neighbor.lastLightValue = neighbor.lightValue;
+            };
+            neighbor.updateLight(generation);
           };
         };
       };
     });
   };
-
-
-  ceil.calculateLight = function() {
-    const startLightValue = this.lightValue;
-    let changed = false;
-    this.crossNeighbors.forEach((neighbour, i) => {
-      if (neighbour) {
-        if (neighbour.contant === null && neighbour.lightValue != 0) {
-          if (neighbour.lightValue > startLightValue) {
-
-          } else {
-            if (neighbour.position.y < this.position.y) {
-              this.lightValue = 0;
-              changed = true
-              setTimeout(function() {
-                neighbour.calculateLight();
-              });
-            } else if (neighbour.position.y === this.position.y) {
-              if (neighbour.lightValue < startLightValue) {
-                this.lightValue = 0;
-                changed = true
-                setTimeout(function() {
-                  neighbour.calculateLight();
-                });
-              }
-            }
-          };
-        };
-      };
-    });
-
-    if(!changed){
-      let maxNeighbourLightValue
-      this.crossNeighbors.forEach((neighbour, i) => {
-        if(neighbour && neighbour.contant === null){
-          if(neighbour.lightValue > maxNeighbourLightValue){
-            maxNeighbourLightValue = neighbour.lightValue
-          };
-        };
-      });
-      if(this.lightValue > maxNeighbourLightValue){
-        this.lightValue = 0;
-      }
-
-    }
-    this.updateNeighbourBlockTexture();
-
-  };
-
-
-  ceil.findLightValue = function() {
-    //смотрим верхнего соседа
-    const oldLightValue = this.lightValue;
-    if (this.contant === null) {
-      if (this.crossNeighbors[2]) {
-        if (this.crossNeighbors[2].seeSky) {
-          this.seeSky = true;
-          this.lightValue = this.crossNeighbors[2].lightValue;
-          for (let y = this.position.y - 1; y >= 0; y--) {
-            if (!map[this.position.x][this.position.z][y].contant) {
-              map[this.position.x][this.position.z][y].findLightValue();
-            } else {
-              break;
-            }
-          };
-        } else {
-          //если сверху нет блока, то ищем вокруг
-          //соеседа, который видит небо, кроме нижнего;
-          let maxNeighbourLightValue = 0;
-          for (let i = 0; i < 6; i++) {
-            const neighbour = this.crossNeighbors[i];
-            if (neighbour != null) {
-              if (i != 3) {
-                if (neighbour != null) {
-                  if (neighbour.seeSky) {
-                    this.seeSky = false;
-                    this.lightValue = neighbour.lightValue - 1;
-                    break;
-                  } else {
-                    this.seeSky = false;
-                    if (neighbour.lightValue >= maxNeighbourLightValue) {
-                      maxNeighbourLightValue = neighbour.lightValue;
-                      this.lightValue = maxNeighbourLightValue - 1;
-                      if (this.lightValue < 0) {
-                        this.lightValue = 0;
-                      }
-                    };
-                  };
-                };
-              } else {
-                //но если нижний сосед светящийся блок
-                if (neighbour.lightBlock) {
-
-                };
-                if (neighbour.lightValue != 15) {
-                  if (neighbour.lightValue >= maxNeighbourLightValue) {
-                    maxNeighbourLightValue = neighbour.lightValue;
-                    if (maxNeighbourLightValue != 0) {
-                      this.lightValue = maxNeighbourLightValue - 1;
-                    } else {
-                      this.lightValue = 0;
-                    }
-                  };
-                };
-              };
-            };
-          };
-        };
-      } else {
-        //самый верхний блок
-        this.lightValue = 15;
-        this.seeSky = true;
-      };
-
-      if (oldLightValue != this.lightValue) {
-        this.crossNeighbors.forEach((neighbour, i) => {
-          if (neighbour != null) {
-            setTimeout(function() {
-              neighbour.findLightValue();
-            }, 1)
-          }
-        });
-        this.updateNeighbourBlockTexture();
-      };
-    };
-  };
-
-  ceil.findLightValueWhenAddBlock = function() {
-    //сначала проверяем блок сверху
-    if (this.contant === null || this.lightBlock) {
-      if (this.crossNeighbors[2] != null) {
-        //если блок сверху видит небо, то и этот видит небо
-        if (this.crossNeighbors[2].seeSky) {
-          this.crossNeighbors.forEach((neighbour, i) => {
-            if (neighbour) {
-              if (!neighbour.seeSky) {
-                if (neighbour.contant === null) {
-                  console.log(neighbour);
-                  neighbour.findLightValue();
-                }
-              };
-            };
-          });
-
-        } else {
-          this.seeSky = false;
-          this.lightValue = 0;
-          this.updateNeighbourBlockTexture();
-          this.crossNeighbors.forEach((neighbour, i) => {
-            if (neighbour) {
-              if (neighbour.contant === null && neighbour.lightValue != 0) {
-                // console.log(neighbour)
-                neighbour.findLightValueWhenAddBlock();
-              } else if (neighbour.lightBlock) {
-
-              }
-            };
-          });
-
-
-        }
-      } else {
-        //если блока сверху нет, значит этот блок финальный
-        this.seeSky = true;
-        this.lightValue = 15;
-        const that = this;
-        setTimeout(function() {
-          that.updateNeighbourBlockTexture();
-        }, 1000);
-      };
-    };
-
-
-
-
-  };
-
-
 
   ceil.contant = null;
   return ceil;
@@ -559,6 +351,7 @@ function updateAmbientLight(helpers) {
           airBlocks.push(mapCeil);
         }
         mapCeil.lightValue = lightValue;
+        mapCeil.lastLightValue = lightValue;
         mapCeil.seeSky = false;
         if (lightValue === 15) {
           mapCeil.seeSky = true;
@@ -572,7 +365,7 @@ function updateAmbientLight(helpers) {
 
 
   airBlocks.forEach((mapCeil, i) => {
-    mapCeil.updateLight();
+    mapCeil.updateLight(true);
   });
 
 
@@ -593,6 +386,77 @@ function updateAmbientLight(helpers) {
   };
   updateBlockTexture();
 
+};
+
+
+async function recalculateAmbientLight(){
+
+  const updateID = Math.random();
+  const airBlocks = [];
+
+  for (let x = 0; x < size.width; x++) {
+    for (let z = 0; z < size.width; z++) {
+      let lightValue = 15;
+      for (let y = size.height - 1; y >= 0; y--) {
+        const mapCeil = map[x][z][y];
+        mapCeil.lightUpdateId = updateID;
+        if (mapCeil.contant != null) {
+          lightValue = 0;
+        } else {
+          airBlocks.push(mapCeil);
+        }
+        mapCeil.lightValue = lightValue;
+        mapCeil.seeSky = false;
+        if (lightValue === 15) {
+          mapCeil.seeSky = true;
+        };
+      };
+    };
+  };
+
+  let updatedMapCeilIndex = 0;
+  let updatedBlockIndex = 0;
+
+
+  airBlocks.forEach((mapCeil, i) => {
+    mapCeil.updateLight();
+  });
+
+  const needUpdate = []
+  airBlocks.forEach((mapCeil, i) => {
+    if(mapCeil.lightValue != mapCeil.lastLightValue){
+      mapCeil.lastLightValue = mapCeil.lightValue;
+      needUpdate.push(mapCeil);
+    };
+  });
+
+  const blocks = []
+  needUpdate.forEach((mapCeil, i) => {
+    mapCeil.crossNeighbors.forEach((neighbour, i) => {
+      if(neighbour){
+        if(neighbour.contant){
+          blocks.push(neighbour.contant)
+        };
+      };
+    });
+  });
+
+  let blockIndex = -1;
+  async function updateBlockTexture(){
+    blockIndex++;
+    if(blockIndex < blocks.length){
+      if(blocks[blockIndex].meshAddedToScene){
+        blocks[blockIndex].updateShadow().then(function(){
+          return updateBlockTexture();
+        });
+      }else{
+        return updateBlockTexture();
+      };
+    }else{
+      return true;
+    };
+  };
+  return updateBlockTexture();
 };
 
 function generateLandscape(seed) {

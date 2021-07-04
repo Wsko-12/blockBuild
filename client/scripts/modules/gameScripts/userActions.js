@@ -156,58 +156,7 @@ const init = function() {
       block.setPosition(position);
       MAIN.game.world.map.addBlock(block);
 
-    }
-
-
-
-
-
-
-
-
-
-    // for (let i = 0; i < intersects.length; i++) {
-
-    //   if (intersects[i].object.gameBlock.name != 'water') {
-    //     const geom = new THREE.BoxBufferGeometry(1,1,1);
-    //     const material = new THREE.MeshBasicMaterial({color:0xe40e0e});
-    //     const mesh = new THREE.Mesh(geom,material);
-    //
-    //
-    //     const positionShift = {
-    //       x: intersects[i].point.x - intersects[i].object.position.x,
-    //       y: intersects[i].point.y - intersects[i].object.position.y,
-    //       z: intersects[i].point.z - intersects[i].object.position.z,
-    //     }
-    //
-    //     for(let key in positionShift){
-    //       if(positionShift[key] % 0.5 === 0){
-    //         positionShift[key] = positionShift[key]*2
-    //       }else{
-    //         positionShift[key] = 0;
-    //       }
-    //     }
-    //
-    //     const position = {
-    //       x : Math.round(intersects[i].object.position.x + positionShift.x),
-    //       y : Math.round(intersects[i].object.position.y + positionShift.y),
-    //       z : Math.round(intersects[i].object.position.z + positionShift.z),
-    //     }
-    //
-    //
-    //
-    //     if(position.x >= GAME.generations.mapSizes.mapWidth || position.x < 0) return;
-    //     if(position.z >= GAME.generations.mapSizes.mapWidth || position.z < 0) return;
-    //     if(position.y >= GAME.generations.mapSizes.mapHeight || position.y < 0) return;
-    //     if(GAME.gameWorld.world[position.x][position.z][position.y].contain.length > 0)return;
-    //
-    //
-    //
-    //     GAME.blocks.addBlock(position,'sand');;
-    //     return
-    //   };
-    //
-    // };
+    };
   };
 
 
@@ -323,7 +272,7 @@ const init = function() {
               removeBlock(lastX, lastY)
             } else {
               //палец отжал, значит строим блок
-              console.log('build block')
+              buildBlock(lastX,lastY)
             }
           }
       }, 350);

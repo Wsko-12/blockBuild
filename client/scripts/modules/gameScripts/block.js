@@ -73,56 +73,60 @@ function get(name) {
 
 
   self.drawSideTexture = async function(side, image, lightValue, cornersValues) {
-    const canvas = document.createElement('canvas');
-    const textureSize = MAIN.render.config.textureSize;
-    canvas.width = textureSize;
-    canvas.height = textureSize;
-    const ctx = canvas.getContext('2d');
-    ctx.imageSmoothingEnabled = false;
-    //рисуем полную текстуру
-    ctx.drawImage(image, 0, 0, textureSize, textureSize);
 
-    //eсли выключены softShadow, то просто затемняем текстуру
-    if (MAIN.render.config.softShadows) {
-      let gradient
-      if (cornersValues[0] > 0) {
-        gradient = ctx.createLinearGradient(0, 0, textureSize, textureSize);
-        gradient.addColorStop(0, `rgba(0,0,0,${cornersValues[0]/3.5-0.2})`);
-        gradient.addColorStop(0.6, 'rgba(0,0,0,0)');
-        ctx.fillStyle = gradient;
-        ctx.fillRect(0, 0, textureSize, textureSize);
-      }
+    function draw(){
+      const canvas = document.createElement('canvas');
+      const textureSize = MAIN.render.config.textureSize;
+      canvas.width = textureSize;
+      canvas.height = textureSize;
+      const ctx = canvas.getContext('2d');
+      ctx.imageSmoothingEnabled = false;
+      //рисуем полную текстуру
+      ctx.drawImage(image, 0, 0, textureSize, textureSize);
 
-      if (cornersValues[1] > 0) {
-        gradient = ctx.createLinearGradient(textureSize, 0, 0, textureSize);
-        gradient.addColorStop(0, `rgba(0,0,0,${cornersValues[1]/3.5-0.2})`);
-        gradient.addColorStop(0.6, 'rgba(0,0,0,0)');
-        ctx.fillStyle = gradient;
-        ctx.fillRect(0, 0, textureSize, textureSize);
-      }
+      //eсли выключены softShadow, то просто затемняем текстуру
+      if (MAIN.render.config.softShadows) {
+        let gradient
+        if (cornersValues[0] > 0) {
+          gradient = ctx.createLinearGradient(0, 0, textureSize, textureSize);
+          gradient.addColorStop(0, `rgba(0,0,0,${cornersValues[0]/3.5-0.2})`);
+          gradient.addColorStop(0.6, 'rgba(0,0,0,0)');
+          ctx.fillStyle = gradient;
+          ctx.fillRect(0, 0, textureSize, textureSize);
+        }
 
-      if (cornersValues[2] > 0) {
-        gradient = ctx.createLinearGradient(textureSize, textureSize, 0, 0);
-        gradient.addColorStop(0, `rgba(0,0,0,${cornersValues[2]/3.5-0.2})`);
-        gradient.addColorStop(0.6, 'rgba(0,0,0,0)');
-        ctx.fillStyle = gradient;
-        ctx.fillRect(0, 0, textureSize, textureSize);
-      }
+        if (cornersValues[1] > 0) {
+          gradient = ctx.createLinearGradient(textureSize, 0, 0, textureSize);
+          gradient.addColorStop(0, `rgba(0,0,0,${cornersValues[1]/3.5-0.2})`);
+          gradient.addColorStop(0.6, 'rgba(0,0,0,0)');
+          ctx.fillStyle = gradient;
+          ctx.fillRect(0, 0, textureSize, textureSize);
+        }
 
-      if (cornersValues[3] > 0) {
-        gradient = ctx.createLinearGradient(0, textureSize, textureSize, 0);
-        gradient.addColorStop(0, `rgba(0,0,0,${cornersValues[3]/3.5-0.2})`);
-        gradient.addColorStop(0.6, 'rgba(0,0,0,0)');
-        ctx.fillStyle = gradient;
-        ctx.fillRect(0, 0, textureSize, textureSize);
-      }
+        if (cornersValues[2] > 0) {
+          gradient = ctx.createLinearGradient(textureSize, textureSize, 0, 0);
+          gradient.addColorStop(0, `rgba(0,0,0,${cornersValues[2]/3.5-0.2})`);
+          gradient.addColorStop(0.6, 'rgba(0,0,0,0)');
+          ctx.fillStyle = gradient;
+          ctx.fillRect(0, 0, textureSize, textureSize);
+        }
+
+        if (cornersValues[3] > 0) {
+          gradient = ctx.createLinearGradient(0, textureSize, textureSize, 0);
+          gradient.addColorStop(0, `rgba(0,0,0,${cornersValues[3]/3.5-0.2})`);
+          gradient.addColorStop(0.6, 'rgba(0,0,0,0)');
+          ctx.fillStyle = gradient;
+          ctx.fillRect(0, 0, textureSize, textureSize);
+        }
+      };
+      ctx.fillStyle = `rgba(0,0,0,${1 - lightValue/15})`;
+      ctx.fillRect(0, 0, textureSize, textureSize);
+
+      side.map = new THREE.CanvasTexture(canvas);
+      side.map.magFilter = THREE.NearestFilter;
+      return true;
     };
-    ctx.fillStyle = `rgba(0,0,0,${1 - lightValue/15})`;
-    ctx.fillRect(0, 0, textureSize, textureSize);
-
-    side.map = new THREE.CanvasTexture(canvas);
-    side.map.magFilter = THREE.NearestFilter;
-    return true;
+    draw();
   };
 
 
@@ -183,6 +187,7 @@ function get(name) {
         that.drawSideTexture(side, sideImage, sideGlobalLightValue, cornersValues).then(function() {
           return checkSide();
         });
+
       } else {
         if (sideIndex === 6) {
           return true;
