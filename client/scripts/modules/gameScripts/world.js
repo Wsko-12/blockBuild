@@ -313,11 +313,11 @@ function mapCeil(x, y, z) {
           if (this.contant && this.contant.config.transparent != 0) {
               if (neighbor.lightValue < this.lightValue - this.contant.config.lightRefraction) {
                 neighbor.lightValue = this.lightValue - this.contant.config.lightRefraction;
-              }
-              if (generation) {
-                neighbor.lastLightValue = neighbor.lightValue;
+                if (generation) {
+                  neighbor.lastLightValue = neighbor.lightValue;
+                };
+                  neighbor.updateLight(generation);
               };
-              // neighbor.updateLight(generation);
           } else {
             if (neighbor.lightValue < this.lightValue - 1) {
               neighbor.lightValue = this.lightValue - 1;

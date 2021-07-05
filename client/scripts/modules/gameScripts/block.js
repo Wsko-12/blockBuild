@@ -76,7 +76,7 @@ function get(name) {
 
 
 
-  self.drawSideTexture = async function(side, image, lightValue, cornersValues) {
+  self.drawSideTexture = async function(side, image, lightValue, cornersValues,sidesValue) {
 
     function draw(){
       const canvas = document.createElement('canvas');
@@ -122,9 +122,46 @@ function get(name) {
           ctx.fillStyle = gradient;
           ctx.fillRect(0, 0, textureSize, textureSize);
         }
-      };
-      ctx.fillStyle = `rgba(0,0,0,${1 - lightValue/15})`;
-      ctx.fillRect(0, 0, textureSize, textureSize);
+
+          // gradient = ctx.createLinearGradient(textureSize/2,0, textureSize/2,textureSize+textureSize/2);
+          // gradient.addColorStop(0, `rgba(0,0,0,${(1 - (lightValue - sidesValue[0])/15)})`);
+          // gradient.addColorStop(1, `rgba(0,0,0,${(1 - lightValue /15)/4})`);
+          // ctx.fillStyle = gradient;
+          // ctx.fillRect(0, 0, textureSize, textureSize);
+          //
+          //
+          // gradient = ctx.createLinearGradient(textureSize,textureSize/2, 0-textureSize/2,textureSize/2);
+          // gradient.addColorStop(0, `rgba(0,0,0,${(1 - (lightValue - sidesValue[1])/15)})`);
+          // gradient.addColorStop(1, `rgba(0,0,0,${(1 - lightValue /15)/4})`);
+          // ctx.fillStyle = gradient;
+          // ctx.fillRect(0, 0, textureSize, textureSize);
+          // //
+          // gradient = ctx.createLinearGradient(textureSize/2,textureSize, textureSize/2,0-textureSize/2);
+          // gradient.addColorStop(0, `rgba(0,0,0,${(1 - (lightValue - sidesValue[2])/15)})`);
+          // gradient.addColorStop(1, `rgba(0,0,0,${(1 - lightValue /15)/4})`);
+          // ctx.fillStyle = gradient;
+          // ctx.fillRect(0, 0, textureSize, textureSize);
+          // //
+          // gradient = ctx.createLinearGradient(0,textureSize/2, textureSize + textureSize/2,textureSize/2);
+          // gradient.addColorStop(0, `rgba(0,0,0,${(1 - (lightValue - sidesValue[3])/15)})`);
+          // gradient.addColorStop(1, `rgba(0,0,0,${(1 - lightValue /15)/4})`);
+          // ctx.fillStyle = gradient;
+          // ctx.fillRect(0, 0, textureSize, textureSize);
+          //
+          //
+          //
+          //
+          //
+
+
+
+
+      }
+        ctx.fillStyle = `rgba(0,0,0,${1 - lightValue/15})`;
+        ctx.fillRect(0, 0, textureSize, textureSize);
+      
+
+
 
       side.map = new THREE.CanvasTexture(canvas);
       side.map.magFilter = THREE.NearestFilter;
@@ -153,6 +190,7 @@ function get(name) {
         const sideImage = originalMaterial[sideIndex].map.image;
         //затемнения углов
         const cornersValues = [0, 0, 0, 0];
+        const sidesValue = [0, 0, 0, 0];//top, right, bottom, left
 
         let sideGlobalLightValue = 0;
 
@@ -186,13 +224,43 @@ function get(name) {
                 };
               };
             };
+
+            // постепенное затемнение
+            // нужно найти с каких сторон блок воздуха темнее
+            if(neighbor.lightValue < mapCeil.neighborsBySide[sideIndex][8].lightValue){
+              if(neighborIndex === 1){
+                sidesValue[0] = 1;
+              }
+              if(neighborIndex === 3){
+                sidesValue[1] = 1;
+              }
+              if(neighborIndex === 5){
+                sidesValue[2] = 1;
+              }
+              if(neighborIndex === 7){
+                sidesValue[3] = 1;
+              }
+            };
+
+
+
+
+
+
           }else{
             //скраю карты
             sideGlobalLightValue = 2;
           }
+
+
         });
 
-        that.drawSideTexture(side, sideImage, sideGlobalLightValue, cornersValues).then(function() {
+
+
+
+
+
+        that.drawSideTexture(side, sideImage, sideGlobalLightValue, cornersValues,sidesValue).then(function() {
           return checkSide();
         });
 

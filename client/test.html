@@ -46,67 +46,16 @@
       //soft shadow = false;
       //рисуем первую текстуру
       ctx.drawImage(image, 0, 0, textureSize, textureSize);
-      //затемняем общую текстуру
-      ctx.fillStyle = `rgba(0,0,0,${1 - lightValue/15})`;
-      ctx.fillRect(0,0,textureSize,textureSize);
-
 
       //Soft shadow = true;
 
-      ctx.drawImage(image, 0, 0, textureSize, textureSize);
-      //затемняем общую текстуру, на тон светлее общего света
-      ctx.fillStyle = `rgba(0,0,0,${1 - (lightValue+1)/15})`;
-      // ctx.fillRect(0,0,textureSize,textureSize);
-
 
       //угол 1
-      let gradient = ctx.createLinearGradient(0,0, textureSize,textureSize);
-      let neighborValue = 3;
-      gradient.addColorStop(0, `rgba(0,0,0,${1 - (lightValue-neighborValue)/15})`);
-      gradient.addColorStop(0.5, 'rgba(0,0,0,0)');
-
-      // Установка стиля заливки и отрисовка прямоугольника градиента
+      let gradient = ctx.createLinearGradient(0,textureSize/2, textureSize,textureSize/2);
+      gradient.addColorStop(0, `rgba(0,0,0,${1})`);
+      gradient.addColorStop(1, 'rgba(0,0,0,0.5)');
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, textureSize, textureSize);
-
-      //угол 2
-      gradient = ctx.createLinearGradient(textureSize,0, 0,textureSize);
-      console.log(gradient);
-      neighborValue = 0;
-      gradient.addColorStop(0, `rgba(0,0,0,${1 - (lightValue-neighborValue)/15})`);
-      gradient.addColorStop(1, 'rgba(0,0,0,0)');
-
-      // Установка стиля заливки и отрисовка прямоугольника градиента
-      ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, textureSize, textureSize);
-
-      //угол 3
-      gradient = ctx.createLinearGradient(textureSize,textureSize, 0,0);
-      neighborValue = 2;
-      gradient.addColorStop(0, `rgba(0,0,0,${1 - (lightValue-neighborValue)/15})`);
-      gradient.addColorStop(0.5, 'rgba(0,0,0,0)');
-
-      // Установка стиля заливки и отрисовка прямоугольника градиента
-      ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, textureSize, textureSize);
-
-      //угол 3
-      gradient = ctx.createLinearGradient(0,textureSize, textureSize,0);
-      neighborValue = 2;
-      gradient.addColorStop(0, `rgba(0,0,0,${1 - (lightValue-neighborValue)/15})`);
-      gradient.addColorStop(0.5, 'rgba(0,0,0,0)');
-
-      // Установка стиля заливки и отрисовка прямоугольника градиента
-      ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, textureSize, textureSize);
-
-
-
-
-
-
-
-
 
 
       //вещаем на блок
@@ -116,7 +65,7 @@
 
 
 
-
+      MAIN.render.render();
     });
 
 
