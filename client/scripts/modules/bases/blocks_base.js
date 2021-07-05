@@ -19,12 +19,14 @@ const BLOCKS_BASE = {
 };
 //geometry:
 // 0 - полный блок;
+//1 - измененный блок
 
 //light
 //bool
 
 //transparent:
 // 0 - не прозрачный;
+// 1 - прозрачный материалом (вода);
 
 //rotation:
 //0 - не крутится
@@ -69,5 +71,18 @@ BLOCKS_BASE.grass = {
   geometry:0,
   transparent:0,
 };
+BLOCKS_BASE.water = {
+  meshBase:'water',
+  geometry:1,
+  transparent:1,
+  positionShift:[0,-0.1,0],
+  lightRefraction:2,
+};
+
+
+
+
+
+
 
 export {BLOCKS_BASE};

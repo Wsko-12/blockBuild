@@ -52,8 +52,9 @@ map.addBlock = async function(block, generation) {
         neighbor.updateBlockInvisibleFaces()
       };
     });
-    recalculateAmbientLight().then(function(){
-        map[position.x][position.z][position.y].updateNeighbourBlockTexture();
+    recalculateAmbientLight().then(function() {
+      map[position.x][position.z][position.y].contant.updateShadow();
+      map[position.x][position.z][position.y].updateNeighbourBlockTexture();
     });
   };
 };
@@ -66,8 +67,8 @@ map.removeBlock = async function(block) {
       neighbor.updateBlockInvisibleFaces()
     };
   });
-  recalculateAmbientLight().then(function(){
-      map[position.x][position.z][position.y].updateNeighbourBlockTexture();
+  recalculateAmbientLight().then(function() {
+    map[position.x][position.z][position.y].updateNeighbourBlockTexture();
   });
 };
 
@@ -308,18 +309,23 @@ function mapCeil(x, y, z) {
     this.crossNeighbors.forEach((neighbor, i) => {
       //если не вышли за пределы карты
       if (neighbor != null) {
-        if (neighbor.contant) {
-          //если сосед блок
-          // neighbor.contant.updateShadow();
-        } else {
-          //если нет, то
-          if (neighbor.lightValue < this.lightValue - 1) {
-
-            neighbor.lightValue = this.lightValue - 1;
-            if(generation){
-              neighbor.lastLightValue = neighbor.lightValue;
+        if (neighbor.contant === null || neighbor.contant.config.transparent != 0) {
+          if (this.contant && this.contant.config.transparent != 0) {
+              if (neighbor.lightValue < this.lightValue - this.contant.config.lightRefraction) {
+                neighbor.lightValue = this.lightValue - this.contant.config.lightRefraction;
+              }
+              if (generation) {
+                neighbor.lastLightValue = neighbor.lightValue;
+              };
+              // neighbor.updateLight(generation);
+          } else {
+            if (neighbor.lightValue < this.lightValue - 1) {
+              neighbor.lightValue = this.lightValue - 1;
+              if (generation) {
+                neighbor.lastLightValue = neighbor.lightValue;
+              };
+              neighbor.updateLight(generation);
             };
-            neighbor.updateLight(generation);
           };
         };
       };
@@ -345,7 +351,12 @@ function updateAmbientLight(helpers) {
         const mapCeil = map[x][z][y];
         mapCeil.lightUpdateId = updateID;
         if (mapCeil.contant != null) {
-          lightValue = 0;
+          if (mapCeil.contant.config.transparent != 0) {
+            lightValue -= mapCeil.contant.config.lightRefraction;
+            airBlocks.push(mapCeil);
+          } else {
+            lightValue = 0;
+          }
           blocks.push(mapCeil.contant);
         } else {
           airBlocks.push(mapCeil);
@@ -370,17 +381,17 @@ function updateAmbientLight(helpers) {
 
 
   let blockIndex = -1;
-  async function updateBlockTexture(){
+  async function updateBlockTexture() {
     blockIndex++;
-    if(blockIndex < blocks.length){
-      if(blocks[blockIndex].meshAddedToScene){
-        blocks[blockIndex].updateShadow().then(function(){
+    if (blockIndex < blocks.length) {
+      if (blocks[blockIndex].meshAddedToScene) {
+        blocks[blockIndex].updateShadow().then(function() {
           updateBlockTexture();
         });
-      }else{
+      } else {
         updateBlockTexture();
       };
-    }else{
+    } else {
       MAIN.render.render();
     }
   };
@@ -389,7 +400,7 @@ function updateAmbientLight(helpers) {
 };
 
 
-async function recalculateAmbientLight(){
+async function recalculateAmbientLight() {
 
   const updateID = Math.random();
   const airBlocks = [];
@@ -401,7 +412,12 @@ async function recalculateAmbientLight(){
         const mapCeil = map[x][z][y];
         mapCeil.lightUpdateId = updateID;
         if (mapCeil.contant != null) {
-          lightValue = 0;
+          if (mapCeil.contant.config.transparent != 0) {
+            lightValue -= mapCeil.contant.config.lightRefraction;
+            airBlocks.push(mapCeil);
+          } else {
+            lightValue = 0;
+          }
         } else {
           airBlocks.push(mapCeil);
         }
@@ -424,7 +440,7 @@ async function recalculateAmbientLight(){
 
   const needUpdate = []
   airBlocks.forEach((mapCeil, i) => {
-    if(mapCeil.lightValue != mapCeil.lastLightValue){
+    if (mapCeil.lightValue != mapCeil.lastLightValue) {
       mapCeil.lastLightValue = mapCeil.lightValue;
       needUpdate.push(mapCeil);
     };
@@ -433,8 +449,8 @@ async function recalculateAmbientLight(){
   const blocks = []
   needUpdate.forEach((mapCeil, i) => {
     mapCeil.crossNeighbors.forEach((neighbour, i) => {
-      if(neighbour){
-        if(neighbour.contant){
+      if (neighbour) {
+        if (neighbour.contant) {
           blocks.push(neighbour.contant)
         };
       };
@@ -442,17 +458,17 @@ async function recalculateAmbientLight(){
   });
 
   let blockIndex = -1;
-  async function updateBlockTexture(){
+  async function updateBlockTexture() {
     blockIndex++;
-    if(blockIndex < blocks.length){
-      if(blocks[blockIndex].meshAddedToScene){
-        blocks[blockIndex].updateShadow().then(function(){
+    if (blockIndex < blocks.length) {
+      if (blocks[blockIndex].meshAddedToScene) {
+        blocks[blockIndex].updateShadow().then(function() {
           return updateBlockTexture();
         });
-      }else{
+      } else {
         return updateBlockTexture();
       };
-    }else{
+    } else {
       return true;
     };
   };
@@ -553,7 +569,7 @@ function generateLandscape(seed) {
         const caveValue = PERLIN_NOISE.Worm(x, z, y);
         if (caveValue < 0.5) {
           // GAME.blocks.addBlock({x,y,z},blockType,null,true);
-          if (blockType === 'stone' || blockType === 'ground' || blockType === 'sand' || blockType === 'snow'|| blockType === 'grass') {
+          if (blockType === 'stone' || blockType === 'ground' || blockType === 'sand' || blockType === 'snow' || blockType === 'grass' || blockType === 'water') {
             let block = BLOCK.get(blockType);
             block.setPosition({
               x,
@@ -575,7 +591,7 @@ function generateLandscape(seed) {
         } else {
           if (blockType === 'snow' || blockType === 'sand' || blockType === 'water' || y === 0) {
             // GAME.blocks.addBlock({x,y,z},blockType,null,true);
-            if (blockType === 'stone' || blockType === 'ground' || blockType === 'sand' || blockType === 'snow') {
+            if (blockType === 'stone' || blockType === 'ground' || blockType === 'sand' || blockType === 'snow' || blockType === 'water') {
               let block = BLOCK.get(blockType);
               block.setPosition({
                 x,

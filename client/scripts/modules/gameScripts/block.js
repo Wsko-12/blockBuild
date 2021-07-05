@@ -32,8 +32,12 @@ function get(name) {
         y: 0,
         z: 0
       };
-    } else {
-
+    } else if(this.config.geometry === 1){
+      positionShift = {
+        x: 0 + this.config.positionShift[0],
+        y: 0 + this.config.positionShift[1],
+        z: 0 + this.config.positionShift[2],
+      };
     };
 
     this.mesh.position.x = this.position.x + positionShift.x;
@@ -138,6 +142,9 @@ function get(name) {
     let sideIndex = -1;
     const that = this;
     const mapCeil = that.mapCeil;
+    if(this.config.transparent === 0){
+      return checkSide();
+    }
 
     function checkSide() {
       sideIndex++;
@@ -157,31 +164,32 @@ function get(name) {
             if (neighborIndex === 8) {
               sideGlobalLightValue = neighbor.lightValue;
             };
-            //верхний левый
-            if (neighborIndex === 7 || neighborIndex === 0 || neighborIndex === 1) {
-              if (mapCeil.neighborsBySide[sideIndex][neighborIndex].contant) {
-                cornersValues[0]++;
-              }
+            if (mapCeil.neighborsBySide[sideIndex][neighborIndex].contant) {
+              if(mapCeil.neighborsBySide[sideIndex][neighborIndex].contant.config.transparent === 0){
+                //верхний левый
+                if (neighborIndex === 7 || neighborIndex === 0 || neighborIndex === 1) {
+                  cornersValues[0]++;
+                };
+
+                //верхний правый
+                if (neighborIndex === 1 || neighborIndex === 2 || neighborIndex === 3) {
+                  cornersValues[1]++;
+                };
+
+                //нижний правый
+                if (neighborIndex === 3 || neighborIndex === 4 || neighborIndex === 5) {
+                  cornersValues[2]++;
+                };
+                //нижний левый
+                if (neighborIndex === 5 || neighborIndex === 6 || neighborIndex === 7) {
+                  cornersValues[3]++;
+                };
+              };
             };
-            //верхний правый
-            if (neighborIndex === 1 || neighborIndex === 2 || neighborIndex === 3) {
-              if (mapCeil.neighborsBySide[sideIndex][neighborIndex].contant) {
-                cornersValues[1]++;
-              }
-            };
-            //нижний правый
-            if (neighborIndex === 3 || neighborIndex === 4 || neighborIndex === 5) {
-              if (mapCeil.neighborsBySide[sideIndex][neighborIndex].contant) {
-                cornersValues[2]++;
-              }
-            };
-            //нижний левый
-            if (neighborIndex === 5 || neighborIndex === 6 || neighborIndex === 7) {
-              if (mapCeil.neighborsBySide[sideIndex][neighborIndex].contant) {
-                cornersValues[3]++;
-              }
-            };
-          };
+          }else{
+            //скраю карты
+            sideGlobalLightValue = 2;
+          }
         });
 
         that.drawSideTexture(side, sideImage, sideGlobalLightValue, cornersValues).then(function() {
@@ -197,7 +205,7 @@ function get(name) {
       };
     };
 
-    return checkSide();
+    // return checkSide();
   };
 
 
@@ -210,7 +218,16 @@ function get(name) {
     this.mapCeil.crossNeighbors.forEach((neighbor, i) => {
       if (neighbor != null) {
         if (neighbor.contant) {
-          this.mesh.material[i] = null;
+          //если этот блок не прозрачный
+          if(this.config.transparent === 0){
+            if(neighbor.contant.config.transparent === 0){
+              this.mesh.material[i] = null;
+            }else{
+              allNeighbours = false;
+            }
+          }else{
+            this.mesh.material[i] = null;
+          }
         } else {
           allNeighbours = false;
         }

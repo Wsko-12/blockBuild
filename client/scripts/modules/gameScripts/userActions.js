@@ -30,7 +30,7 @@ const init = function() {
   const raycaster = new THREE.Raycaster();
 
   function removeBlock(x, y) {
-    console.log('remove')
+    // console.log('remove')
     const mouseRaycast = new THREE.Vector2();
     mouseRaycast.x = (x / window.innerWidth) * 2 - 1;
     mouseRaycast.y = -(y / window.innerHeight) * 2 + 1;
@@ -119,7 +119,7 @@ const init = function() {
   })
 
   function buildBlock(x,y){
-    console.log('build')
+    // console.log('build')
     const mouseRaycast = new THREE.Vector2();
     mouseRaycast.x = (x / window.innerWidth) * 2 - 1;
     mouseRaycast.y = -(y / window.innerHeight) * 2 + 1;

@@ -159,9 +159,42 @@ function init(){
     ],
   };
 
-
-
-
+  MESHES_BASE.water = {
+    G:standardBlockGeometry,
+    M:[
+      //ewtbsn
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.water_0,
+        transparent:true,
+        opacity:0.5,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.water_0,
+        transparent:true,
+        opacity:0.5,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.water_0,
+        transparent:true,
+        opacity:0.5,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.water_0,
+        transparent:true,
+        opacity:0.5,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.water_0,
+        transparent:true,
+        opacity:0.5,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.water_0,
+        transparent:true,
+        opacity:0.5,
+      }),
+    ],
+  };
 };
 
 
