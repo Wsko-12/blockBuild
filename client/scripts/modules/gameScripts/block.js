@@ -159,7 +159,7 @@ function get(name) {
       }
         ctx.fillStyle = `rgba(0,0,0,${1 - lightValue/15})`;
         ctx.fillRect(0, 0, textureSize, textureSize);
-      
+
 
 
 
@@ -309,10 +309,52 @@ function get(name) {
 
   };
 
+  self.onGravityUpdate = false;
+  self.updateGravity = function(){
+    if(this.config.gravity){
+      if(!this.onGravityUpdate){
+        if(this.mapCeil.crossNeighbors[3]){
+          if(this.mapCeil.crossNeighbors[3].contant === null){
+            this.onGravityUpdate = true;
+            const lastMapCeil = this.mapCeil;
+            const futureMapCeil = this.mapCeil.crossNeighbors[3];
+            this.mapCeil = futureMapCeil;
+            MAIN.game.world.map.moveBlock(lastMapCeil,futureMapCeil);
+            this.setPosition({x:this.position.x,y:this.position.y - 1,z:this.position.z});
+
+
+            const gravitySpeed = .2;
+            let gravityShift = 0;
+            const gravityShiftMax = 1 / gravitySpeed;
+
+            const that = this;
+            function moveMesh(){
+              gravityShift++;
+              that.mesh.position.y -= gravitySpeed;
+              that.mouseBox.position.y -= gravitySpeed;
+              if(gravityShift != gravityShiftMax){
+                setTimeout(function(){
+                  moveMesh();
+                })
+              }else{
+                that.onGravityUpdate = false;
+                that.updateGravity();
+              };
+            };
+            moveMesh();
+          };
+        };
+
+      };
+    };
+  };
 
 
   self.update = function() {
     this.updateInvisibleFaces();
+    this.updateShadow();
+    this.updateGravity();
+
   };
   return self;
 

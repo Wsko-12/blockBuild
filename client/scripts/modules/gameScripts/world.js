@@ -46,31 +46,62 @@ map.addBlock = async function(block, generation) {
   block.mapCeil = map[position.x][position.z][position.y];
   block.addMeshToScene();
   if (!generation) {
-
-    map[position.x][position.z][position.y].crossNeighbors.forEach((neighbor, i) => {
-      if (neighbor != null) {
-        neighbor.updateBlockInvisibleFaces()
-      };
-    });
     recalculateAmbientLight().then(function() {
-      map[position.x][position.z][position.y].contant.updateShadow();
-      map[position.x][position.z][position.y].updateNeighbourBlockTexture();
+      map[position.x][position.z][position.y].contant.update();
+      map[position.x][position.z][position.y].closeNeighbors.forEach((neighbour, i) => {
+        if (neighbour) {
+          if(neighbour.contant){
+            neighbour.contant.update();
+          };
+          // neighbor.updateBlockInvisibleFaces()
+        };
+      });
+      // map[position.x][position.z][position.y].updateNeighbourBlockTexture();
     });
+
+
+
   };
 };
 map.removeBlock = async function(block) {
   const position = block.position;
   map[position.x][position.z][position.y].contant = null;
   block.removeMeshFromScene();
-  map[position.x][position.z][position.y].crossNeighbors.forEach((neighbor, i) => {
-    if (neighbor != null) {
-      neighbor.updateBlockInvisibleFaces()
-    };
-  });
   recalculateAmbientLight().then(function() {
-    map[position.x][position.z][position.y].updateNeighbourBlockTexture();
+    map[position.x][position.z][position.y].closeNeighbors.forEach((neighbour, i) => {
+      if (neighbour != null) {
+        if(neighbour.contant){
+          neighbour.contant.update();
+        };
+      };
+    });
   });
 };
+
+map.moveBlock = function(fromMapCeil,toMapCeil){
+  toMapCeil.contant = fromMapCeil.contant;
+  fromMapCeil.contant = null;
+
+  recalculateAmbientLight().then(function() {
+  fromMapCeil.closeNeighbors.forEach((neighbour, i) => {
+      if (neighbour != null) {
+        if(neighbour.contant){
+          neighbour.contant.update();
+        };
+      };
+    });
+  toMapCeil.closeNeighbors.forEach((neighbour, i) => {
+      if (neighbour != null) {
+        if(neighbour.contant){
+          neighbour.contant.update();
+        };
+      };
+    });
+  });
+};
+
+
+
 
 
 function mapCeil(x, y, z) {
