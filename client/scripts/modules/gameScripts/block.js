@@ -458,6 +458,18 @@ function get(name) {
               setTimeout(function() {
                   that.mapCeil.crossNeighbors[3].contant.updateGeometry();
                   that.mapCeil.crossNeighbors[3].contant.updateInvisibleFaces();
+                  that.mapCeil.crossNeighbors[3].closeNeighbors.forEach((neighbour, i) => {
+                    if(neighbour){
+                      if(neighbour.contant){
+                        if(neighbour.contant.liquid){
+                          neighbour.contant.updateGeometry();
+                          neighbour.contant.updateInvisibleFaces();
+                        }
+                      }
+                    }
+                  });
+
+
               }, 250);
             }
           };
@@ -489,6 +501,17 @@ function get(name) {
                     setTimeout(function() {
                       neighbour.contant.updateGeometry();
                       neighbour.contant.updateInvisibleFaces();
+
+                      neighbour.closeNeighbors.forEach((neighbour2, i) => {
+                        if(neighbour2){
+                          if(neighbour2.contant){
+                            if(neighbour2.contant.liquid){
+                              neighbour2.contant.updateGeometry();
+                              neighbour2.contant.updateInvisibleFaces();
+                            }
+                          }
+                        }
+                      });
                     }, 250);
                   };
                 };
@@ -527,6 +550,16 @@ function get(name) {
                         setTimeout(function() {
                           neighbour.contant.updateGeometry();
                           neighbour.contant.updateInvisibleFaces();
+                          neighbour.closeNeighbors.forEach((neighbour2, i) => {
+                            if(neighbour2){
+                              if(neighbour2.contant){
+                                if(neighbour2.contant.liquid){
+                                  neighbour2.contant.updateGeometry();
+                                  neighbour2.contant.updateInvisibleFaces();
+                                }
+                              }
+                            }
+                          });
                         }, 250);
                       };
                     };
