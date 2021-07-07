@@ -51,6 +51,48 @@ const init = function() {
     };
   };
 
+  function buildBlock(x,y){
+    // console.log('build')
+    const mouseRaycast = new THREE.Vector2();
+    mouseRaycast.x = (x / window.innerWidth) * 2 - 1;
+    mouseRaycast.y = -(y / window.innerHeight) * 2 + 1;
+    raycaster.setFromCamera(mouseRaycast, MAIN.render.camera);
+    const intersects = raycaster.intersectObjects(MAIN.render.mouseBoxes.children);
+    if(intersects[0]){
+      const positionShift = {
+        x: intersects[0].point.x - intersects[0].object.position.x,
+        y: intersects[0].point.y - intersects[0].object.position.y,
+        z: intersects[0].point.z - intersects[0].object.position.z,
+      }
+
+      for(let key in positionShift){
+        if(positionShift[key] % 0.5 === 0){
+          positionShift[key] = positionShift[key]*2
+        }else{
+          positionShift[key] = 0;
+        }
+      }
+
+      const position = {
+        x : Math.round(intersects[0].object.position.x + positionShift.x),
+        y : Math.round(intersects[0].object.position.y + positionShift.y),
+        z : Math.round(intersects[0].object.position.z + positionShift.z),
+      }
+
+      if(position.x >= MAIN.game.world.size.width || position.x < 0) return;
+      if(position.z >= MAIN.game.world.size.width || position.z < 0) return;
+      if(position.y >= MAIN.game.world.size.heigh || position.y < 0) return;
+      if(MAIN.game.world.map[position.x][position.z][position.y].contant != null)return;
+
+
+      const block = BLOCK.get('water');
+      block.fluidity = 8;
+      block.setPosition(position);
+      MAIN.game.world.map.addBlock(block);
+
+    };
+  };
+
 
 
 
@@ -118,46 +160,7 @@ const init = function() {
     };
   })
 
-  function buildBlock(x,y){
-    // console.log('build')
-    const mouseRaycast = new THREE.Vector2();
-    mouseRaycast.x = (x / window.innerWidth) * 2 - 1;
-    mouseRaycast.y = -(y / window.innerHeight) * 2 + 1;
-    raycaster.setFromCamera(mouseRaycast, MAIN.render.camera);
-    const intersects = raycaster.intersectObjects(MAIN.render.mouseBoxes.children);
-    if(intersects[0]){
-      const positionShift = {
-        x: intersects[0].point.x - intersects[0].object.position.x,
-        y: intersects[0].point.y - intersects[0].object.position.y,
-        z: intersects[0].point.z - intersects[0].object.position.z,
-      }
 
-      for(let key in positionShift){
-        if(positionShift[key] % 0.5 === 0){
-          positionShift[key] = positionShift[key]*2
-        }else{
-          positionShift[key] = 0;
-        }
-      }
-
-      const position = {
-        x : Math.round(intersects[0].object.position.x + positionShift.x),
-        y : Math.round(intersects[0].object.position.y + positionShift.y),
-        z : Math.round(intersects[0].object.position.z + positionShift.z),
-      }
-
-      if(position.x >= MAIN.game.world.size.width || position.x < 0) return;
-      if(position.z >= MAIN.game.world.size.width || position.z < 0) return;
-      if(position.y >= MAIN.game.world.size.heigh || position.y < 0) return;
-      if(MAIN.game.world.map[position.x][position.z][position.y].contant != null)return;
-
-
-      const block = BLOCK.get('test');
-      block.setPosition(position);
-      MAIN.game.world.map.addBlock(block);
-
-    };
-  };
 
 
 

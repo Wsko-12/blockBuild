@@ -166,35 +166,44 @@ function init(){
       new THREE.MeshBasicMaterial({
         map:TEXTURES_BASE.atlas.water_0,
         transparent:true,
-        opacity:0.5,
+        opacity:1,
       }),
       new THREE.MeshBasicMaterial({
         map:TEXTURES_BASE.atlas.water_0,
         transparent:true,
-        opacity:0.5,
+        opacity:1,
       }),
       new THREE.MeshBasicMaterial({
         map:TEXTURES_BASE.atlas.water_0,
         transparent:true,
-        opacity:0.5,
+        opacity:1,
       }),
       new THREE.MeshBasicMaterial({
         map:TEXTURES_BASE.atlas.water_0,
         transparent:true,
-        opacity:0.5,
+        opacity:1,
       }),
       new THREE.MeshBasicMaterial({
         map:TEXTURES_BASE.atlas.water_0,
         transparent:true,
-        opacity:0.5,
+        opacity:1,
       }),
       new THREE.MeshBasicMaterial({
         map:TEXTURES_BASE.atlas.water_0,
         transparent:true,
-        opacity:0.5,
+        opacity:1,
       }),
     ],
   };
+
+
+  MESHES_BASE.water_F7 = MESHES_BASE.water;
+  MESHES_BASE.water_F6 = MESHES_BASE.water;
+  MESHES_BASE.water_F5 = MESHES_BASE.water;
+  MESHES_BASE.water_F4 = MESHES_BASE.water;
+  MESHES_BASE.water_F3 = MESHES_BASE.water;
+  MESHES_BASE.water_F2 = MESHES_BASE.water;
+  MESHES_BASE.water_F1 = MESHES_BASE.water;
 };
 
 

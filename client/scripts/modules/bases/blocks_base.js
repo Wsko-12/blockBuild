@@ -75,7 +75,6 @@ BLOCKS_BASE.water = {
   meshBase:'water',
   geometry:1,
   transparent:1,
-  positionShift:[0,-0.1,0],
   lightRefraction:2,
   liquid:true,
 };

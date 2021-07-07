@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>all game blocks</title>
+  </head>
+  <body style="position:fixed;width:100vw;height:100vh;margin:0">
+
+  </body>
+  <script type="module">
+    import * as THREE from './ThreeJsLib/build/three.module.js';
+    import {MAIN} from './scripts/main.js';
+    import {TEXTURES_BASE} from './scripts/modules/bases/textures_base.js';
+    import {MESHES_BASE} from './scripts/modules/bases/meshes_base.js';
+    import {BLOCKS_BASE} from './scripts/modules/bases/blocks_base.js';
+    import {OrbitControls} from './ThreeJsLib/examples/jsm/controls/OrbitControls.js';
+
+    MAIN.render.init();
+
+    TEXTURES_BASE.init().then(result => {
+      MESHES_BASE.init();
+      BLOCKS_BASE.init();
+
+      const light = new THREE.HemisphereLight( 0xa3b8ee, 0x393939, 1 );
+      MAIN.render.scene.add(light);
+
+      const controls = new OrbitControls(MAIN.render.camera, MAIN.render.renderer.domElement) ;
+      const geometry = new THREE.BoxBufferGeometry(1,1,1);
+      const material  = new THREE.MeshPhongMaterial();
+      const material2  = new THREE.MeshBasicMaterial();
+      const materialFull = [];
+      materialFull.push(material)
+      materialFull.push(material);
+      materialFull.push(material);
+      materialFull.push(material);
+      materialFull.push(material);
+      materialFull.push(material);
+
+
+
+      console.log(geometry.attributes.position.array);
+
+
+      //0
+      // geometry.attributes.position.array[13] = geometry.attributes.position.array[13]  - 0.2;
+      // geometry.attributes.position.array[25] = geometry.attributes.position.array[25]  - 0.2;
+      // geometry.attributes.position.array[64] = geometry.attributes.position.array[64]  - 0.2;
+      //
+      // //1
+      // geometry.attributes.position.array[4] = geometry.attributes.position.array[4]  - 0.2;
+      // geometry.attributes.position.array[28] = geometry.attributes.position.array[28]  - 0.2;
+      // geometry.attributes.position.array[61] = geometry.attributes.position.array[61]  - 0.2;
+      //
+      // //2
+      // geometry.attributes.position.array[1] = geometry.attributes.position.array[1]  - 0.2;
+      // geometry.attributes.position.array[34] = geometry.attributes.position.array[34]  - 0.2;
+      // geometry.attributes.position.array[52] = geometry.attributes.position.array[52]  - 0.2;
+      //
+      // //3
+      // geometry.attributes.position.array[49] = geometry.attributes.position.array[49]  - 0.2;
+      // geometry.attributes.position.array[31] = geometry.attributes.position.array[31]  - 0.2;
+      // geometry.attributes.position.array[16] = geometry.attributes.position.array[16]  - 0.2;
+
+
+
+
+      //bottom
+      //0
+      geometry.attributes.position.array[37] = geometry.attributes.position.array[37]  - 0.2;
+      geometry.attributes.position.array[55] = geometry.attributes.position.array[55]  - 0.2;
+      geometry.attributes.position.array[22] = geometry.attributes.position.array[22]  - 0.2;
+
+
+      //1
+      geometry.attributes.position.array[40] = geometry.attributes.position.array[40]  - 0.2;
+      geometry.attributes.position.array[7] = geometry.attributes.position.array[7]  - 0.2;
+      geometry.attributes.position.array[58] = geometry.attributes.position.array[58]  - 0.2;
+
+
+      //2
+      geometry.attributes.position.array[46] = geometry.attributes.position.array[46]  - 0.2;
+      geometry.attributes.position.array[10] = geometry.attributes.position.array[10]  - 0.2;
+      geometry.attributes.position.array[67] = geometry.attributes.position.array[67]  - 0.2;
+
+
+      //3
+      geometry.attributes.position.array[43] = geometry.attributes.position.array[43]  - 0.2;
+      geometry.attributes.position.array[19] = geometry.attributes.position.array[19]  - 0.2;
+      geometry.attributes.position.array[70] = geometry.attributes.position.array[70]  - 0.2;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      const mesh = new THREE.Mesh(geometry,materialFull);
+
+
+      MAIN.render.scene.add(mesh);
+
+      MAIN.render.render();
+    });
+
+
+
+
+
+  </script>
+</html>

@@ -47,20 +47,15 @@ map.addBlock = async function(block, generation) {
   block.addMeshToScene();
   if (!generation) {
     recalculateAmbientLight().then(function() {
-      map[position.x][position.z][position.y].contant.update();
-      map[position.x][position.z][position.y].closeNeighbors.forEach((neighbour, i) => {
-        if (neighbour) {
-          if(neighbour.contant){
-            neighbour.contant.update();
+        map[position.x][position.z][position.y].contant.update();
+        map[position.x][position.z][position.y].closeNeighbors.forEach((neighbour, i) => {
+          if (neighbour) {
+            if(neighbour.contant){
+              neighbour.contant.update();
+            };
           };
-          // neighbor.updateBlockInvisibleFaces()
-        };
-      });
-      // map[position.x][position.z][position.y].updateNeighbourBlockTexture();
+        });
     });
-
-
-
   };
 };
 map.removeBlock = async function(block) {
@@ -431,6 +426,27 @@ function updateAmbientLight(helpers) {
 };
 
 
+
+
+
+function updateWaterGeometry(){
+  for (let x = 0; x < size.width; x++) {
+    for (let z = 0; z < size.width; z++) {
+      for (let y = size.height - 1; y >= 0; y--) {
+        const mapCeil = map[x][z][y];
+        if(mapCeil.contant){
+          if(mapCeil.contant.config.liquid){
+            mapCeil.contant.updateGeometry();
+            break;
+          }else{
+            break;
+          };
+        };
+      };
+    };
+  };
+
+}
 async function recalculateAmbientLight() {
 
   const updateID = Math.random();
@@ -607,6 +623,9 @@ function generateLandscape(seed) {
               y,
               z
             });
+            if(blockType === 'water'){
+              block.fluidity = 8;
+            };
             map.addBlock(block, true);
           } else {
             let block = BLOCK.get('test');
@@ -629,6 +648,9 @@ function generateLandscape(seed) {
                 y,
                 z
               });
+              if(blockType === 'water'){
+                block.fluidity = 8;
+              };
               map.addBlock(block, true);
             } else {
               let block = BLOCK.get('test');
@@ -677,6 +699,7 @@ const WORLD = {
   size,
   updateAmbientLight,
   generateLandscape,
+  updateWaterGeometry,
 };
 
 export {
