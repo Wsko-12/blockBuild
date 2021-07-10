@@ -445,7 +445,6 @@ function updateWaterGeometry(){
       };
     };
   };
-
 }
 async function recalculateAmbientLight() {
 

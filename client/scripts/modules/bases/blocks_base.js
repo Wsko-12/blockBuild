@@ -54,6 +54,7 @@ BLOCKS_BASE.ground = {
   meshBase:'ground',
   geometry:0,
   transparent:0,
+
 };
 BLOCKS_BASE.sand = {
   meshBase:'sand',
