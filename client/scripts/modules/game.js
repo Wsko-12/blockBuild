@@ -11,7 +11,16 @@ const init = function(){
     BLOCKS_BASE.init();
 
     WORLD.init();
-    WORLD.generateLandscape(Math.random()*10000);
+    // WORLD.generateLandscape(Math.random()*10000);
+
+    //плоский
+    WORLD.generateLandscape(7470.8241806446085);
+
+    // WORLD.generateLandscape(5552.875163845905);
+
+
+
+
     // WORLD.generateLandscape(2291.43157993738);
     // WORLD.generateLandscape(5584.588819541116);
     //7173.807933317389 снег

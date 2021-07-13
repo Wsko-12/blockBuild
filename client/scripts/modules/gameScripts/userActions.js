@@ -87,6 +87,7 @@ const init = function() {
 
       const block = BLOCK.get('water');
       block.fluidity = 8;
+      block.waterfall = false;
       block.setPosition(position);
       MAIN.game.world.map.addBlock(block);
 
