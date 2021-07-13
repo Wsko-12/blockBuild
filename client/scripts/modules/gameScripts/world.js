@@ -59,20 +59,27 @@ map.addBlock = async function(block, generation) {
   };
 };
 map.removeBlock = async function(block,generation) {
-  const position = block.position;
-  map[position.x][position.z][position.y].contant = null;
-  block.removeMeshFromScene();
-  if(!generation){
-    recalculateAmbientLight().then(function() {
-      map[position.x][position.z][position.y].closeNeighbors.forEach((neighbour, i) => {
-        if (neighbour != null) {
-          if(neighbour.contant){
-            neighbour.contant.update();
+  if(block.config.liquid){
+    block.removeLiquidBlock();
+  }else{
+    const position = block.position;
+    map[position.x][position.z][position.y].contant = null;
+    block.removeMeshFromScene();
+    if(!generation){
+      recalculateAmbientLight().then(function() {
+        map[position.x][position.z][position.y].closeNeighbors.forEach((neighbour, i) => {
+          if (neighbour != null) {
+            if(neighbour.contant){
+              neighbour.contant.update();
+            };
           };
-        };
+        });
       });
-    });
-  };
+    };
+  }
+
+
+
 };
 
 map.moveBlock = function(fromMapCeil,toMapCeil){
