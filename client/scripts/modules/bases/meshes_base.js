@@ -195,6 +195,30 @@ function init(){
       }),
     ],
   };
+  MESHES_BASE.lava = {
+    G:standardBlockGeometry,
+    M:[
+      //ewtbsn
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.lava,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.lava,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.lava,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.lava,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.lava,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.lava,
+      }),
+    ],
+  };
 
 
   MESHES_BASE.water_F7 = MESHES_BASE.water;

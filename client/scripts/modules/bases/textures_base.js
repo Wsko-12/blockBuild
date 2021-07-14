@@ -33,6 +33,11 @@ const textures = [
     textureName:'water_0',
     file:'water_0.png',
   },
+  {
+    textureName:'lava',
+    file:'lava.png',
+  },
+
 ];
 
 const atlas = {};

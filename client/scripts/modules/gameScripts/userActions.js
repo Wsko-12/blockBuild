@@ -85,9 +85,12 @@ const init = function() {
       if(MAIN.game.world.map[position.x][position.z][position.y].contant != null)return;
 
 
-      const block = BLOCK.get('water');
-      block.fluidity = 8;
-      block.waterfall = false;
+      const block = BLOCK.get('lava');
+
+      if(block.name === 'water' || block.name === 'lava'){
+        block.fluidity = 8;
+        block.waterfall = false;
+      }
       block.setPosition(position);
       MAIN.game.world.map.addBlock(block);
 

@@ -471,7 +471,12 @@ async function recalculateAmbientLight() {
             lightValue -= mapCeil.contant.config.lightRefraction;
             airBlocks.push(mapCeil);
           } else {
-            lightValue = 0;
+            if(mapCeil.contant.config.lightBlock){
+              lightValue = mapCeil.contant.config.lightValue;
+              airBlocks.push(mapCeil);
+            }else{
+              lightValue = 0;
+            }
           }
         } else {
           airBlocks.push(mapCeil);

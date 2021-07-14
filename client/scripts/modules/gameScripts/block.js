@@ -152,77 +152,81 @@ function get(name) {
       //рисуем полную текстуру
       ctx.drawImage(image, 0, 0, textureSize, textureSize);
 
-      //eсли выключены softShadow, то просто затемняем текстуру
-      if (MAIN.render.config.softShadows) {
-        let gradient
-        if (cornersValues[0] > 0) {
-          gradient = ctx.createLinearGradient(0, 0, textureSize, textureSize);
-          gradient.addColorStop(0, `rgba(0,0,0,${cornersValues[0]/3.5-0.2})`);
-          gradient.addColorStop(0.6, 'rgba(0,0,0,0)');
-          ctx.fillStyle = gradient;
-          ctx.fillRect(0, 0, textureSize, textureSize);
+
+      if(!self.config.lightBlock){
+        //eсли выключены softShadow, то просто затемняем текстуру
+        if (MAIN.render.config.softShadows) {
+          let gradient
+          if (cornersValues[0] > 0) {
+            gradient = ctx.createLinearGradient(0, 0, textureSize, textureSize);
+            gradient.addColorStop(0, `rgba(0,0,0,${cornersValues[0]/3.5-0.2})`);
+            gradient.addColorStop(0.6, 'rgba(0,0,0,0)');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, textureSize, textureSize);
+          }
+
+          if (cornersValues[1] > 0) {
+            gradient = ctx.createLinearGradient(textureSize, 0, 0, textureSize);
+            gradient.addColorStop(0, `rgba(0,0,0,${cornersValues[1]/3.5-0.2})`);
+            gradient.addColorStop(0.6, 'rgba(0,0,0,0)');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, textureSize, textureSize);
+          }
+
+          if (cornersValues[2] > 0) {
+            gradient = ctx.createLinearGradient(textureSize, textureSize, 0, 0);
+            gradient.addColorStop(0, `rgba(0,0,0,${cornersValues[2]/3.5-0.2})`);
+            gradient.addColorStop(0.6, 'rgba(0,0,0,0)');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, textureSize, textureSize);
+          }
+
+          if (cornersValues[3] > 0) {
+            gradient = ctx.createLinearGradient(0, textureSize, textureSize, 0);
+            gradient.addColorStop(0, `rgba(0,0,0,${cornersValues[3]/3.5-0.2})`);
+            gradient.addColorStop(0.6, 'rgba(0,0,0,0)');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, textureSize, textureSize);
+          }
+
+          // gradient = ctx.createLinearGradient(textureSize/2,0, textureSize/2,textureSize+textureSize/2);
+          // gradient.addColorStop(0, `rgba(0,0,0,${(1 - (lightValue - sidesValue[0])/15)})`);
+          // gradient.addColorStop(1, `rgba(0,0,0,${(1 - lightValue /15)/4})`);
+          // ctx.fillStyle = gradient;
+          // ctx.fillRect(0, 0, textureSize, textureSize);
+          //
+          //
+          // gradient = ctx.createLinearGradient(textureSize,textureSize/2, 0-textureSize/2,textureSize/2);
+          // gradient.addColorStop(0, `rgba(0,0,0,${(1 - (lightValue - sidesValue[1])/15)})`);
+          // gradient.addColorStop(1, `rgba(0,0,0,${(1 - lightValue /15)/4})`);
+          // ctx.fillStyle = gradient;
+          // ctx.fillRect(0, 0, textureSize, textureSize);
+          // //
+          // gradient = ctx.createLinearGradient(textureSize/2,textureSize, textureSize/2,0-textureSize/2);
+          // gradient.addColorStop(0, `rgba(0,0,0,${(1 - (lightValue - sidesValue[2])/15)})`);
+          // gradient.addColorStop(1, `rgba(0,0,0,${(1 - lightValue /15)/4})`);
+          // ctx.fillStyle = gradient;
+          // ctx.fillRect(0, 0, textureSize, textureSize);
+          // //
+          // gradient = ctx.createLinearGradient(0,textureSize/2, textureSize + textureSize/2,textureSize/2);
+          // gradient.addColorStop(0, `rgba(0,0,0,${(1 - (lightValue - sidesValue[3])/15)})`);
+          // gradient.addColorStop(1, `rgba(0,0,0,${(1 - lightValue /15)/4})`);
+          // ctx.fillStyle = gradient;
+          // ctx.fillRect(0, 0, textureSize, textureSize);
+          //
+          //
+          //
+          //
+          //
+
+
+
+
         }
-
-        if (cornersValues[1] > 0) {
-          gradient = ctx.createLinearGradient(textureSize, 0, 0, textureSize);
-          gradient.addColorStop(0, `rgba(0,0,0,${cornersValues[1]/3.5-0.2})`);
-          gradient.addColorStop(0.6, 'rgba(0,0,0,0)');
-          ctx.fillStyle = gradient;
-          ctx.fillRect(0, 0, textureSize, textureSize);
-        }
-
-        if (cornersValues[2] > 0) {
-          gradient = ctx.createLinearGradient(textureSize, textureSize, 0, 0);
-          gradient.addColorStop(0, `rgba(0,0,0,${cornersValues[2]/3.5-0.2})`);
-          gradient.addColorStop(0.6, 'rgba(0,0,0,0)');
-          ctx.fillStyle = gradient;
-          ctx.fillRect(0, 0, textureSize, textureSize);
-        }
-
-        if (cornersValues[3] > 0) {
-          gradient = ctx.createLinearGradient(0, textureSize, textureSize, 0);
-          gradient.addColorStop(0, `rgba(0,0,0,${cornersValues[3]/3.5-0.2})`);
-          gradient.addColorStop(0.6, 'rgba(0,0,0,0)');
-          ctx.fillStyle = gradient;
-          ctx.fillRect(0, 0, textureSize, textureSize);
-        }
-
-        // gradient = ctx.createLinearGradient(textureSize/2,0, textureSize/2,textureSize+textureSize/2);
-        // gradient.addColorStop(0, `rgba(0,0,0,${(1 - (lightValue - sidesValue[0])/15)})`);
-        // gradient.addColorStop(1, `rgba(0,0,0,${(1 - lightValue /15)/4})`);
-        // ctx.fillStyle = gradient;
-        // ctx.fillRect(0, 0, textureSize, textureSize);
-        //
-        //
-        // gradient = ctx.createLinearGradient(textureSize,textureSize/2, 0-textureSize/2,textureSize/2);
-        // gradient.addColorStop(0, `rgba(0,0,0,${(1 - (lightValue - sidesValue[1])/15)})`);
-        // gradient.addColorStop(1, `rgba(0,0,0,${(1 - lightValue /15)/4})`);
-        // ctx.fillStyle = gradient;
-        // ctx.fillRect(0, 0, textureSize, textureSize);
-        // //
-        // gradient = ctx.createLinearGradient(textureSize/2,textureSize, textureSize/2,0-textureSize/2);
-        // gradient.addColorStop(0, `rgba(0,0,0,${(1 - (lightValue - sidesValue[2])/15)})`);
-        // gradient.addColorStop(1, `rgba(0,0,0,${(1 - lightValue /15)/4})`);
-        // ctx.fillStyle = gradient;
-        // ctx.fillRect(0, 0, textureSize, textureSize);
-        // //
-        // gradient = ctx.createLinearGradient(0,textureSize/2, textureSize + textureSize/2,textureSize/2);
-        // gradient.addColorStop(0, `rgba(0,0,0,${(1 - (lightValue - sidesValue[3])/15)})`);
-        // gradient.addColorStop(1, `rgba(0,0,0,${(1 - lightValue /15)/4})`);
-        // ctx.fillStyle = gradient;
-        // ctx.fillRect(0, 0, textureSize, textureSize);
-        //
-        //
-        //
-        //
-        //
-
-
-
-
+        ctx.fillStyle = `rgba(0,0,0,${1 - lightValue/15})`;
+        ctx.fillRect(0, 0, textureSize, textureSize);
       }
-      ctx.fillStyle = `rgba(0,0,0,${1 - lightValue/15})`;
-      ctx.fillRect(0, 0, textureSize, textureSize);
+
 
 
 
@@ -268,23 +272,25 @@ function get(name) {
             };
             if (mapCeil.neighborsBySide[sideIndex][neighborIndex].contant) {
               if (mapCeil.neighborsBySide[sideIndex][neighborIndex].contant.config.transparent === 0) {
-                //верхний левый
-                if (neighborIndex === 7 || neighborIndex === 0 || neighborIndex === 1) {
-                  cornersValues[0]++;
-                };
+                if(!mapCeil.neighborsBySide[sideIndex][neighborIndex].contant.config.lightBlock){
+                  //верхний левый
+                  if (neighborIndex === 7 || neighborIndex === 0 || neighborIndex === 1) {
+                    cornersValues[0]++;
+                  };
 
-                //верхний правый
-                if (neighborIndex === 1 || neighborIndex === 2 || neighborIndex === 3) {
-                  cornersValues[1]++;
-                };
+                  //верхний правый
+                  if (neighborIndex === 1 || neighborIndex === 2 || neighborIndex === 3) {
+                    cornersValues[1]++;
+                  };
 
-                //нижний правый
-                if (neighborIndex === 3 || neighborIndex === 4 || neighborIndex === 5) {
-                  cornersValues[2]++;
-                };
-                //нижний левый
-                if (neighborIndex === 5 || neighborIndex === 6 || neighborIndex === 7) {
-                  cornersValues[3]++;
+                  //нижний правый
+                  if (neighborIndex === 3 || neighborIndex === 4 || neighborIndex === 5) {
+                    cornersValues[2]++;
+                  };
+                  //нижний левый
+                  if (neighborIndex === 5 || neighborIndex === 6 || neighborIndex === 7) {
+                    cornersValues[3]++;
+                  };
                 };
               };
             };
@@ -347,44 +353,75 @@ function get(name) {
     if (!this.meshAddedToScene) {
       this.addMeshToScene();
     };
-    this.mapCeil.crossNeighbors.forEach((neighbor, i) => {
-      if (neighbor != null) {
-        if (neighbor.contant) {
+    this.mapCeil.crossNeighbors.forEach((neighbour, i) => {
+      if (neighbour != null) {
+        if (neighbour.contant) {
+
+          //для обычных блоков
+          if(this.config.geometry === 0 && this.config.transparent === 0){
+              //если сосед такой же
+             if (neighbour.contant.config.geometry === 0  && neighbour.contant.config.transparent === 0 ) {
+               this.mesh.material[i] = null;
+             };
+             //если сосед прозрачный
+             if(neighbour.contant.config.transparent != 0){
+               allNeighbours = false;
+             };
+
+             //если у соседа сложная геометрия
+             if(neighbour.contant.config.geometry != 0){
+               allNeighbours = false;
+             };
+          };
 
 
-          //для стандартных блоков
-          if (this.config.geometry === 0) {
-            if (this.config.transparent === 0) {
-              if (neighbor.contant.config.transparent === 0) {
+          //для воды
+          if(this.config.liquidType === 'water'){
+            //если сосед обычный блок
+            if (neighbour.contant.config.geometry === 0  && neighbour.contant.config.transparent === 0 ) {
+              if(!this.geometryUpdated){
                 this.mesh.material[i] = null;
-              } else {
-                allNeighbours = false;
-              }
-            } else {
-              this.mesh.material[i] = null;
-            }
-          }
+              };
+            };
 
-
-
-          //для жидкостей
-          if (this.config.liquid) {
-            if (neighbor.contant.config.transparent === 1) {
-              this.mesh.material[i] = null;
-            } else {
-              if (i != 2) {
-                if (!this.geometryUpdated) {
-                  this.mesh.material[i] = null;
-                } else {
-                  allNeighbours = false;
-                };
+            //если сосед тоже вода
+            if(neighbour.contant.config.liquid){
+              if(neighbour.contant.config.liquidType === 'water'){
+                this.mesh.material[i] = null;
               };
             };
           };
-        } else {
+
+
+          if(this.config.liquidType === 'lava'){
+            //если сосед обычный блок
+            if (neighbour.contant.config.geometry === 0  && neighbour.contant.config.transparent === 0 ) {
+              if(!this.geometryUpdated){
+                this.mesh.material[i] = null;
+              };
+            };
+
+            //если сосед тоже лава
+            if(neighbour.contant.config.liquid){
+              if(neighbour.contant.config.liquidType === 'lava'){
+                this.mesh.material[i] = null;
+              };
+            };
+          };
+
+
+
+
+
+
+
+
+        }else{
+          //если сосед воздух
           allNeighbours = false;
-        };
-      } else {
+        }
+      }else{
+        //если сосед за пределом карты
         allNeighbours = false;
       };
     });
@@ -497,6 +534,7 @@ function get(name) {
       this.mapCeil.contant = null;
       if (this.removeMeshFromScene) {
         this.removeMeshFromScene();
+        MAIN.game.world.recalculateAmbientLight();
       }
       this.mapCeil.crossNeighbors.forEach((neighbour, i) => {
         if (neighbour) {
