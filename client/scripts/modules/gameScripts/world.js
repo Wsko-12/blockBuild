@@ -58,19 +58,28 @@ map.addBlock = async function(block, generation) {
     });
   };
 };
-map.removeBlock = async function(block) {
-  const position = block.position;
-  map[position.x][position.z][position.y].contant = null;
-  block.removeMeshFromScene();
-  recalculateAmbientLight().then(function() {
-    map[position.x][position.z][position.y].closeNeighbors.forEach((neighbour, i) => {
-      if (neighbour != null) {
-        if(neighbour.contant){
-          neighbour.contant.update();
-        };
-      };
-    });
-  });
+map.removeBlock = async function(block,generation) {
+  if(block.config.liquid){
+    block.removeLiquidBlock();
+  }else{
+    const position = block.position;
+    map[position.x][position.z][position.y].contant = null;
+    block.removeMeshFromScene();
+    if(!generation){
+      recalculateAmbientLight().then(function() {
+        map[position.x][position.z][position.y].closeNeighbors.forEach((neighbour, i) => {
+          if (neighbour != null) {
+            if(neighbour.contant){
+              neighbour.contant.update();
+            };
+          };
+        });
+      });
+    };
+  }
+
+
+
 };
 
 map.moveBlock = function(fromMapCeil,toMapCeil){
@@ -624,6 +633,7 @@ function generateLandscape(seed) {
             });
             if(blockType === 'water'){
               block.fluidity = 8;
+              block.waterfall = false;
             };
             map.addBlock(block, true);
           } else {
@@ -699,6 +709,7 @@ const WORLD = {
   updateAmbientLight,
   generateLandscape,
   updateWaterGeometry,
+  recalculateAmbientLight,
 };
 
 export {

@@ -78,6 +78,7 @@ BLOCKS_BASE.water = {
   transparent:1,
   lightRefraction:2,
   liquid:true,
+  liquidType:'water',
 };
 
 
