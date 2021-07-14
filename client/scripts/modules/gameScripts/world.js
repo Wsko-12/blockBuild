@@ -709,6 +709,7 @@ const WORLD = {
   updateAmbientLight,
   generateLandscape,
   updateWaterGeometry,
+  recalculateAmbientLight,
 };
 
 export {

@@ -441,8 +441,109 @@ function get(name) {
 
 
 
-  self.removeLiquidBlock = function(){
-    
+  self.removeLiquidBlock = function() {
+    let haveNeighbourWithGreaterFluidity = false;
+    let greaterFluidityValue = 0;
+    let neighbourWithGreaterFluidity = null;
+
+
+    this.mapCeil.crossNeighbors.forEach((neighbour, i) => {
+      if (neighbour) {
+        if (neighbour.contant) {
+          if (neighbour.contant.config.liquid && neighbour.contant.config.liquidType === this.config.liquidType) {
+            if (i != 3) {
+              if (this.fluidity === 8) {
+                if (neighbour.contant.fluidity === 8) {
+                  haveNeighbourWithGreaterFluidity = true;
+                  if (neighbour.contant.fluidity > greaterFluidityValue) {
+                    greaterFluidityValue = neighbour.contant.fluidity;
+                    neighbourWithGreaterFluidity = neighbour;
+                  };
+
+                }
+              } else {
+                if (neighbour.contant.fluidity > this.fluidity) {
+                  haveNeighbourWithGreaterFluidity = true;
+                  if (neighbour.contant.fluidity > greaterFluidityValue) {
+                    greaterFluidityValue = neighbour.contant.fluidity;
+                    neighbourWithGreaterFluidity = neighbour;
+                  };
+                };
+              };
+            };
+          };
+        };
+      };
+    });
+    if (haveNeighbourWithGreaterFluidity) {
+      this.mapCeil.contant = null;
+      this.removeMeshFromScene();
+      this.mapCeil.crossNeighbors.forEach((neighbour, i) => {
+        if (neighbour) {
+          if (neighbour.contant) {
+            if (neighbour.contant.config.liquid && neighbour.contant.config.liquidType === this.config.liquidType) {
+              neighbour.contant.updateGeometry();
+              neighbour.contant.updateInvisibleFaces();
+            };
+          };
+        };
+      });
+      setTimeout(function() {
+        if (neighbourWithGreaterFluidity.contant) {
+          neighbourWithGreaterFluidity.contant.update();
+        }
+      }, 250);
+    } else {
+      this.mapCeil.contant = null;
+      if (this.removeMeshFromScene) {
+        this.removeMeshFromScene();
+      }
+      this.mapCeil.crossNeighbors.forEach((neighbour, i) => {
+        if (neighbour) {
+          if (neighbour.contant) {
+            if (neighbour.contant.config.liquid && neighbour.contant.config.liquidType === this.config.liquidType) {
+              if (i != 3) {
+                if (neighbour.contant.fluidity < this.fluidity) {
+                  neighbour.contant.updateGeometry();
+                  neighbour.contant.updateInvisibleFaces();
+                  setTimeout(function() {
+                    if (neighbour.contant) {
+                      neighbour.contant.removeLiquidBlock();
+                      MAIN.game.world.recalculateAmbientLight();
+                    };
+                  }, 150);
+                } else {
+                  if (neighbour.contant) {
+                    setTimeout(function() {
+                      if (neighbour.contant) {
+                        neighbour.contant.update();
+                      }
+                    }, 250);
+                  }
+                };
+              } else {
+                if (neighbour.contant.waterfall) {
+                  neighbour.contant.updateGeometry();
+                  neighbour.contant.updateInvisibleFaces();
+                  setTimeout(function() {
+                    if (neighbour.contant) {
+                      neighbour.contant.removeLiquidBlock();
+                      MAIN.game.world.recalculateAmbientLight();
+                    };
+                  }, 150);
+                } else {
+                  neighbour.contant.updateGeometry();
+                  neighbour.contant.updateInvisibleFaces();
+                }
+              };
+
+            };
+          };
+        };
+      });
+
+    };
+
   };
 
   self.updateLiquidPhysics = async function() {
@@ -491,26 +592,26 @@ function get(name) {
         };
 
         if (mapCeil.contant.config.liquid && mapCeil.contant.config.liquidType === blockConfig.liquidType) {
-            if(mapCeil.contant.fluidity <= blockConfig.fluidity){
-                mapCeil.contant.fluidity = blockConfig.fluidity;
-                mapCeil.contant.waterfall = blockConfig.waterfall;
-            };
+          if (mapCeil.contant.fluidity <= blockConfig.fluidity) {
+            mapCeil.contant.fluidity = blockConfig.fluidity;
+            mapCeil.contant.waterfall = blockConfig.waterfall;
+          };
 
-            if (!onlyGeometryUpdate.includes(mapCeil)) {
-              onlyGeometryUpdate.push(mapCeil);
-            };
+          if (!onlyGeometryUpdate.includes(mapCeil)) {
+            onlyGeometryUpdate.push(mapCeil);
+          };
 
-              mapCeil.closeNeighbors.forEach((neighbour, i) => {
-                if (neighbour) {
-                  if (neighbour.contant) {
-                    if (neighbour.contant.config.liquid && neighbour.contant.config.liquidType === blockConfig.liquidType) {
-                      if (!onlyGeometryUpdate.includes(neighbour)) {
-                        onlyGeometryUpdate.push(neighbour);
-                      };
-                    };
+          mapCeil.closeNeighbors.forEach((neighbour, i) => {
+            if (neighbour) {
+              if (neighbour.contant) {
+                if (neighbour.contant.config.liquid && neighbour.contant.config.liquidType === blockConfig.liquidType) {
+                  if (!onlyGeometryUpdate.includes(neighbour)) {
+                    onlyGeometryUpdate.push(neighbour);
                   };
                 };
-              });
+              };
+            };
+          });
 
           // if (mapCeil.contant.fluidity < blockConfig.fluidity || mapCeil.contant.waterfall != blockConfig.waterfall) {
           //
@@ -613,7 +714,7 @@ function get(name) {
                 fluidity: 7,
                 liquidType: that.config.liquidType
               }]);
-            }else{
+            } else {
               needUpdate[needUpdateContain][1] = {
                 waterfall: true,
                 fluidity: 7,
@@ -629,7 +730,7 @@ function get(name) {
                   fluidity: 7,
                   liquidType: that.config.liquidType
                 }]);
-              }else{
+              } else {
                 needUpdate[needUpdateContain][1] = {
                   waterfall: true,
                   fluidity: 7,
@@ -646,7 +747,7 @@ function get(name) {
                   fluidity: 7,
                   liquidType: that.config.liquidType,
                 }]);
-              }else{
+              } else {
                 needUpdate[needUpdateContain][1] = {
                   waterfall: true,
                   fluidity: 7,
@@ -769,13 +870,15 @@ function get(name) {
           if (needUpdate.length > 0) {
             addChildBlocks().then(res => {
               if (res) {
+                MAIN.game.world.recalculateAmbientLight();
                 checkChilds();
               };
             });
-          } else {
-            // console.log('stop')
-          }
-        }
+          };
+          // else {
+          //   // console.log('stop')
+          // }
+        };
 
 
         checkNeighbours(that).then(result => {
