@@ -662,7 +662,6 @@ function get(name) {
 
             MAIN.game.world.map.addBlock(block, true);
             if (!onlyGeometryUpdate.includes(mapCeil)) {
-
               onlyGeometryUpdate.push(mapCeil);
             };
             mapCeil.closeNeighbors.forEach((neighbour, i) => {
@@ -701,13 +700,13 @@ function get(name) {
               if(mapCeil.crossNeighbors[2]){
                 if(mapCeil.crossNeighbors[2].contant){
                   if(mapCeil.crossNeighbors[2].contant.config.liquid &&  mapCeil.crossNeighbors[2].contant.config.liquidType === blockConfig.liquidType){
-                    block.waterfall = true;
-                    block.fluidity = 7;
+                    if(mapCeil.contant.fluidity != 8){
+                      mapCeil.contant.waterfall = true;
+                      mapCeil.contant.fluidity = 7;
+                    };
                   };
                 };
               };
-
-
 
               if (!onlyGeometryUpdate.includes(mapCeil)) {
                 onlyGeometryUpdate.push(mapCeil);
@@ -792,12 +791,6 @@ function get(name) {
                     fluidity: 7,
                     liquidType: that.config.liquidType
                   }]);
-                } else {
-                  needUpdate[needUpdateContain][1] = {
-                    waterfall: true,
-                    fluidity: 7,
-                    liquidType: that.config.liquidType
-                  };
                 };
               } else {
                 if (that.mapCeil.crossNeighbors[3].contant.config.destroyedByWater) {
@@ -808,12 +801,6 @@ function get(name) {
                       fluidity: 7,
                       liquidType: that.config.liquidType
                     }]);
-                  } else {
-                    needUpdate[needUpdateContain][1] = {
-                      waterfall: true,
-                      fluidity: 7,
-                      liquidType: that.config.liquidType
-                    };
                   };
                 };
                 if (that.mapCeil.crossNeighbors[3].contant.config.liquid && that.mapCeil.crossNeighbors[3].contant.config.liquidType === that.config.liquidType) {
@@ -825,12 +812,6 @@ function get(name) {
                       fluidity: 7,
                       liquidType: that.config.liquidType,
                     }]);
-                  } else {
-                    needUpdate[needUpdateContain][1] = {
-                      waterfall: true,
-                      fluidity: 7,
-                      liquidType: that.config.liquidType
-                    };
                   };
                 };
               };
