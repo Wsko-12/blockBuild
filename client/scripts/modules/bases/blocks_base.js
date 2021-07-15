@@ -42,10 +42,24 @@ BLOCKS_BASE.test = {
   meshBase:'test',
   geometry:0,
   transparent:0,
+  lightBlock:true,
+  lightValue:13,
 };
 
 BLOCKS_BASE.stone = {
   meshBase:'stone',
+  geometry:0,
+  transparent:0,
+};
+
+BLOCKS_BASE.cobblestone = {
+  meshBase:'cobblestone',
+  geometry:0,
+  transparent:0,
+};
+
+BLOCKS_BASE.obsidian = {
+  meshBase:'obsidian',
   geometry:0,
   transparent:0,
 };
@@ -79,6 +93,15 @@ BLOCKS_BASE.water = {
   lightRefraction:2,
   liquid:true,
   liquidType:'water',
+};
+BLOCKS_BASE.lava = {
+  meshBase:'lava',
+  geometry:1,
+  liquid:true,
+  transparent:0,
+  liquidType:'lava',
+  lightBlock:true,
+  lightValue:15,
 };
 
 

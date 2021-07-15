@@ -195,15 +195,109 @@ function init(){
       }),
     ],
   };
+  MESHES_BASE.lava = {
+    G:standardBlockGeometry,
+    M:[
+      //ewtbsn
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.lava,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.lava,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.lava,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.lava,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.lava,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.lava,
+      }),
+    ],
+  };
 
 
-  MESHES_BASE.water_F7 = MESHES_BASE.water;
-  MESHES_BASE.water_F6 = MESHES_BASE.water;
-  MESHES_BASE.water_F5 = MESHES_BASE.water;
-  MESHES_BASE.water_F4 = MESHES_BASE.water;
-  MESHES_BASE.water_F3 = MESHES_BASE.water;
-  MESHES_BASE.water_F2 = MESHES_BASE.water;
-  MESHES_BASE.water_F1 = MESHES_BASE.water;
+  MESHES_BASE.lava = {
+    G:standardBlockGeometry,
+    M:[
+      //ewtbsn
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.lava,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.lava,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.lava,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.lava,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.lava,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.lava,
+      }),
+    ],
+  };
+
+
+  MESHES_BASE.cobblestone = {
+    G:standardBlockGeometry,
+    M:[
+      //ewtbsn
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.cobblestone,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.cobblestone,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.cobblestone,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.cobblestone,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.cobblestone,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.cobblestone,
+      }),
+    ],
+  };
+
+  MESHES_BASE.obsidian = {
+    G:standardBlockGeometry,
+    M:[
+      //ewtbsn
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.obsidian,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.obsidian,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.obsidian,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.obsidian,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.obsidian,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.obsidian,
+      }),
+    ],
+  };
+
+
 };
 
 
