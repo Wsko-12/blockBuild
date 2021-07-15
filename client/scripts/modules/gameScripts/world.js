@@ -76,11 +76,19 @@ map.removeBlock = async function(block,generation) {
         });
       });
     };
-  }
-
-
-
+  };
 };
+
+map.replaceBlock = async function(block){
+  const position = block.position;
+  map[position.x][position.z][position.y].contant.removeMeshFromScene();
+  map[position.x][position.z][position.y].contant.mapCeil = null;
+  map[position.x][position.z][position.y].contant = block;
+  block.addMeshToScene();
+};
+
+
+
 
 map.moveBlock = function(fromMapCeil,toMapCeil){
   toMapCeil.contant = fromMapCeil.contant;

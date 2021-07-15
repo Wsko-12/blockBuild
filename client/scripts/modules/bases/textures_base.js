@@ -33,6 +33,18 @@ const textures = [
     textureName:'water_0',
     file:'water_0.png',
   },
+  {
+    textureName:'lava',
+    file:'lava.png',
+  },
+  {
+    textureName:'cobblestone',
+    file:'cobblestone.png',
+  },
+  {
+    textureName:'obsidian',
+    file:'obsidian.png',
+  },
 ];
 
 const atlas = {};
