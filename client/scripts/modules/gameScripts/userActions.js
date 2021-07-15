@@ -94,7 +94,6 @@ const init = function() {
         block.fluidity = 4;
         block.waterfall = false;
       };
-
       block.setPosition(position);
       MAIN.game.world.map.addBlock(block);
 

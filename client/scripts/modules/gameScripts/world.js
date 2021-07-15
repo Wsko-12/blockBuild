@@ -45,7 +45,7 @@ map.addBlock = async function(block, generation) {
   map[position.x][position.z][position.y].contant = block;
   block.mapCeil = map[position.x][position.z][position.y];
   block.addMeshToScene();
-  
+
   if (!generation) {
     recalculateAmbientLight().then(function() {
         map[position.x][position.z][position.y].contant.update();
@@ -86,6 +86,7 @@ map.replaceBlock = async function(block){
   map[position.x][position.z][position.y].contant = block;
   block.mapCeil =   map[position.x][position.z][position.y];
   block.addMeshToScene();
+  block.update();
 };
 
 
@@ -480,7 +481,12 @@ async function recalculateAmbientLight() {
             lightValue -= mapCeil.contant.config.lightRefraction;
             airBlocks.push(mapCeil);
           } else {
-            lightValue = 0;
+            if(mapCeil.contant.config.lightBlock){
+              lightValue = mapCeil.contant.config.lightValue;
+              airBlocks.push(mapCeil);
+            }else{
+              lightValue = 0;
+            }
           }
         } else {
           airBlocks.push(mapCeil);
