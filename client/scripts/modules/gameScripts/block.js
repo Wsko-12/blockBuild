@@ -318,12 +318,6 @@ function get(name) {
 
 
         });
-
-
-
-
-
-
         that.drawSideTexture(side, sideImage, sideGlobalLightValue, cornersValues, sidesValue).then(function() {
           return checkSide();
         });
@@ -498,6 +492,15 @@ function get(name) {
       if (this.removeMeshFromScene) {
         this.removeMeshFromScene();
       }
+
+      const neighboursToRemove = [];
+      const copyBlocks = [];
+      const blocksWithGreaterValue = [];
+
+
+
+
+
       this.mapCeil.crossNeighbors.forEach((neighbour, i) => {
         if (neighbour) {
           if (neighbour.contant) {
@@ -506,31 +509,22 @@ function get(name) {
                 if (neighbour.contant.fluidity < this.fluidity) {
                   neighbour.contant.updateGeometry();
                   neighbour.contant.updateInvisibleFaces();
-                  setTimeout(function() {
-                    if (neighbour.contant) {
-                      neighbour.contant.removeLiquidBlock();
-                      MAIN.game.world.recalculateAmbientLight();
-                    };
-                  }, 150);
-                } else {
-                  if (neighbour.contant) {
-                    setTimeout(function() {
-                      if (neighbour.contant) {
-                        neighbour.contant.update();
-                      }
-                    }, 250);
+                  if(!neighboursToRemove.includes(neighbour)){
+                    neighboursToRemove.push(neighbour);
                   }
+
+                } else {
+                  if(!blocksWithGreaterValue.includes(neighbour.contant)){
+                    blocksWithGreaterValue.push(neighbour.contant)
+                  };
                 };
               } else {
                 if (neighbour.contant.waterfall) {
                   neighbour.contant.updateGeometry();
                   neighbour.contant.updateInvisibleFaces();
-                  setTimeout(function() {
-                    if (neighbour.contant) {
-                      neighbour.contant.removeLiquidBlock();
-                      MAIN.game.world.recalculateAmbientLight();
-                    };
-                  }, 150);
+                  if(!neighboursToRemove.includes(neighbour)){
+                    neighbour.push(neighbour);
+                  }
                 } else {
                   neighbour.contant.updateGeometry();
                   neighbour.contant.updateInvisibleFaces();
@@ -542,7 +536,98 @@ function get(name) {
         };
       });
 
+      async function loop(){
+        if(neighboursToRemove.length > 0){
+          setTimeout(function(){
+            removeChilds().then(result =>{
+              if(result){
+                checkChilds().then(res =>{
+                  if(res){
+                    loop();
+                  };
+                });
+              };
+            });
+          },150)
+        }else{
+          if(blocksWithGreaterValue.length > 0){
+            blocksWithGreaterValue.forEach((block, i) => {
+              if(block.mapCeil.contant){
+                block.update();
+              };
+            });
+          };
+        };
+      };
+
+      async function removeChilds(){
+        copyBlocks.length = 0;
+        let childIndex = -1;
+        function removeBlock(){
+          childIndex++;
+          if(childIndex < neighboursToRemove.length){
+            copyBlocks.push(neighboursToRemove[childIndex].contant);
+            neighboursToRemove[childIndex].contant.removeMeshFromScene();
+            neighboursToRemove[childIndex].contant = null;
+            return removeBlock();
+          }else{
+            return true;
+          }
+        };
+        return removeBlock();
+      };
+
+      async function checkChilds(){
+        const copy = [...neighboursToRemove];
+        neighboursToRemove.length = 0;
+        let childIndex = -1;
+        function check(){
+          childIndex++;
+          if(childIndex < copy.length){
+            const mapCeil = copy[childIndex];
+            const that = copyBlocks[childIndex];
+            mapCeil.crossNeighbors.forEach((neighbour, i) => {
+              if (neighbour) {
+                if (neighbour.contant) {
+                  if (neighbour.contant.config.liquid && neighbour.contant.config.liquidType === that.config.liquidType) {
+                    if (i != 3) {
+                      if (neighbour.contant.fluidity < that.fluidity) {
+                        neighbour.contant.updateGeometry();
+                        neighbour.contant.updateInvisibleFaces();
+                        if(!neighboursToRemove.includes(neighbour)){
+                          neighboursToRemove.push(neighbour);
+                        }
+                      } else {
+                        if(!blocksWithGreaterValue.includes(neighbour.contant)){
+                          blocksWithGreaterValue.push(neighbour.contant)
+                        };
+                      };
+                    } else {
+                      if (neighbour.contant.waterfall) {
+                        neighbour.contant.updateGeometry();
+                        neighbour.contant.updateInvisibleFaces();
+                        if(!neighboursToRemove.includes(neighbour)){
+                          neighboursToRemove.push(neighbour);
+                        }
+                      } else {
+                        neighbour.contant.updateGeometry();
+                        neighbour.contant.updateInvisibleFaces();
+                      };
+                    };
+                  };
+                };
+              };
+            });
+            return check();
+          }else{
+            return true;
+          };
+        };
+        return check();
+      };
+      loop();
     };
+
 
   };
 
