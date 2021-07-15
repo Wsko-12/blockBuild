@@ -50,6 +50,18 @@ BLOCKS_BASE.stone = {
   transparent:0,
 };
 
+BLOCKS_BASE.cobblestone = {
+  meshBase:'cobblestone',
+  geometry:0,
+  transparent:0,
+};
+
+BLOCKS_BASE.obsidian = {
+  meshBase:'obsidian',
+  geometry:0,
+  transparent:0,
+};
+
 BLOCKS_BASE.ground = {
   meshBase:'ground',
   geometry:0,
@@ -80,6 +92,13 @@ BLOCKS_BASE.water = {
   liquid:true,
   liquidType:'water',
 };
+BLOCKS_BASE.lava = {
+  meshBase:'lava',
+  geometry:1,
+  liquid:true,
+  liquidType:'lava',
+};
+
 
 
 

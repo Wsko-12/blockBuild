@@ -45,6 +45,7 @@ map.addBlock = async function(block, generation) {
   map[position.x][position.z][position.y].contant = block;
   block.mapCeil = map[position.x][position.z][position.y];
   block.addMeshToScene();
+  
   if (!generation) {
     recalculateAmbientLight().then(function() {
         map[position.x][position.z][position.y].contant.update();
@@ -76,11 +77,19 @@ map.removeBlock = async function(block,generation) {
         });
       });
     };
-  }
-
-
-
+  };
 };
+
+map.replaceBlock = async function(block){
+  const position = block.position;
+  map[position.x][position.z][position.y].contant.removeMeshFromScene();
+  map[position.x][position.z][position.y].contant = block;
+  block.mapCeil =   map[position.x][position.z][position.y];
+  block.addMeshToScene();
+};
+
+
+
 
 map.moveBlock = function(fromMapCeil,toMapCeil){
   toMapCeil.contant = fromMapCeil.contant;
