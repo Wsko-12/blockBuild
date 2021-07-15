@@ -37,7 +37,14 @@ const textures = [
     textureName:'lava',
     file:'lava.png',
   },
-
+  {
+    textureName:'cobblestone',
+    file:'cobblestone.png',
+  },
+  {
+    textureName:'obsidian',
+    file:'obsidian.png',
+  },
 ];
 
 const atlas = {};

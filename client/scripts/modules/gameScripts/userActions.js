@@ -86,11 +86,14 @@ const init = function() {
 
 
       const block = BLOCK.get('lava');
-
-      if(block.name === 'water' || block.name === 'lava'){
+      if(block.name === 'water'){
         block.fluidity = 8;
         block.waterfall = false;
       }
+      if(block.name === 'lava'){
+        block.fluidity = 4;
+        block.waterfall = false;
+      };
       block.setPosition(position);
       MAIN.game.world.map.addBlock(block);
 
