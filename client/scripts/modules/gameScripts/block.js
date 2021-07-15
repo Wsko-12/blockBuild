@@ -341,44 +341,67 @@ function get(name) {
     if (!this.meshAddedToScene) {
       this.addMeshToScene();
     };
-    this.mapCeil.crossNeighbors.forEach((neighbor, i) => {
-      if (neighbor != null) {
-        if (neighbor.contant) {
+    this.mapCeil.crossNeighbors.forEach((neighbour, i) => {
+      if (neighbour != null) {
+        if (neighbour.contant) {
+
+          //для обычных блоков
+          if(this.config.geometry === 0 && this.config.transparent === 0){
+              //если сосед такой же
+             if (neighbour.contant.config.geometry === 0  && neighbour.contant.config.transparent === 0 ) {
+               this.mesh.material[i] = null;
+             };
+             //если сосед прозрачный
+             if(neighbour.contant.config.transparent != 0){
+               allNeighbours = false;
+             };
+
+             //если у соседа сложная геометрия
+             if(neighbour.contant.config.geometry != 0){
+               allNeighbours = false;
+             };
+          };
 
 
-          //для стандартных блоков
-          if (this.config.geometry === 0) {
-            if (this.config.transparent === 0) {
-              if (neighbor.contant.config.transparent === 0) {
+          //для воды
+          if(this.config.liquidType === 'water'){
+            //если сосед обычный блок
+            if (neighbour.contant.config.geometry === 0  && neighbour.contant.config.transparent === 0 ) {
+              if(!this.geometryUpdated){
                 this.mesh.material[i] = null;
-              } else {
-                allNeighbours = false;
-              }
-            } else {
-              this.mesh.material[i] = null;
-            }
-          }
+              };
+            };
 
-
-
-          //для жидкостей
-          if (this.config.liquid) {
-            if (neighbor.contant.config.transparent === 1) {
-              this.mesh.material[i] = null;
-            } else {
-              if (i != 2) {
-                if (!this.geometryUpdated) {
-                  this.mesh.material[i] = null;
-                } else {
-                  allNeighbours = false;
-                };
+            //если сосед тоже вода
+            if(neighbour.contant.config.liquid){
+              if(neighbour.contant.config.liquidType === 'water'){
+                this.mesh.material[i] = null;
               };
             };
           };
-        } else {
+
+
+          if(this.config.liquidType === 'lava'){
+            //если сосед обычный блок
+            if (neighbour.contant.config.geometry === 0  && neighbour.contant.config.transparent === 0 ) {
+              if(!this.geometryUpdated){
+                this.mesh.material[i] = null;
+              };
+            };
+
+            //если сосед тоже лава
+            if(neighbour.contant.config.liquid){
+              if(neighbour.contant.config.liquidType === 'lava'){
+                this.mesh.material[i] = null;
+              };
+            };
+          };
+        }else{
+          //если сосед воздух
           allNeighbours = false;
-        };
-      } else {
+        }
+      }else{
+        //если сосед за пределом карты
         allNeighbours = false;
       };
     });
@@ -386,51 +409,6 @@ function get(name) {
       this.removeMeshFromScene();
     };
 
-  };
-
-  self.onGravityUpdate = false;
-  self.updateGravity = function() {
-    if (this.config.gravity) {
-      if (!this.onGravityUpdate) {
-        if (this.mapCeil.crossNeighbors[3]) {
-          if (this.mapCeil.crossNeighbors[3].contant === null) {
-            this.onGravityUpdate = true;
-            const lastMapCeil = this.mapCeil;
-            const futureMapCeil = this.mapCeil.crossNeighbors[3];
-            this.mapCeil = futureMapCeil;
-            MAIN.game.world.map.moveBlock(lastMapCeil, futureMapCeil);
-            this.setPosition({
-              x: this.position.x,
-              y: this.position.y - 1,
-              z: this.position.z
-            });
-
-
-            const gravitySpeed = .2;
-            let gravityShift = 0;
-            const gravityShiftMax = 1 / gravitySpeed;
-
-            const that = this;
-
-            function moveMesh() {
-              gravityShift++;
-              that.mesh.position.y -= gravitySpeed;
-              that.mouseBox.position.y -= gravitySpeed;
-              if (gravityShift != gravityShiftMax) {
-                setTimeout(function() {
-                  moveMesh();
-                })
-              } else {
-                that.onGravityUpdate = false;
-                that.updateGravity();
-              };
-            };
-            moveMesh();
-          };
-        };
-
-      };
-    };
   };
 
 
