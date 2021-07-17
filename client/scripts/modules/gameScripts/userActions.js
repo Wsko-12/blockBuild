@@ -5,7 +5,10 @@ import {
 import {BLOCK} from './block.js';
 
 
-
+const user = {
+  selectedBlock:'grass',
+  mouseOnButtons:false,
+}
 const mouse = {
   x: 0,
   y: 0,
@@ -18,9 +21,6 @@ const mouse = {
   touchDown: false,
   touchMoved: false,
   touchShake: 1,
-
-
-
 };
 
 
@@ -30,74 +30,78 @@ const init = function() {
   const raycaster = new THREE.Raycaster();
 
   function removeBlock(x, y) {
-    // console.log('remove')
-    const mouseRaycast = new THREE.Vector2();
-    mouseRaycast.x = (x / window.innerWidth) * 2 - 1;
-    mouseRaycast.y = -(y / window.innerHeight) * 2 + 1;
-    raycaster.setFromCamera(mouseRaycast, MAIN.render.camera);
-    const intersects = raycaster.intersectObjects(MAIN.render.mouseBoxes.children);
-    if(intersects[0]){
-      for (let i = 0; i < intersects.length; i++) {
-        // console.log(intersects[i].object);
-        // if (intersects[i].object.gameBlock.name != 'water') {
-        //   intersects[i].object.gameBlock.removeBlock();
-        //   return
-        // };
+    if(!user.mouseOnButtons){
+      // console.log('remove')
+      const mouseRaycast = new THREE.Vector2();
+      mouseRaycast.x = (x / window.innerWidth) * 2 - 1;
+      mouseRaycast.y = -(y / window.innerHeight) * 2 + 1;
+      raycaster.setFromCamera(mouseRaycast, MAIN.render.camera);
+      const intersects = raycaster.intersectObjects(MAIN.render.mouseBoxes.children);
+      if(intersects[0]){
+        for (let i = 0; i < intersects.length; i++) {
+          // console.log(intersects[i].object);
+          // if (intersects[i].object.gameBlock.name != 'water') {
+          //   intersects[i].object.gameBlock.removeBlock();
+          //   return
+          // };
 
-        MAIN.game.world.map.removeBlock(intersects[i].object.userData.block);
+          MAIN.game.world.map.removeBlock(intersects[i].object.userData.block);
 
-        return;
+          return;
+        };
       };
     };
   };
 
   function buildBlock(x,y){
     // console.log('build')
-    const mouseRaycast = new THREE.Vector2();
-    mouseRaycast.x = (x / window.innerWidth) * 2 - 1;
-    mouseRaycast.y = -(y / window.innerHeight) * 2 + 1;
-    raycaster.setFromCamera(mouseRaycast, MAIN.render.camera);
-    const intersects = raycaster.intersectObjects(MAIN.render.mouseBoxes.children);
-    if(intersects[0]){
-      const positionShift = {
-        x: intersects[0].point.x - intersects[0].object.position.x,
-        y: intersects[0].point.y - intersects[0].object.position.y,
-        z: intersects[0].point.z - intersects[0].object.position.z,
-      }
-
-      for(let key in positionShift){
-        if(positionShift[key] % 0.5 === 0){
-          positionShift[key] = positionShift[key]*2
-        }else{
-          positionShift[key] = 0;
+    if(!user.mouseOnButtons){
+      const mouseRaycast = new THREE.Vector2();
+      mouseRaycast.x = (x / window.innerWidth) * 2 - 1;
+      mouseRaycast.y = -(y / window.innerHeight) * 2 + 1;
+      raycaster.setFromCamera(mouseRaycast, MAIN.render.camera);
+      const intersects = raycaster.intersectObjects(MAIN.render.mouseBoxes.children);
+      if(intersects[0]){
+        const positionShift = {
+          x: intersects[0].point.x - intersects[0].object.position.x,
+          y: intersects[0].point.y - intersects[0].object.position.y,
+          z: intersects[0].point.z - intersects[0].object.position.z,
         }
-      }
 
-      const position = {
-        x : Math.round(intersects[0].object.position.x + positionShift.x),
-        y : Math.round(intersects[0].object.position.y + positionShift.y),
-        z : Math.round(intersects[0].object.position.z + positionShift.z),
-      }
+        for(let key in positionShift){
+          if(positionShift[key] % 0.5 === 0){
+            positionShift[key] = positionShift[key]*2
+          }else{
+            positionShift[key] = 0;
+          }
+        }
 
-      if(position.x >= MAIN.game.world.size.width || position.x < 0) return;
-      if(position.z >= MAIN.game.world.size.width || position.z < 0) return;
-      if(position.y >= MAIN.game.world.size.heigh || position.y < 0) return;
-      if(MAIN.game.world.map[position.x][position.z][position.y].contant != null)return;
+        const position = {
+          x : Math.round(intersects[0].object.position.x + positionShift.x),
+          y : Math.round(intersects[0].object.position.y + positionShift.y),
+          z : Math.round(intersects[0].object.position.z + positionShift.z),
+        }
+
+        if(position.x >= MAIN.game.world.size.width || position.x < 0) return;
+        if(position.z >= MAIN.game.world.size.width || position.z < 0) return;
+        if(position.y >= MAIN.game.world.size.heigh || position.y < 0) return;
+        if(MAIN.game.world.map[position.x][position.z][position.y].contant != null)return;
 
 
-      const block = BLOCK.get('lava');
-      if(block.name === 'water'){
-        block.fluidity = 8;
-        block.waterfall = false;
-      }
-      if(block.name === 'lava'){
-        block.fluidity = 4;
-        block.waterfall = false;
+        const block = BLOCK.get(user.selectedBlock);
+        if(block.name === 'water'){
+          block.fluidity = 8;
+          block.waterfall = false;
+        }
+        if(block.name === 'lava'){
+          block.fluidity = 4;
+          block.waterfall = false;
+        };
+        block.setPosition(position);
+        MAIN.game.world.map.addBlock(block);
       };
-      block.setPosition(position);
-      MAIN.game.world.map.addBlock(block);
-
     };
+
   };
 
 
@@ -107,16 +111,16 @@ const init = function() {
 
 
 
-  const body = document.querySelector('body');
+  const MOUSE_CEAPER = document.querySelector('#mouseCeaper');
 
 
-  body.addEventListener('mousemove', function(event) {
+  MOUSE_CEAPER.addEventListener('mousemove', function(event) {
     mouse.x = event.clientX;
     mouse.y = event.clientY;
   });
 
 
-  body.addEventListener('mousedown', function(event) {
+  MOUSE_CEAPER.addEventListener('mousedown', function(event) {
 
     if (!event.sourceCapabilities.firesTouchEvents) { //отключить клик на телефоне
       //указываем, что мышка нажата
@@ -125,13 +129,13 @@ const init = function() {
     };
   });
 
-  body.addEventListener('mouseup', function(event) {
+  MOUSE_CEAPER.addEventListener('mouseup', function(event) {
     if (!event.sourceCapabilities.firesTouchEvents) { //отключить клик на телефоне
       mouse.down = false;
     };
   });
 
-  body.addEventListener('wheel', function(event) {
+  MOUSE_CEAPER.addEventListener('wheel', function(event) {
     if (event.deltaY > 0) {
       updateCameraZoom(true)
     } else {
@@ -140,7 +144,7 @@ const init = function() {
   });
 
 
-  body.addEventListener('keydown',function(e){
+  MOUSE_CEAPER.addEventListener('keydown',function(e){
     if(e.key === 'b'){
       const mouseRaycast = new THREE.Vector2();
       mouseRaycast.x = (mouse.x / window.innerWidth) * 2 - 1;
@@ -218,17 +222,16 @@ const init = function() {
 
 
 
-  const clientInfoDiv = `<div id='userInfo' style="position:fixed;left:10px;bottom:0px;z-index:100;color:rgb(0, 56, 255);font-size:20px"></div>`
-
-  body.insertAdjacentHTML('beforeEnd', clientInfoDiv);
 
 
-  body.addEventListener('touchmove', function(event) {
+
+
+  MOUSE_CEAPER.addEventListener('touchmove', function(event) {
     mouse.touchX = Math.round(event.touches[0].clientX);
     mouse.touchY = Math.round(event.touches[0].clientY);
   });
 
-  body.addEventListener('touchstart', function(event) {
+  MOUSE_CEAPER.addEventListener('touchstart', function(event) {
     //сохраняем корды, потому что так просто они не апдейтятся
     mouse.touchX = Math.round(event.touches[0].clientX);
     mouse.touchY = Math.round(event.touches[0].clientY);
@@ -292,7 +295,7 @@ const init = function() {
 
 
 
-  body.addEventListener('touchend', function(event) {
+  MOUSE_CEAPER.addEventListener('touchend', function(event) {
     mouse.touchDown = false;
   });
 
@@ -387,6 +390,7 @@ const init = function() {
 const USER_ACTIONS = {
   mouse,
   init,
+  user,
 };
 
 export {
