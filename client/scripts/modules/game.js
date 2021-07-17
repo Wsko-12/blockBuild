@@ -38,6 +38,7 @@ const init = function(){
 const GAME = {
   init,
   world:WORLD,
+  userActions:USER_ACTIONS,
 };
 
 export {GAME};

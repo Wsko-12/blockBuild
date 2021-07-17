@@ -62,19 +62,18 @@ const init = function() {
   scene.add(blocks);
 
 
-	document.body.appendChild( stats.dom );
+	document.querySelector('#render').appendChild( stats.dom );
   if(document.body.clientWidth < document.body.clientHeight){
     stats.domElement.childNodes.forEach((canvas, i) => {
       canvas.style.width = '20vw';
       canvas.style.height = '12vw';
-        console.log(canvas)
     });
   };
 
 
 
 
-  document.querySelector('body').appendChild(renderer.domElement);
+  document.querySelector('#render').appendChild(renderer.domElement);
   camera.position.set(50,20,50);
   camera.lookAt(0,0,0);
   renderer.domElement.style.position = 'fixed';
