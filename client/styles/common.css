@@ -1,0 +1,42 @@
+* {
+  box-sizing: border-box;
+}
+html{
+-webkit-user-select: none;
+-webkit-touch-callout: none;
+overflow:  hidden;
+}
+body{
+  position:fixed;width:100vw;height:100vh;margin:0
+}
+.nonSelectText {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.blur_background {
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+.fullscreen{
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+}
+
+.test{
+  width: 10vw;
+  height: 10vw;
+  position: fixed;
+  background-color: red;
+  z-index: 100;
+}
+.test:hover{
+  background-color: blue;
+
+}

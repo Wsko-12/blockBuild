@@ -42,8 +42,6 @@ BLOCKS_BASE.test = {
   meshBase:'test',
   geometry:0,
   transparent:0,
-  lightBlock:true,
-  lightValue:13,
 };
 
 BLOCKS_BASE.stone = {
