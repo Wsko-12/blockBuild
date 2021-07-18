@@ -376,6 +376,8 @@ function get(name) {
             if (neighbour.contant.config.geometry === 0  && neighbour.contant.config.transparent === 0 ) {
               if(!this.geometryUpdated){
                 this.mesh.material[i] = null;
+              }else{
+                allNeighbours = false;
               };
             };
 
@@ -393,6 +395,8 @@ function get(name) {
             if (neighbour.contant.config.geometry === 0  && neighbour.contant.config.transparent === 0 ) {
               if(!this.geometryUpdated){
                 this.mesh.material[i] = null;
+              }else{
+                allNeighbours = false;
               };
             };
 
