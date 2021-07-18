@@ -11,10 +11,10 @@ const init = function(){
     BLOCKS_BASE.init();
 
     WORLD.init();
-    // WORLD.generateLandscape(Math.random()*10000);
+    WORLD.generateLandscape(Math.random()*10000);
 
     //плоский
-    WORLD.generateLandscape(7470.8241806446085);
+    // WORLD.generateLandscape(7470.8241806446085);
 
     // WORLD.generateLandscape(5552.875163845905);
 
