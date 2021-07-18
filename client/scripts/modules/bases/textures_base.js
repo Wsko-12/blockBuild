@@ -2,6 +2,25 @@ const textureFolder = '../../../textures/';
 import * as THREE from '../../../ThreeJsLib/build/three.module.js';
 const textures = [
   {
+    textureName:'stairs_alphaMap_north',
+    file:'alphaMap/stairs_north.png',
+  },
+  {
+    textureName:'stairs_alphaMap_south',
+    file:'alphaMap/stairs_south.png',
+  },
+
+  {
+    textureName:'stairs_alphaMap_north_R',
+    file:'alphaMap/stairs_north_R.png',
+  },
+  {
+    textureName:'stairs_alphaMap_south_R',
+    file:'alphaMap/stairs_south_R.png',
+  },
+
+
+  {
     textureName:'test',
     file:'test.png',
   },
@@ -71,6 +90,7 @@ const textures = [
     textureName:'cobblestone',
     file:'cobblestone.png',
   },
+
   {
     textureName:'obsidian',
     file:'obsidian.png',

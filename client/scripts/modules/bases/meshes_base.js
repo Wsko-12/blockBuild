@@ -369,6 +369,62 @@ function init(){
   };
 
 
+  MESHES_BASE.cobblestone_stairs = {
+    G:standardBlockGeometry,
+    M:[
+      //ewtbsn
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.cobblestone,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.cobblestone,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.cobblestone,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.cobblestone,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.cobblestone,
+        transparent:true,
+        alphaMap:TEXTURES_BASE.atlas.stairs_alphaMap_south,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.cobblestone,
+        transparent:true,
+        alphaMap:TEXTURES_BASE.atlas.stairs_alphaMap_north,
+      }),
+    ],
+
+    M_R:[
+      //ewtbsn
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.cobblestone,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.cobblestone,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.cobblestone,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.cobblestone,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.cobblestone,
+        transparent:true,
+        alphaMap:TEXTURES_BASE.atlas.stairs_alphaMap_south_R,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.cobblestone,
+        transparent:true,
+        alphaMap:TEXTURES_BASE.atlas.stairs_alphaMap_north_R,
+      }),
+    ],
+  };
+
+
 };
 
 
@@ -403,7 +459,15 @@ function getMeshMaterial_Rotated_1(name){
   return newMaterial;
 };
 
+function getMeshMaterial_Rotated_2(name){
+  const stockMaterial = MESHES_BASE[name].M_R;
+  const newMaterial = [];
+  stockMaterial.forEach((side, i) => {
+      newMaterial.push(side.clone())
+  });
 
+  return newMaterial;
+};
 
 
 const MESHES_BASE = {
@@ -411,6 +475,7 @@ const MESHES_BASE = {
   getMesh,
   getMeshMaterial,
   getMeshMaterial_Rotated_1,
+  getMeshMaterial_Rotated_2,
 };
 
 
