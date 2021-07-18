@@ -221,17 +221,10 @@ function get(name) {
           //
           //
 
-
-
-
-        }
+        };
         ctx.fillStyle = `rgba(0,0,0,${1 - lightValue/15})`;
         ctx.fillRect(0, 0, textureSize, textureSize);
-      }
-
-
-
-
+      };
 
       side.map = new THREE.CanvasTexture(canvas);
       side.map.magFilter = THREE.NearestFilter;
@@ -243,11 +236,15 @@ function get(name) {
 
   self.updateShadow = async function() {
     //когда эта функция вернет true, перейдет к другому блоку
-    const originalMaterial = MESHES_BASE.getMeshMaterial(this.name);
+    const that = this;
 
 
     let sideIndex = -1;
-    const that = this;
+    //сразу прокручиваем текстуру;
+    const originalMaterial = that.rotateSidesTextures();
+
+
+
     const mapCeil = that.mapCeil;
     if (this.config.transparent === 0) {
       return checkSide();
@@ -340,7 +337,6 @@ function get(name) {
 
     // return checkSide();
   };
-
 
   self.updateInvisibleFaces = function() {
     this.mesh.material = MESHES_BASE.getMeshMaterial(this.name);
@@ -2130,6 +2126,106 @@ function get(name) {
       };
     };
   };
+
+
+  self.rotateSidesTextures = function(){
+    let material = MESHES_BASE.getMeshMaterial(this.name);
+
+
+
+    if(this.rotationConfig){
+      if(this.config.rotated){
+        function rotateTo(direction){
+
+          let copy = [...material]
+
+          //по умолчанию лицевая сторона направлена на восток
+          if(direction === 0){//на восток
+            return copy;
+          };
+          if(direction === 1){//на север
+            copy[0] = material[4];
+            copy[1] = material[5];
+            copy[4] = material[1];
+            copy[5] = material[0];
+            return copy;
+          };
+          if(direction === 2){//на запад
+            copy[0] = material[1];
+            copy[1] = material[0];
+            copy[4] = material[5];
+            copy[5] = material[4];
+            return copy;
+          };
+          if(direction === 3){//на юг
+            copy[0] = material[4];
+            copy[1] = material[5];
+            copy[4] = material[0];
+            copy[5] = material[1];
+            return copy;
+          };
+        };
+        if(this.config.rotatedConfig === 0){
+          //прокрутка тестуры по ewsn (печь)
+
+
+          //сначала отрубим если был клик на соседний блок (на его east, west,south,north);
+          if(this.rotationConfig.faceIndex != 2 && this.rotationConfig.faceIndex != 3){
+            // return rotateTo(this.rotationConfig.faceIndex);
+            let direction;
+            if(this.rotationConfig.faceIndex === 0){
+              direction = 0;
+            };
+            if(this.rotationConfig.faceIndex === 1){
+              direction = 2;
+            };
+            if(this.rotationConfig.faceIndex === 4){
+              direction = 3;
+            };
+            if(this.rotationConfig.faceIndex === 5){
+              direction = 1;
+            };
+            return rotateTo(direction);
+          }else{
+             return rotateTo(this.rotationConfig.rotation);
+          };
+        };
+
+        if(this.config.rotatedConfig === 1){//дерево и тд;
+          //сначала отрубим если был клик на нижний или верхний блок(на его top, bottom);
+          if(this.rotationConfig.faceIndex === 2 || this.rotationConfig.faceIndex === 3){
+            return material;
+          }else{
+            //если был клик на соседний блок (на его east, west,south,north);
+            material = MESHES_BASE.getMeshMaterial_Rotated_1(this.name);
+            let direction;
+            if(this.rotationConfig.faceIndex === 0){
+              direction = 0;
+            };
+            if(this.rotationConfig.faceIndex === 1){
+              direction = 2;
+            };
+            if(this.rotationConfig.faceIndex === 4){
+              direction = 3;
+            };
+            if(this.rotationConfig.faceIndex === 5){
+              direction = 1;
+            };
+            return rotateTo(direction);
+          };
+        };
+      }else{
+        return material;
+      };
+    }else{
+      return material;
+    };
+  };
+
+  self.rotateBlock = function(rotationConfig){
+    this.rotationConfig = rotationConfig;
+  };
+
 
   self.update = function() {
     this.updateGeometry();

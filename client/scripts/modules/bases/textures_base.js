@@ -6,6 +6,36 @@ const textures = [
     file:'test.png',
   },
   {
+    textureName:'east',
+    file:'east.png',
+  },
+  {
+    textureName:'west',
+    file:'west.png',
+  },
+  {
+    textureName:'top',
+    file:'top.png',
+  },
+  {
+    textureName:'bottom',
+    file:'bottom.png',
+  },
+  {
+    textureName:'south',
+    file:'south.png',
+  },
+  {
+    textureName:'north',
+    file:'north.png',
+  },
+
+
+
+
+
+
+  {
     textureName:'stone',
     file:'stone.png',
   },
@@ -45,6 +75,45 @@ const textures = [
     textureName:'obsidian',
     file:'obsidian.png',
   },
+
+
+  //furnace
+  {
+    textureName:'furnace_main',
+    file:'furnace_main.png',
+  },
+  {
+    textureName:'furnace_side',
+    file:'furnace_side.png',
+  },
+  {
+    textureName:'furnace_top',
+    file:'furnace_top.png',
+  },
+
+    //oak_log
+    {
+      textureName:'oak_log_top',
+      file:'oak_log_top.png',
+    },
+    {
+      textureName:'oak_log_side',
+      file:'oak_log_side.png',
+    },
+    {
+      textureName:'oak_log_side_rotated',
+      file:'oak_log_side_rotated.png',
+    },
+
+
+
+
+
+
+
+
+
+
 ];
 
 const atlas = {};
