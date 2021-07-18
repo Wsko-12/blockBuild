@@ -19,7 +19,7 @@ const BLOCKS_BASE = {
 };
 //geometry:
 // 0 - полный блок;
-//1 - измененный блок
+//1 - измененный блок (вода, ?полублоки)
 
 //light
 //bool
@@ -28,9 +28,13 @@ const BLOCKS_BASE = {
 // 0 - не прозрачный;
 // 1 - прозрачный материалом (вода);
 
-//rotation:
-//0 - не крутится
-//1 - крутится текстура
+
+
+//  rotated - крутиться ли блок,
+// rotatedConfig:0 - крутиться только текстура ewsn (печь)
+// rotatedConfig:1 - крутиться только текстура ewtbsn парно (дерево)
+
+
 
 
 
@@ -101,6 +105,32 @@ BLOCKS_BASE.lava = {
   lightBlock:true,
   lightValue:15,
 };
+
+
+
+
+
+BLOCKS_BASE.furnace = {
+  meshBase:'furnace',
+  geometry:0,
+  transparent:0,
+  rotated:true,
+  rotatedConfig:0,
+};
+
+
+
+
+
+BLOCKS_BASE.oak_log = {
+  meshBase:'oak_log',
+  geometry:0,
+  transparent:0,
+  rotated:true,
+  rotatedConfig:1,
+};
+
+
 
 
 

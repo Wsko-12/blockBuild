@@ -60,45 +60,121 @@ const init = function() {
       mouseRaycast.x = (x / window.innerWidth) * 2 - 1;
       mouseRaycast.y = -(y / window.innerHeight) * 2 + 1;
       raycaster.setFromCamera(mouseRaycast, MAIN.render.camera);
+
+
+
       const intersects = raycaster.intersectObjects(MAIN.render.mouseBoxes.children);
       if(intersects[0]){
-        const positionShift = {
-          x: intersects[0].point.x - intersects[0].object.position.x,
-          y: intersects[0].point.y - intersects[0].object.position.y,
-          z: intersects[0].point.z - intersects[0].object.position.z,
-        }
+        const checkedBlock = intersects[0].object.userData.block;
+        //если блоки с обычной или подкорректированой геометрией (полублоки и тд)
+        let direction = [0,0,0]
+        if(checkedBlock.config.geometry === 0 || checkedBlock.config.geometry === 1){
+          let faceIndex = Math.floor(intersects[0].faceIndex / 2);
+          if(faceIndex === 0){
+            direction[0] = 1;
+          };
+          if(faceIndex === 1){
+            direction[0] = -1;
+          };
+          if(faceIndex === 2){
+            direction[1] = 1;
+          };
+          if(faceIndex === 3){
+            direction[1] = -1;
+          };
+          if(faceIndex === 4){
+            direction[2] = 1;
+          };
+          if(faceIndex === 5){
+            direction[2] = -1;
+          };
 
-        for(let key in positionShift){
-          if(positionShift[key] % 0.5 === 0){
-            positionShift[key] = positionShift[key]*2
-          }else{
-            positionShift[key] = 0;
+          const blockPosition = {x:checkedBlock.position.x + direction[0],y:checkedBlock.position.y + direction[1],z:checkedBlock.position.z + direction[2]};
+
+          const firstPosition = checkedBlock.position;
+          const cameraPosition = MAIN.render.camera.position;
+
+
+
+          //так как я знаю, под каким углом находится камера к игровому полю то исходя из этого будет считаться поворот блока;
+
+          // console.log(MAIN.render.cameraPosition.deg)
+          let rotation;
+          // против часовой стрелки начиная с востока
+          //0 - блок лицом на восток
+          //1 - блок лицом на север
+          //2 - блок лицом на запад
+          //3 - блок лицом на юг
+
+
+          // разбиваем окружность по секторам (вместо ⊕ используем ⊗)
+          if(MAIN.render.cameraPosition.deg > 315 && MAIN.render.cameraPosition.deg <= 360 || MAIN.render.cameraPosition.deg >= 0 && MAIN.render.cameraPosition.deg < 45){
+            rotation = 0;
+          }else if(MAIN.render.cameraPosition.deg >= 45 && MAIN.render.cameraPosition.deg < 135){
+            rotation = 1;
+          }else if(MAIN.render.cameraPosition.deg >= 135 && MAIN.render.cameraPosition.deg < 225){
+            rotation = 2;
+          }else if(MAIN.render.cameraPosition.deg >= 225 && MAIN.render.cameraPosition.deg < 315){
+            rotation = 3;
           }
-        }
 
-        const position = {
-          x : Math.round(intersects[0].object.position.x + positionShift.x),
-          y : Math.round(intersects[0].object.position.y + positionShift.y),
-          z : Math.round(intersects[0].object.position.z + positionShift.z),
-        }
-
-        if(position.x >= MAIN.game.world.size.width || position.x < 0) return;
-        if(position.z >= MAIN.game.world.size.width || position.z < 0) return;
-        if(position.y >= MAIN.game.world.size.heigh || position.y < 0) return;
-        if(MAIN.game.world.map[position.x][position.z][position.y].contant != null)return;
+          let rotationConfig = {
+            faceIndex,
+            rotation,
+          }
 
 
-        const block = BLOCK.get(user.selectedBlock);
-        if(block.name === 'water'){
-          block.fluidity = 8;
-          block.waterfall = false;
-        }
-        if(block.name === 'lava'){
-          block.fluidity = 4;
-          block.waterfall = false;
+
+          const block = BLOCK.get(user.selectedBlock);
+          if(block.name === 'water'){
+            block.fluidity = 8;
+            block.waterfall = false;
+          }
+          if(block.name === 'lava'){
+            block.fluidity = 4;
+            block.waterfall = false;
+          };
+          block.setPosition(blockPosition);
+          block.rotateBlock(rotationConfig);
+          MAIN.game.world.map.addBlock(block);
+
         };
-        block.setPosition(position);
-        MAIN.game.world.map.addBlock(block);
+
+
+
+
+
+
+
+
+        // console.log(intersects[0],MAIN.render.camera)
+        // const positionShift = {
+        //   x: intersects[0].point.x - intersects[0].object.position.x,
+        //   y: intersects[0].point.y - intersects[0].object.position.y,
+        //   z: intersects[0].point.z - intersects[0].object.position.z,
+        // }
+        //
+        // for(let key in positionShift){
+        //   if(positionShift[key] % 0.5 === 0){
+        //     positionShift[key] = positionShift[key]*2
+        //   }else{
+        //     positionShift[key] = 0;
+        //   }
+        // }
+        //
+        // const position = {
+        //   x : Math.round(intersects[0].object.position.x + positionShift.x),
+        //   y : Math.round(intersects[0].object.position.y + positionShift.y),
+        //   z : Math.round(intersects[0].object.position.z + positionShift.z),
+        // }
+        //
+        // if(position.x >= MAIN.game.world.size.width || position.x < 0) return;
+        // if(position.z >= MAIN.game.world.size.width || position.z < 0) return;
+        // if(position.y >= MAIN.game.world.size.heigh || position.y < 0) return;
+        // if(MAIN.game.world.map[position.x][position.z][position.y].contant != null)return;
+        //
+        //
+
       };
     };
 
@@ -333,8 +409,13 @@ const init = function() {
       MAIN.render.cameraPosition.deg += 360;
     }
     // console.log(MAIN.render.cameraPosition.deg);
-    MAIN.render.camera.position.x = Math.sin(MAIN.render.cameraPosition.deg * Math.PI / 180) * MAIN.render.cameraPosition.radius + 7;
-    MAIN.render.camera.position.z = Math.cos(MAIN.render.cameraPosition.deg * Math.PI / 180) * MAIN.render.cameraPosition.radius + 7;
+    //MAIN.render.cameraPosition.deg+90 --- +90 чтобы сделать 0 градусов на восток;
+    MAIN.render.camera.position.x = Math.sin((MAIN.render.cameraPosition.deg+90) * Math.PI / 180) * MAIN.render.cameraPosition.radius + 12;
+    MAIN.render.camera.position.z = Math.cos((MAIN.render.cameraPosition.deg+90) * Math.PI / 180) * MAIN.render.cameraPosition.radius + 12;
+
+
+
+    ;
 
     const heighChange = 64 * (-yValue / window.innerWidth * window.devicePixelRatio);
     MAIN.render.cameraPosition.heigh += heighChange;

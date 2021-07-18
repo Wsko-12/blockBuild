@@ -40,7 +40,7 @@ map.updateAllInvisibleFaces = function() {
 
 
 
-map.addBlock = async function(block, generation) {
+map.addBlock = async function(block, generation, rotationObj) {
   const position = block.position;
   map[position.x][position.z][position.y].contant = block;
   block.mapCeil = map[position.x][position.z][position.y];
