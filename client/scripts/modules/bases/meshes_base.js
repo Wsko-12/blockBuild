@@ -13,22 +13,22 @@ function init(){
     M:[
       //ewtbsn
       new THREE.MeshBasicMaterial({
-        map:TEXTURES_BASE.atlas.test,
+        map:TEXTURES_BASE.atlas.east,
       }),
       new THREE.MeshBasicMaterial({
-        map:TEXTURES_BASE.atlas.test,
+        map:TEXTURES_BASE.atlas.west,
       }),
       new THREE.MeshBasicMaterial({
-        map:TEXTURES_BASE.atlas.test,
+        map:TEXTURES_BASE.atlas.top,
       }),
       new THREE.MeshBasicMaterial({
-        map:TEXTURES_BASE.atlas.test,
+        map:TEXTURES_BASE.atlas.bottom,
       }),
       new THREE.MeshBasicMaterial({
-        map:TEXTURES_BASE.atlas.test,
+        map:TEXTURES_BASE.atlas.south,
       }),
       new THREE.MeshBasicMaterial({
-        map:TEXTURES_BASE.atlas.test,
+        map:TEXTURES_BASE.atlas.north,
       }),
     ],
   };
@@ -297,6 +297,77 @@ function init(){
     ],
   };
 
+  MESHES_BASE.furnace = {
+    G:standardBlockGeometry,
+    M:[
+      //ewtbsn
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.furnace_main,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.furnace_side,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.furnace_top,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.furnace_top,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.furnace_side,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.furnace_side,
+      }),
+    ],
+  };
+
+  MESHES_BASE.oak_log = {
+    G:standardBlockGeometry,
+    M:[
+      //ewtbsn
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.oak_log_side,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.oak_log_side,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.oak_log_top,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.oak_log_top,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.oak_log_side,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.oak_log_side,
+      }),
+    ],
+
+    M_R_1:[
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.oak_log_top,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.oak_log_top,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.oak_log_side_rotated,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.oak_log_side_rotated,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.oak_log_side_rotated,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.oak_log_side_rotated,
+      }),
+    ],
+  };
+
 
 };
 
@@ -322,10 +393,24 @@ function getMeshMaterial(name){
   return newMaterial;
 };
 
+function getMeshMaterial_Rotated_1(name){
+  const stockMaterial = MESHES_BASE[name].M_R_1;
+  const newMaterial = [];
+  stockMaterial.forEach((side, i) => {
+      newMaterial.push(side.clone())
+  });
+
+  return newMaterial;
+};
+
+
+
+
 const MESHES_BASE = {
   init,
   getMesh,
   getMeshMaterial,
+  getMeshMaterial_Rotated_1,
 };
 
 
