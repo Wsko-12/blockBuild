@@ -74,7 +74,7 @@ const init = function() {
 
 
   document.querySelector('#render').appendChild(renderer.domElement);
-  camera.position.set(50,20,50);
+  camera.position.set(0,20,0);
   camera.lookAt(0,0,0);
   renderer.domElement.style.position = 'fixed';
   scene.background = new THREE.Color(0xb8d6ff);
