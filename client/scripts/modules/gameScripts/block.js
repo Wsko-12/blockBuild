@@ -2236,6 +2236,103 @@ function get(name) {
   };
 
 
+
+  self.pushDeathParticles = function(){
+
+    const size = 2;
+    const count = 20;
+    const image = MESHES_BASE.getMeshMaterial(this.name)[0].map.image;
+
+
+    //рисуем полную текстуру
+    const spritesTextures = [];
+    for(let i=0;i<count;i++){
+      const canvas = document.createElement('canvas');
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext('2d');
+      ctx.imageSmoothingEnabled = false;
+      let x = Math.round(Math.random()*(14-size));
+      let y = Math.round(Math.random()*(14-size));
+      ctx.drawImage(image,x, y, x+size, y+size,0, 0, size,size);
+      const spriteTexture = new THREE.CanvasTexture(canvas);
+      spriteTexture.magFilter = THREE.NearestFilter;
+      spritesTextures[i] = spriteTexture;
+    };
+
+    const sprites = new THREE.Group();
+    const particles = [];
+    for ( let i = 0; i < count; i ++ ) {
+        const x = this.position.x + 0.5- Math.random();
+        const y = this.position.y + 0.5-Math.random();
+        const z = this.position.z + 0.5-Math.random();
+
+        const material = new THREE.SpriteMaterial( { map: spritesTextures[i] } );
+        const sprite = new THREE.Sprite( material );
+        sprite.scale.set(size/16, size/16, size/16);
+        sprite.position.set(x,y,z);
+        sprites.add(sprite);
+
+        const particle = {
+          sprite,
+          x,y,z,
+          shift: 0,
+          startY: y,
+          deg: Math.round(Math.random()*360),
+        };
+        particles.push(particle);
+      };
+      MAIN.render.scene.add( sprites );
+
+
+
+      function play(){
+        let allParticlesOnGround = true;
+        particles.forEach((particle, i) => {
+          const normalizedCords = {
+            x:Math.floor(0.5+particle.x),
+            y:Math.floor(0.5+particle.y),
+            z:Math.floor(0.5+particle.z),
+          };
+
+          let thisCordsColumnHeight;
+          for(let i = normalizedCords.y; i>0; i--){
+            if(normalizedCords.x < 0 || normalizedCords.x >= MAIN.game.world.size.width || normalizedCords.z < 0 || normalizedCords.z >= MAIN.game.world.size.width){
+              thisCordsColumnHeight = 0;
+              break;
+            };
+            if(MAIN.game.world.map[normalizedCords.x][normalizedCords.z][i].contant){
+              if(MAIN.game.world.map[normalizedCords.x][normalizedCords.z][i].contant.name != 'water'){
+                thisCordsColumnHeight = i+0.6;
+                break;
+              };
+            }else{
+              thisCordsColumnHeight = 0;
+            };
+          };
+          if(particle.y > thisCordsColumnHeight){
+            particle.shift += Math.random()*0.005;
+            particle.x += Math.sin(particle.deg * Math.PI / 180) * particle.shift/3;
+            particle.z += Math.cos(particle.deg * Math.PI / 180) * particle.shift/3;
+            particle.y -= particle.shift*1.2;
+            particle.sprite.position.set(  particle.x,particle.y,  particle.z);
+            allParticlesOnGround = false;
+          };
+        });
+
+        if(allParticlesOnGround){
+          setTimeout(function(){
+            MAIN.render.scene.remove(sprites);
+          },250);
+        }else{
+          requestAnimationFrame(function(){
+            play();
+          });
+        };
+      };
+      play();
+  };
+
   self.update = function() {
     this.updateGeometry();
     this.updateLiquidPhysics();

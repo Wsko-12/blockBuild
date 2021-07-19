@@ -67,6 +67,9 @@ map.removeBlock = async function(block,generation) {
     map[position.x][position.z][position.y].contant = null;
     block.removeMeshFromScene();
     if(!generation){
+      if(!block.config.disableDeathParticles){
+        block.pushDeathParticles();
+      };
       recalculateAmbientLight().then(function() {
         map[position.x][position.z][position.y].closeNeighbors.forEach((neighbour, i) => {
           if (neighbour != null) {
