@@ -105,6 +105,12 @@ const textures = [
       file:'oak_log_side_rotated.png',
     },
 
+    {
+      textureName:'oak_leaves',
+      file:'oak_leaves.png',
+    },
+
+
 
 
 

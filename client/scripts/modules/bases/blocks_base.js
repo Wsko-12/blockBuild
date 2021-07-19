@@ -27,6 +27,7 @@ const BLOCKS_BASE = {
 //transparent:
 // 0 - не прозрачный;
 // 1 - прозрачный материалом (вода);
+//2 - прозрачный сс отдельной отрисовкой текстуры(листва)
 
 
 
@@ -128,6 +129,13 @@ BLOCKS_BASE.oak_log = {
   transparent:0,
   rotated:true,
   rotatedConfig:1,
+};
+
+BLOCKS_BASE.oak_leaves = {
+  meshBase:'oak_leaves',
+  geometry:0,
+  transparent:2,
+  lightRefraction:1,
 };
 
 
