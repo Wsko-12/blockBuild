@@ -8,6 +8,10 @@ function init(){
   //testBlock
   const standardBlockGeometry = new THREE.BoxBufferGeometry(1,1,1);
 
+
+  //это сделано для того, чтобы стороны не "врезались" в соседние блоки
+  const blockGeometryForDoubleSide = new THREE.BoxBufferGeometry(0.999,0.999,0.999);
+
   MESHES_BASE.test = {
     G:standardBlockGeometry,
     M:[
@@ -166,32 +170,26 @@ function init(){
       new THREE.MeshBasicMaterial({
         map:TEXTURES_BASE.atlas.water_0,
         transparent:true,
-        opacity:1,
       }),
       new THREE.MeshBasicMaterial({
         map:TEXTURES_BASE.atlas.water_0,
         transparent:true,
-        opacity:1,
       }),
       new THREE.MeshBasicMaterial({
         map:TEXTURES_BASE.atlas.water_0,
         transparent:true,
-        opacity:1,
       }),
       new THREE.MeshBasicMaterial({
         map:TEXTURES_BASE.atlas.water_0,
         transparent:true,
-        opacity:1,
       }),
       new THREE.MeshBasicMaterial({
         map:TEXTURES_BASE.atlas.water_0,
         transparent:true,
-        opacity:1,
       }),
       new THREE.MeshBasicMaterial({
         map:TEXTURES_BASE.atlas.water_0,
         transparent:true,
-        opacity:1,
       }),
     ],
   };
@@ -364,6 +362,43 @@ function init(){
       }),
       new THREE.MeshBasicMaterial({
         map:TEXTURES_BASE.atlas.oak_log_side_rotated,
+      }),
+    ],
+  };
+
+  MESHES_BASE.oak_leaves = {
+    G:blockGeometryForDoubleSide,
+    M:[
+      //ewtbsn
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.oak_leaves,
+        alphaTest: 0.9,
+        side: THREE.DoubleSide,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.oak_leaves,
+        alphaTest: 0.9,
+        side: THREE.DoubleSide,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.oak_leaves,
+        alphaTest: 0.9,
+        side: THREE.DoubleSide,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.oak_leaves,
+        alphaTest: 0.9,
+        side: THREE.DoubleSide,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.oak_leaves,
+        alphaTest: 0.9,
+        side: THREE.DoubleSide,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.oak_leaves,
+        alphaTest: 0.9,
+        side: THREE.DoubleSide,
       }),
     ],
   };

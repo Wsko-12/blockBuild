@@ -154,7 +154,6 @@ function get(name) {
       //рисуем полную текстуру
       ctx.drawImage(image, 0, 0, textureSize, textureSize);
 
-
       if(!self.config.lightBlock){
         //eсли выключены softShadow, то просто затемняем текстуру
         if (MAIN.render.config.softShadows) {
@@ -249,6 +248,9 @@ function get(name) {
     if (this.config.transparent === 0) {
       return checkSide();
     }
+    if(this.config.transparent === 2){
+      return checkSide();
+    }
 
     function checkSide() {
       sideIndex++;
@@ -267,10 +269,17 @@ function get(name) {
           if (neighbor != null) {
             //центр,его не должно быть, но в будущем для прозрачных блоков нужен
             if (neighborIndex === 8) {
-              sideGlobalLightValue = neighbor.lightValue;
+                sideGlobalLightValue = neighbor.lightValue;
+                if(that.config.transparent === 2){
+                  //чтобы работал alphaClip, нельзя чтобы градиент рисовался с alpha = 1
+                  //поэтому этот блок смотрит на свой lightValue, если соседский блок непрозрачный
+                  if(sideGlobalLightValue === 0){
+                    sideGlobalLightValue = that.mapCeil.lightValue;
+                  };
+                };
             };
             if (mapCeil.neighborsBySide[sideIndex][neighborIndex].contant) {
-              if (mapCeil.neighborsBySide[sideIndex][neighborIndex].contant.config.transparent === 0) {
+              if (mapCeil.neighborsBySide[sideIndex][neighborIndex].contant.config.transparent != 1) {
                 if(!mapCeil.neighborsBySide[sideIndex][neighborIndex].contant.config.lightBlock){
                   //верхний левый
                   if (neighborIndex === 7 || neighborIndex === 0 || neighborIndex === 1) {
