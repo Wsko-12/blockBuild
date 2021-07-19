@@ -96,6 +96,8 @@ BLOCKS_BASE.water = {
   lightRefraction:2,
   liquid:true,
   liquidType:'water',
+  disableDeathParticles:true,
+  
 };
 BLOCKS_BASE.lava = {
   meshBase:'lava',
@@ -105,6 +107,7 @@ BLOCKS_BASE.lava = {
   liquidType:'lava',
   lightBlock:true,
   lightValue:15,
+  disableDeathParticles:true,
 };
 
 
