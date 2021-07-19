@@ -19,7 +19,7 @@ const BLOCKS_BASE = {
 };
 //geometry:
 // 0 - полный блок;
-//1 - измененный блок (вода, ?полублоки)
+//1 - измененный блок (вода, ?полублоки,кактус)
 
 //light
 //bool
@@ -140,6 +140,83 @@ BLOCKS_BASE.oak_leaves = {
 
 
 
+
+
+BLOCKS_BASE.cactus = {
+  meshBase:'cactus',
+  geometry:1,
+  transparent:2,
+  lightRefraction:1,
+  //как этот блок добавляется;
+  uniqueAdd:true,
+  uniqueAddFunction:function(block,config){
+    if(config.faceIndex === 2){
+      if(config.checkedBlock.name === 'sand' || config.checkedBlock.name === 'cactus'){
+        let thisMapCeil = config.checkedBlock.mapCeil.crossNeighbors[config.faceIndex];
+        for(let i=0;i<thisMapCeil.crossNeighbors.length;i++){
+          if(i!= 2 && i!= 3){
+            const neighbour = thisMapCeil.crossNeighbors[i];
+            if(neighbour){
+              if(neighbour.contant){
+                if(!neighbour.contant.config.liquid){
+                  return false;
+                };
+              };
+            };
+          };
+        };
+        return true;
+      }else{
+        return false;
+      };
+    }else{
+      return false;
+    }
+  },
+
+  //когда добавляют к этому блоку
+  uniqueAttachment: true,
+  uniqueAttachmentFunction:function(config){
+    if(config.faceIndex === 2 ||config.faceIndex === 3 ){
+      return true;
+    }else{
+      return false;
+    };
+  },
+
+
+  uniqueUpdate:true,
+  uniqueUpdateFunction:function(block){
+    for(let i = 0;i<block.mapCeil.crossNeighbors.length;i++){
+      const neighbour = block.mapCeil.crossNeighbors[i];
+      if(i!= 2 && i!= 3){
+          if(neighbour){
+            if(neighbour.contant){
+              if(!neighbour.contant.config.liquid){
+                MAIN.game.world.map.removeBlock(block);
+                return;
+              };
+            };
+          };
+      }else if(i === 3){
+        if(neighbour){
+          if(neighbour.contant){
+            if(neighbour.contant.config.liquid){
+              MAIN.game.world.map.removeBlock(block);
+              return;
+            };
+          }else{
+            MAIN.game.world.map.removeBlock(block);
+            return;
+          };
+        }else{
+          MAIN.game.world.map.removeBlock(block);
+          return;
+        };
+      };
+    };
+  },
+};
 
 
 

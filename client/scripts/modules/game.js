@@ -2,11 +2,15 @@ import {MAIN} from '../main.js';
 import {TEXTURES_BASE} from './bases/textures_base.js';
 import {MESHES_BASE} from './bases/meshes_base.js';
 import {BLOCKS_BASE} from './bases/blocks_base.js';
+import {GEOMETRY_BASE} from './bases/geometry_base.js';
+
 import {WORLD} from './gameScripts/world.js';
 import {USER_ACTIONS} from './gameScripts/userActions.js';
 
 const init = function(){
+
   TEXTURES_BASE.init().then(result => {
+    GEOMETRY_BASE.init();
     MESHES_BASE.init();
     BLOCKS_BASE.init();
 
