@@ -68,7 +68,7 @@ const init = function() {
         const checkedBlock = intersects[0].object.userData.block;
         //если блоки с обычной или подкорректированой геометрией (полублоки и тд)
         let direction = [0,0,0]
-        if(checkedBlock.config.geometry === 0 || checkedBlock.config.geometry === 1){
+        if(checkedBlock.config.geometry === 0 || checkedBlock.config.geometry === 1 ){
           let faceIndex = Math.floor(intersects[0].faceIndex / 2);
           if(faceIndex === 0){
             direction[0] = 1;

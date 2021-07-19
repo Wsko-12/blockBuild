@@ -279,8 +279,9 @@ function get(name) {
                 };
             };
             if (mapCeil.neighborsBySide[sideIndex][neighborIndex].contant) {
-              if (mapCeil.neighborsBySide[sideIndex][neighborIndex].contant.config.transparent != 1) {
+              if (mapCeil.neighborsBySide[sideIndex][neighborIndex].contant.config.transparent === 0) {
                 if(!mapCeil.neighborsBySide[sideIndex][neighborIndex].contant.config.lightBlock){
+
                   //верхний левый
                   if (neighborIndex === 7 || neighborIndex === 0 || neighborIndex === 1) {
                     cornersValues[0]++;

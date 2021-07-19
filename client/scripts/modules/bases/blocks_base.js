@@ -19,7 +19,7 @@ const BLOCKS_BASE = {
 };
 //geometry:
 // 0 - полный блок;
-//1 - измененный блок (вода, ?полублоки)
+//1 - измененный блок (вода, ?полублоки,кактус)
 
 //light
 //bool
@@ -144,8 +144,9 @@ BLOCKS_BASE.oak_leaves = {
 
 BLOCKS_BASE.cactus = {
   meshBase:'cactus',
-  geometry:2,
-  transparent:0,
+  geometry:1,
+  transparent:2,
+  lightRefraction:1,
 };
 
 
