@@ -44,8 +44,9 @@ const init = function() {
           //   intersects[i].object.gameBlock.removeBlock();
           //   return
           // };
-
           MAIN.game.world.map.removeBlock(intersects[i].object.userData.block);
+          // intersects[i].object.userData.block.pushDeathParticles();
+
 
           return;
         };
