@@ -142,6 +142,13 @@ BLOCKS_BASE.oak_leaves = {
 
 
 
+BLOCKS_BASE.cactus = {
+  meshBase:'cactus',
+  geometry:2,
+  transparent:0,
+};
+
+
 
 
 
