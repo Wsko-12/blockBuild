@@ -1,5 +1,7 @@
 import * as THREE from '../../../ThreeJsLib/build/three.module.js';
 import {TEXTURES_BASE} from './textures_base.js';
+import {GEOMETRY_BASE} from './geometry_base.js';
+
 const loader = new THREE.ObjectLoader();
 
 
@@ -402,6 +404,48 @@ function init(){
       }),
     ],
   };
+
+
+  MESHES_BASE.cactus = {
+    G:GEOMETRY_BASE.cactus,
+    M:[
+      //ewtbsn
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.cactus_side,
+        alphaTest: 0.9,
+        side: THREE.DoubleSide,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.cactus_side,
+        alphaTest: 0.9,
+        side: THREE.DoubleSide,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.cactus_top,
+        alphaTest: 0.9,
+        side: THREE.DoubleSide,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.cactus_top,
+        alphaTest: 0.9,
+        side: THREE.DoubleSide,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.cactus_side,
+        alphaTest: 0.9,
+        side: THREE.DoubleSide,
+      }),
+      new THREE.MeshBasicMaterial({
+        map:TEXTURES_BASE.atlas.cactus_side,
+        alphaTest: 0.9,
+        side: THREE.DoubleSide,
+      }),
+    ],
+  };
+
+
+
+
 
 
 };

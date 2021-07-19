@@ -68,7 +68,7 @@ const init = function() {
         const checkedBlock = intersects[0].object.userData.block;
         //если блоки с обычной или подкорректированой геометрией (полублоки и тд)
         let direction = [0,0,0]
-        if(checkedBlock.config.geometry === 0 || checkedBlock.config.geometry === 1){
+        if(checkedBlock.config.geometry === 0 || checkedBlock.config.geometry === 1 ){
           let faceIndex = Math.floor(intersects[0].faceIndex / 2);
           if(faceIndex === 0){
             direction[0] = 1;
@@ -124,7 +124,6 @@ const init = function() {
           }
 
 
-
           const block = BLOCK.get(user.selectedBlock);
           if(block.name === 'water'){
             block.fluidity = 8;
@@ -136,10 +135,37 @@ const init = function() {
           };
           block.setPosition(blockPosition);
           block.rotateBlock(rotationConfig);
-          MAIN.game.world.map.addBlock(block);
-          // console.log(block);
 
 
+
+          //если блок на который нажали емеет специальную функцию прикрепления, то идет по его правилам
+          if(checkedBlock.config.uniqueAttachment){
+            const config = {
+              block,
+              faceIndex,
+            };
+            if(checkedBlock.config.uniqueAttachmentFunction(config)){
+              addBlock();
+            };
+          }else{
+            addBlock();
+          };
+
+
+          function addBlock(){
+            //если блок который нужно добавить емеет специальную функцию добавления
+            if(block.config.uniqueAdd){
+              const config = {
+                checkedBlock,
+                faceIndex,
+              };
+              if(block.config.uniqueAddFunction(block,config)){
+                MAIN.game.world.map.addBlock(block);
+              };
+            }else{
+              MAIN.game.world.map.addBlock(block);
+            };
+          };
         };
 
 
