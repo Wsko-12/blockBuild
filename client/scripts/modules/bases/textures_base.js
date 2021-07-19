@@ -117,6 +117,21 @@ const textures = [
 
 
 
+    {
+      textureName:'cactus_top',
+      file:'cactus_top.png',
+    },
+    {
+      textureName:'cactus_side',
+      file:'cactus_side.png',
+    },
+
+
+
+
+
+
+
 
 
 
