@@ -137,6 +137,8 @@ const init = function() {
           block.setPosition(blockPosition);
           block.rotateBlock(rotationConfig);
           MAIN.game.world.map.addBlock(block);
+          // console.log(block);
+
 
         };
 
