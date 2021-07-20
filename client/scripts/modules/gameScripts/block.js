@@ -155,7 +155,7 @@ function get(name) {
       //рисуем полную текстуру
       ctx.drawImage(image, 0, 0, textureSize, textureSize);
 
-      if(!self.config.lightBlock){
+      if (!self.config.lightBlock) {
         //eсли выключены softShadow, то просто затемняем текстуру
         if (MAIN.render.config.softShadows) {
           let gradient
@@ -244,7 +244,7 @@ function get(name) {
     if (this.config.transparent === 0) {
       return checkSide();
     }
-    if(this.config.transparent === 2){
+    if (this.config.transparent === 2) {
       return checkSide();
     }
 
@@ -265,13 +265,7 @@ function get(name) {
           if (neighbor != null) {
             //центр,его не должно быть, но в будущем для прозрачных блоков нужен
             if (neighborIndex === 8) {
-                sideGlobalLightValue = neighbor.lightValue;
-                if(that.config.transparent === 2){
-                  //чтобы работал alphaClip, нельзя чтобы градиент рисовался с alpha = 1
-                  //поэтому этот блок смотрит на свой lightValue, если соседский блок непрозрачный
-                  if(sideGlobalLightValue === 0){
-                    sideGlobalLightValue = that.mapCeil.lightValue;
-                  };
+              sideGlobalLightValue = neighbor.lightValue;
               if (that.config.transparent === 2) {
                 //чтобы работал alphaClip, нельзя чтобы градиент рисовался с alpha = 1
                 //поэтому этот блок смотрит на свой lightValue, если соседский блок непрозрачный
@@ -349,20 +343,12 @@ function get(name) {
         if (neighbour.contant) {
 
           //для обычных блоков
-          if(this.config.geometry === 0 && this.config.transparent === 0){
-              //если сосед такой же
-             if (neighbour.contant.config.geometry === 0  && neighbour.contant.config.transparent === 0 ) {
-               this.mesh.material[i] = null;
-             };
-             //если сосед прозрачный
-             if(neighbour.contant.config.transparent != 0){
-               allNeighbours = false;
-             };
-
-             //если у соседа сложная геометрия
-             if(neighbour.contant.config.geometry != 0){
-               allNeighbours = false;
-             };
+          if (this.config.geometry === 0 && this.config.transparent === 0) {
+            //если сосед такой же
+            if (neighbour.contant.config.geometry === 0 && neighbour.contant.config.transparent === 0) {
+              this.mesh.material[i] = null;
+            };
+            //если сосед прозрачный
             if (neighbour.contant.config.transparent != 0) {
               allNeighbours = false;
             };
@@ -375,12 +361,12 @@ function get(name) {
 
 
           //для воды
-          if(this.config.liquidType === 'water'){
+          if (this.config.liquidType === 'water') {
             //если сосед обычный блок
-            if (neighbour.contant.config.geometry === 0  && neighbour.contant.config.transparent === 0 ) {
-              if(!this.geometryUpdated){
+            if (neighbour.contant.config.geometry === 0 && neighbour.contant.config.transparent === 0) {
+              if (!this.geometryUpdated) {
                 this.mesh.material[i] = null;
-              }else{
+              } else {
                 allNeighbours = false;
               };
             };
@@ -396,9 +382,9 @@ function get(name) {
 
           if (this.config.liquidType === 'lava') {
             //если сосед обычный блок
-              if(!this.geometryUpdated){
+            if (neighbour.contant.config.geometry === 0 && neighbour.contant.config.transparent === 0) {
+              if (!this.geometryUpdated) {
                 this.mesh.material[i] = null;
-              }else{
               } else {
                 allNeighbours = false;
               };
@@ -414,8 +400,6 @@ function get(name) {
 
 
 
-          if(this.config.transparent === 2){
-            if(neighbour.contant.config.transparent != 0){
           if (this.config.transparent === 2) {
             if (neighbour.contant.config.transparent != 0) {
               allNeighbours = false;
