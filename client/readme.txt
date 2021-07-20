@@ -2,7 +2,8 @@ new:
 particle optimization(async);
 
 
-bucket and build under water
+- bucket and build under water
+- water update (if block of water have two neighbours with water source, it will become a source (fluidity 8))
 
 new blocks cofig:
   - destroyedByLiquid
@@ -11,5 +12,4 @@ new blocks cofig:
 
 
 need to bug fix:
-water update (if block of water have two neighbours with water source, it will become a source (fluidity 8))
 gravity under water

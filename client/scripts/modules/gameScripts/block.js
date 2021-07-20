@@ -559,7 +559,7 @@ function get(name) {
                       neighbour.contant.updateGeometry();
                       neighbour.contant.updateInvisibleFaces();
                       if (!neighboursToRemove.includes(neighbour)) {
-                        neighbour.push(neighbour);
+                        neighboursToRemove.push(neighbour);
                       }
                     } else {
                       neighbour.contant.updateGeometry();
@@ -913,7 +913,7 @@ function get(name) {
                 if (neighbour.contant) {
                   if (neighbour.contant.config.liquid && neighbour.contant.config.liquidType === blockConfig.liquidType) {
                     if (!onlyGeometryUpdate.includes(neighbour)) {
-                      onlyGeometryUpdate.push(neighbour)
+                      onlyGeometryUpdate.push(neighbour);
                     };
                   };
                 };
@@ -1040,14 +1040,15 @@ function get(name) {
                   };
                 };
                 if (that.mapCeil.crossNeighbors[3].contant.config.liquid && that.mapCeil.crossNeighbors[3].contant.config.liquidType === that.config.liquidType) {
-                  const needUpdateContain = needUpdate.isContain(that.mapCeil.crossNeighbors[3]);
-
-                  if (needUpdateContain === false) {
-                    needUpdate.push([that.mapCeil.crossNeighbors[3], {
-                      waterfall: true,
-                      fluidity: 7,
-                      liquidType: that.config.liquidType,
-                    }]);
+                  if(that.mapCeil.crossNeighbors[3].contant.fluidity < 8){
+                    const needUpdateContain = needUpdate.isContain(that.mapCeil.crossNeighbors[3]);
+                    if (needUpdateContain === false) {
+                      needUpdate.push([that.mapCeil.crossNeighbors[3], {
+                        waterfall: true,
+                        fluidity: 7,
+                        liquidType: that.config.liquidType,
+                      }]);
+                    };
                   };
                 };
               };
@@ -1144,6 +1145,40 @@ function get(name) {
                   if (that.mapCeil.crossNeighbors[3].contant) {
                     if (!that.mapCeil.crossNeighbors[3].contant.config.destroyedByLiquid && !that.mapCeil.crossNeighbors[3].contant.config.liquid) {
                       check();
+                    }else{
+                      //баг при колодце в 2 блока.
+                      let sourcesNumbers = 0;
+                      that.mapCeil.crossNeighbors.forEach((neighbour, i) => {
+                        if(i != 3 && i != 2){
+                          if(neighbour){
+                            if(neighbour.contant){
+                              if(neighbour.contant.config.liquid && neighbour.contant.config.liquidType === that.config.liquidType){
+                                if(neighbour.contant.fluidity === 8){
+                                  sourcesNumbers++;
+                                };
+                              };
+                            };
+                          };
+                        };
+                      });
+                      if (sourcesNumbers > 1) {
+                        const needUpdateContain = needUpdate.isContain(that.mapCeil);
+                        if (needUpdateContain === false) {
+                          needUpdate.push([that.mapCeil, {
+                            waterfall: false,
+                            fluidity: 8,
+                            liquidType: that.config.liquidType,
+                          }]);
+                        } else {
+                          needUpdate[needUpdateContain][1] = {
+                            waterfall: false,
+                            fluidity: 8,
+                            liquidType: that.config.liquidType,
+                          };
+                        };
+                      };
+
+
                     };
                   };
                 };
