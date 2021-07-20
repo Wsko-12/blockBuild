@@ -6,6 +6,7 @@ bucket and build under water
 
 new blocks cofig:
   - destroyedByLiquid
+  - compatibleWithWater = блоки которые можно размещать в воде с сохранением воды вокруг(водоросли)
 
 
 
