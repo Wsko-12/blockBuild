@@ -127,6 +127,7 @@ function get(name) {
 
 
   self.removeMeshFromScene = function() {
+
     if (this.meshAddedToScene) {
       this.meshAddedToScene = false;
       this.mouseBox.parent.remove(this.mouseBox);
@@ -236,14 +237,9 @@ function get(name) {
   self.updateShadow = async function() {
     //когда эта функция вернет true, перейдет к другому блоку
     const that = this;
-
-
     let sideIndex = -1;
     //сразу прокручиваем текстуру;
     const originalMaterial = that.rotateSidesTextures();
-
-
-
     const mapCeil = that.mapCeil;
     if (this.config.transparent === 0) {
       return checkSide();
@@ -307,34 +303,25 @@ function get(name) {
             if (neighbor.lightValue < mapCeil.neighborsBySide[sideIndex][8].lightValue) {
               if (neighborIndex === 1) {
                 sidesValue[0] = 1;
-              }
+              };
               if (neighborIndex === 3) {
                 sidesValue[1] = 1;
-              }
+              };
               if (neighborIndex === 5) {
                 sidesValue[2] = 1;
-              }
+              };
               if (neighborIndex === 7) {
                 sidesValue[3] = 1;
-              }
+              };
             };
-
-
-
-
-
-
           } else {
             //скраю карты
             sideGlobalLightValue = 2;
-          }
-
-
+          };
         });
         that.drawSideTexture(side, sideImage, sideGlobalLightValue, cornersValues, sidesValue).then(function() {
           return checkSide();
         });
-
       } else {
         if (sideIndex === 6) {
           return true;
@@ -343,8 +330,6 @@ function get(name) {
         };
       };
     };
-
-    // return checkSide();
   };
 
   self.updateInvisibleFaces = function() {
@@ -412,10 +397,18 @@ function get(name) {
               };
             };
           };
+
+
+
+          if(this.config.transparent === 2){
+            if(neighbour.contant.config.transparent != 0){
+              allNeighbours = false;
+            };
+          };
         }else{
           //если сосед воздух
           allNeighbours = false;
-        }
+        };
       }else{
         //если сосед за пределом карты
         allNeighbours = false;
@@ -465,6 +458,8 @@ function get(name) {
               };
             };
             moveMesh();
+          }else{
+            MAIN.game.world.recalculateAmbientLight();
           };
         };
 
@@ -918,7 +913,7 @@ function get(name) {
           if (mapCeil.contant === null) {
             add();
           } else {
-            if (mapCeil.contant.config.destroyedByWater) {
+            if (mapCeil.contant.config.destroyedByLiquid) {
               MAIN.game.world.map.removeBlock(mapCeil.contant, true);
               mapCeil.crossNeighbors.forEach((neighbour, i) => {
                 if (neighbour) {
@@ -1031,7 +1026,7 @@ function get(name) {
                   }]);
                 };
               } else {
-                if (that.mapCeil.crossNeighbors[3].contant.config.destroyedByWater) {
+                if (that.mapCeil.crossNeighbors[3].contant.config.destroyedByLiquid) {
                   const needUpdateContain = needUpdate.isContain(that.mapCeil.crossNeighbors[3]);
                   if (needUpdateContain === false) {
                     needUpdate.push([that.mapCeil.crossNeighbors[3], {
@@ -1070,7 +1065,7 @@ function get(name) {
                           }]);
                         };
                       } else {
-                        if (neighbour.contant.config.destroyedByWater) {
+                        if (neighbour.contant.config.destroyedByLiquid) {
                           if (!needUpdate.isContain(neighbour)) {
                             needUpdate.push([neighbour, {
                               waterfall: false,
@@ -1102,7 +1097,7 @@ function get(name) {
                 //если не исток, то вода разливается только если внизу твердый блок
                 if (that.mapCeil.crossNeighbors[3]) {
                   if (that.mapCeil.crossNeighbors[3].contant) {
-                    if (!that.mapCeil.crossNeighbors[3].contant.config.destroyedByWater && !that.mapCeil.crossNeighbors[3].contant.config.liquid) {
+                    if (!that.mapCeil.crossNeighbors[3].contant.config.destroyedByLiquid && !that.mapCeil.crossNeighbors[3].contant.config.liquid) {
                       check();
                     };
                   };
@@ -1227,7 +1222,7 @@ function get(name) {
           if (mapCeil.contant === null) {
             add();
           } else {
-            if (mapCeil.contant.config.destroyedByWater) {
+            if (mapCeil.contant.config.destroyedByLiquid) {
               MAIN.game.world.map.removeBlock(mapCeil.contant, true);
               mapCeil.crossNeighbors.forEach((neighbour, i) => {
                 if (neighbour) {
@@ -1340,7 +1335,7 @@ function get(name) {
                   }]);
                 };
               } else {
-                if (that.mapCeil.crossNeighbors[3].contant.config.destroyedByWater) {
+                if (that.mapCeil.crossNeighbors[3].contant.config.destroyedByLiquid) {
                   const needUpdateContain = needUpdate.isContain(that.mapCeil.crossNeighbors[3]);
                   if (needUpdateContain === false) {
                     needUpdate.push([that.mapCeil.crossNeighbors[3], {
@@ -1365,7 +1360,7 @@ function get(name) {
                 if (that.mapCeil.crossNeighbors[3].contant.config.liquid && that.mapCeil.crossNeighbors[3].contant.config.liquidType === 'water') {
                   const block = get('stone');
                   block.setPosition(that.mapCeil.crossNeighbors[3].position);
-                  MAIN.game.world.map.replaceBlock(block);
+                  MAIN.game.world.map.replaceBlock(block,true);
                 };
               };
             };
@@ -1385,7 +1380,7 @@ function get(name) {
                           }]);
                         };
                       } else {
-                        if (neighbour.contant.config.destroyedByWater) {
+                        if (neighbour.contant.config.destroyedByLiquid) {
                           if (!needUpdate.isContain(neighbour)) {
                             needUpdate.push([neighbour, {
                               waterfall: false,
@@ -1409,11 +1404,11 @@ function get(name) {
                           if (that.fluidity === 4) {
                             const block = get('obsidian');
                             block.setPosition(that.position);
-                            MAIN.game.world.map.replaceBlock(block);
+                            MAIN.game.world.map.replaceBlock(block,true);
                           } else {
                             const block = get('cobblestone');
                             block.setPosition(that.position);
-                            MAIN.game.world.map.replaceBlock(block);
+                            MAIN.game.world.map.replaceBlock(block,true);
                           };
                         };
                       };
@@ -1428,7 +1423,7 @@ function get(name) {
                 //если не исток, то вода разливается только если внизу твердый блок
                 if (that.mapCeil.crossNeighbors[3]) {
                   if (that.mapCeil.crossNeighbors[3].contant) {
-                    if (!that.mapCeil.crossNeighbors[3].contant.config.destroyedByLava && !that.mapCeil.crossNeighbors[3].contant.config.liquid) {
+                    if (!that.mapCeil.crossNeighbors[3].contant.config.destroyedByLiquid && !that.mapCeil.crossNeighbors[3].contant.config.liquid) {
                       check();
                     };
                   };

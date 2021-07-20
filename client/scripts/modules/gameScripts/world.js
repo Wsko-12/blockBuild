@@ -42,21 +42,37 @@ map.updateAllInvisibleFaces = function() {
 
 map.addBlock = async function(block, generation, rotationObj) {
   const position = block.position;
-  map[position.x][position.z][position.y].contant = block;
-  block.mapCeil = map[position.x][position.z][position.y];
-  block.addMeshToScene();
+  const mapCeil = map[position.x][position.z][position.y];
+  if(mapCeil.contant === null){
+    map[position.x][position.z][position.y].contant = block;
+    block.mapCeil = map[position.x][position.z][position.y];
+    block.addMeshToScene();
 
-  if (!generation) {
-    recalculateAmbientLight().then(function() {
-        map[position.x][position.z][position.y].contant.update();
-        map[position.x][position.z][position.y].closeNeighbors.forEach((neighbour, i) => {
-          if (neighbour) {
-            if(neighbour.contant){
-              neighbour.contant.update();
+    if (!generation) {
+      recalculateAmbientLight().then(function() {
+          map[position.x][position.z][position.y].contant.update();
+          map[position.x][position.z][position.y].closeNeighbors.forEach((neighbour, i) => {
+            if (neighbour) {
+              if(neighbour.contant){
+                neighbour.contant.update();
+              };
             };
-          };
-        });
-    });
+          });
+      });
+    };
+  }else{
+    if(mapCeil.contant.config.liquid){
+      //блоки которые можно размещать в воде с сохранением воды вокруг(водоросли)
+      if(block.config.compatibleWithWater){
+        if(mapCeil.contant.config.liquidType === 'water'){
+
+        };
+      }else{
+        if(!block.config.destroyedByLiquid){
+          map.replaceBlock(block);
+        };
+      };
+    };
   };
 };
 map.removeBlock = async function(block,generation) {
@@ -83,13 +99,24 @@ map.removeBlock = async function(block,generation) {
   };
 };
 
-map.replaceBlock = async function(block){
+map.replaceBlock = async function(block,generation){
   const position = block.position;
   map[position.x][position.z][position.y].contant.removeMeshFromScene();
   map[position.x][position.z][position.y].contant = block;
-  block.mapCeil =   map[position.x][position.z][position.y];
+  block.mapCeil = map[position.x][position.z][position.y];
   block.addMeshToScene();
   block.update();
+  if(!generation){
+    recalculateAmbientLight().then(function() {
+      map[position.x][position.z][position.y].closeNeighbors.forEach((neighbour, i) => {
+        if (neighbour != null) {
+          if(neighbour.contant){
+            neighbour.contant.update();
+          };
+        };
+      });
+    });
+  };
 };
 
 
