@@ -89,6 +89,10 @@ BLOCKS_BASE.grass = {
   geometry:0,
   transparent:0,
 };
+
+BLOCKS_BASE.bucket = {
+};
+
 BLOCKS_BASE.water = {
   meshBase:'water',
   geometry:1,
@@ -97,7 +101,7 @@ BLOCKS_BASE.water = {
   liquid:true,
   liquidType:'water',
   disableDeathParticles:true,
-  
+
 };
 BLOCKS_BASE.lava = {
   meshBase:'lava',
@@ -156,6 +160,10 @@ BLOCKS_BASE.cactus = {
     if(config.faceIndex === 2){
       if(config.checkedBlock.name === 'sand' || config.checkedBlock.name === 'cactus'){
         let thisMapCeil = config.checkedBlock.mapCeil.crossNeighbors[config.faceIndex];
+        if(thisMapCeil.contant){
+          //это при строительстве по жидкостью
+          return false;
+        };
         for(let i=0;i<thisMapCeil.crossNeighbors.length;i++){
           if(i!= 2 && i!= 3){
             const neighbour = thisMapCeil.crossNeighbors[i];
@@ -168,6 +176,7 @@ BLOCKS_BASE.cactus = {
             };
           };
         };
+
         return true;
       }else{
         return false;
@@ -220,6 +229,9 @@ BLOCKS_BASE.cactus = {
     };
   },
 };
+
+
+
 
 
 
