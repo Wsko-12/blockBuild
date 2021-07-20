@@ -1,0 +1,2 @@
+new:
+particle optimization(async);

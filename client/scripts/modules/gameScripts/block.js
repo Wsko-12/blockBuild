@@ -2237,52 +2237,74 @@ function get(name) {
 
 
 
-  self.pushDeathParticles = function(){
-
+  self.pushDeathParticles = async function(){
+    const that = this;
     const size = 2;
     const count = 20;
     const image = MESHES_BASE.getMeshMaterial(this.name)[0].map.image;
-
-
-    //рисуем полную текстуру
     const spritesTextures = [];
-    for(let i=0;i<count;i++){
-      const canvas = document.createElement('canvas');
-      canvas.width = size;
-      canvas.height = size;
-      const ctx = canvas.getContext('2d');
-      ctx.imageSmoothingEnabled = false;
-      let x = Math.round(Math.random()*(14-size));
-      let y = Math.round(Math.random()*(14-size));
-      ctx.drawImage(image,x, y, x+size, y+size,0, 0, size,size);
-      const spriteTexture = new THREE.CanvasTexture(canvas);
-      spriteTexture.magFilter = THREE.NearestFilter;
-      spritesTextures[i] = spriteTexture;
+    const particles = [];
+    const sprites = new THREE.Group();
+    let createdIndex = -1
+    async function create(){
+      //рисуем полную текстуру
+      createdIndex++;
+      if(createdIndex < count){
+        const canvas = document.createElement('canvas');
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext('2d');
+        ctx.imageSmoothingEnabled = false;
+        let x = Math.round(Math.random()*(14-size));
+        let y = Math.round(Math.random()*(14-size));
+        ctx.drawImage(image,x, y, x+size, y+size,0, 0, size,size);
+        const spriteTexture = new THREE.CanvasTexture(canvas);
+        spriteTexture.magFilter = THREE.NearestFilter;
+        spritesTextures[createdIndex] = spriteTexture;
+
+        return create();
+      }else{
+
+
+        for ( let i = 0; i < count; i ++ ) {
+            const x = that.position.x + 0.5- Math.random();
+            const y = that.position.y + 0.5-Math.random();
+            const z = that.position.z + 0.5-Math.random();
+
+            const material = new THREE.SpriteMaterial( { map: spritesTextures[i] } );
+            const sprite = new THREE.Sprite( material );
+            sprite.scale.set(size/16, size/16, size/16);
+            sprite.position.set(x,y,z);
+            sprites.add(sprite);
+
+            const particle = {
+              sprite,
+              x,y,z,
+              shift: 0,
+              startY: y,
+              deg: Math.round(Math.random()*360),
+            };
+            particles.push(particle);
+          };
+          MAIN.render.scene.add( sprites );
+
+        return true;
+      };
+
     };
 
-    const sprites = new THREE.Group();
-    const particles = [];
-    for ( let i = 0; i < count; i ++ ) {
-        const x = this.position.x + 0.5- Math.random();
-        const y = this.position.y + 0.5-Math.random();
-        const z = this.position.z + 0.5-Math.random();
 
-        const material = new THREE.SpriteMaterial( { map: spritesTextures[i] } );
-        const sprite = new THREE.Sprite( material );
-        sprite.scale.set(size/16, size/16, size/16);
-        sprite.position.set(x,y,z);
-        sprites.add(sprite);
 
-        const particle = {
-          sprite,
-          x,y,z,
-          shift: 0,
-          startY: y,
-          deg: Math.round(Math.random()*360),
-        };
-        particles.push(particle);
+    create().then(result =>{
+      if(result){
+        play();
       };
-      MAIN.render.scene.add( sprites );
+    })
+
+
+
+
+
 
 
 
@@ -2330,7 +2352,7 @@ function get(name) {
           });
         };
       };
-      play();
+
   };
 
   self.update = function() {
