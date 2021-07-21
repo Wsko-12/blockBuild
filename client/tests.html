@@ -26,34 +26,22 @@
     TEXTURES_BASE.init().then(result => {
       MESHES_BASE.init();
       BLOCKS_BASE.init();
-      const canvas = document.querySelector('#canvas');
-      const ctx = canvas.getContext('2d');
-      ctx.imageSmoothingEnabled = false;
-      ctx.filter = 'opacity(100%)';
-      ctx.drawImage(MESHES_BASE.oak_leaves.M[0].map.image,0,0,16,16);
-
-      let gradient = ctx.createLinearGradient(0, 0, 16, 16);
-      gradient.addColorStop(0, `rgba(0,0,0,${0.9})`);
-      gradient.addColorStop(0.6, 'rgba(0,0,0,0)');
-      ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, 16, 16);
+      // const canvas = document.querySelector('#canvas');
+      // const ctx = canvas.getContext('2d');
+      // ctx.imageSmoothingEnabled = false;
+      // ctx.filter = 'opacity(100%)';
+      // ctx.drawImage(MESHES_BASE.oak_leaves.M[0].map.image,0,0,16,16);
 
 
 
 
-      const geometry = new THREE.BoxGeometry(1,1,1);
-      const material = new THREE.MeshBasicMaterial({});
-      material.alphaTest = 0.9;
-      material.side = THREE.DoubleSide;
-      const mesh = new THREE.Mesh(geometry,material);
-      MAIN.render.scene.add(mesh);
 
 
 
-      mesh.material.map = new THREE.CanvasTexture(canvas);
-      mesh.material.map.magFilter = THREE.NearestFilter;
 
-      console.log(ctx.getImageData(0,0,1,1))
+
+
+
 
 
       const controls = new OrbitControls( MAIN.render.camera, MAIN.render.renderer.domElement );
