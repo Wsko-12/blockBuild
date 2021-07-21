@@ -180,12 +180,14 @@ const init = function() {
                     };
                   };
                 }else{
-                  if(checkedBlock.mapCeil.crossNeighbors[faceIndex].contant === null){
-                    MAIN.game.world.map.addBlock(block);
-                  };
-                  if(checkedBlock.mapCeil.crossNeighbors[faceIndex].contant.config.liquid){
-                    if(!block.config.destroyedByLiquid){
+                  if(checkedBlock.mapCeil.crossNeighbors[faceIndex]){
+                    if(checkedBlock.mapCeil.crossNeighbors[faceIndex].contant === null){
                       MAIN.game.world.map.addBlock(block);
+                    };
+                    if(checkedBlock.mapCeil.crossNeighbors[faceIndex].contant.config.liquid){
+                      if(!block.config.destroyedByLiquid){
+                        MAIN.game.world.map.addBlock(block);
+                      };
                     };
                   };
                 };
@@ -300,7 +302,7 @@ const init = function() {
     const thisX = mouse.x;
     const thisY = mouse.y;
     if (mouse.down) {
-      setTimeout(function() {
+      requestAnimationFrame(function(){
         checkMoveValue(thisX, thisY);
       });
       if (thisX != lastX || thisY != lastY) {
@@ -400,7 +402,7 @@ const init = function() {
     const thisY = mouse.touchY;
 
     if (mouse.touchDown) {
-      setTimeout(function() {
+      requestAnimationFrame(function(){
         checkTouchMoveValue(thisX, thisY);
       });
       if (thisX != lastX || thisY != lastY) {

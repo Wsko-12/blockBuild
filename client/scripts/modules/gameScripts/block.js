@@ -277,22 +277,31 @@ function get(name) {
             if (mapCeil.neighborsBySide[sideIndex][neighborIndex].contant) {
               if (mapCeil.neighborsBySide[sideIndex][neighborIndex].contant.config.transparent === 0) {
                 if (!mapCeil.neighborsBySide[sideIndex][neighborIndex].contant.config.lightBlock) {
-                  //верхний левый
-                  if (neighborIndex === 7 || neighborIndex === 0 || neighborIndex === 1) {
-                    cornersValues[0]++;
-                  };
-                  //верхний правый
-                  if (neighborIndex === 1 || neighborIndex === 2 || neighborIndex === 3) {
-                    cornersValues[1]++;
-                  };
+                  function setCornersValue() {
+                    //верхний левый
+                    if (neighborIndex === 7 || neighborIndex === 0 || neighborIndex === 1) {
+                      cornersValues[0]++;
+                    };
+                    //верхний правый
+                    if (neighborIndex === 1 || neighborIndex === 2 || neighborIndex === 3) {
+                      cornersValues[1]++;
+                    };
 
-                  //нижний правый
-                  if (neighborIndex === 3 || neighborIndex === 4 || neighborIndex === 5) {
-                    cornersValues[2]++;
+                    //нижний правый
+                    if (neighborIndex === 3 || neighborIndex === 4 || neighborIndex === 5) {
+                      cornersValues[2]++;
+                    };
+                    //нижний левый
+                    if (neighborIndex === 5 || neighborIndex === 6 || neighborIndex === 7) {
+                      cornersValues[3]++;
+                    };
                   };
-                  //нижний левый
-                  if (neighborIndex === 5 || neighborIndex === 6 || neighborIndex === 7) {
-                    cornersValues[3]++;
+                  if (mapCeil.neighborsBySide[sideIndex][neighborIndex].contant.config.gravity) {
+                    if (!mapCeil.neighborsBySide[sideIndex][neighborIndex].contant.onGravityUpdate) {
+                      setCornersValue();
+                    };
+                  } else {
+                    setCornersValue();
                   };
                 };
               };
@@ -346,7 +355,14 @@ function get(name) {
           if (this.config.geometry === 0 && this.config.transparent === 0) {
             //если сосед такой же
             if (neighbour.contant.config.geometry === 0 && neighbour.contant.config.transparent === 0) {
-              this.mesh.material[i] = null;
+              //чтобы не схватывал блок в полете
+              if (neighbour.contant.config.gravity) {
+                if (!neighbour.contant.onGravityUpdate) {
+                  this.mesh.material[i] = null;
+                };
+              } else {
+                this.mesh.material[i] = null;
+              };
             };
             //если сосед прозрачный
             if (neighbour.contant.config.transparent != 0) {
@@ -365,7 +381,15 @@ function get(name) {
             //если сосед обычный блок
             if (neighbour.contant.config.geometry === 0 && neighbour.contant.config.transparent === 0) {
               if (!this.geometryUpdated) {
-                this.mesh.material[i] = null;
+                //чтобы не схватывал блок в полете
+
+                if (neighbour.contant.config.gravity) {
+                  if (!neighbour.contant.onGravityUpdate) {
+                    this.mesh.material[i] = null;
+                  };
+                } else {
+                  this.mesh.material[i] = null;
+                };
               } else {
                 allNeighbours = false;
               };
@@ -384,7 +408,14 @@ function get(name) {
             //если сосед обычный блок
             if (neighbour.contant.config.geometry === 0 && neighbour.contant.config.transparent === 0) {
               if (!this.geometryUpdated) {
-                this.mesh.material[i] = null;
+                //чтобы не схватывал блок в полете
+                if (neighbour.contant.config.gravity) {
+                  if (!neighbour.contant.onGravityUpdate) {
+                    this.mesh.material[i] = null;
+                  };
+                } else {
+                  this.mesh.material[i] = null;
+                };
               } else {
                 allNeighbours = false;
               };
@@ -421,37 +452,71 @@ function get(name) {
   };
 
   self.onGravityUpdate = false;
+  self.updatedGravityPosition = false;
+  self.gravityReplacedBlock = null;
+  self.mapCeilBeforeGravityUpdate_updated = false;
   self.updateGravity = function() {
+    const gravitySpeed = .2;
+    let gravityShift = 0;
+    const gravityShiftMax = 1 / gravitySpeed;
+
+    const that = this;
+
     if (this.config.gravity) {
       if (!this.onGravityUpdate) {
+
         if (this.mapCeil.crossNeighbors[3]) {
-          if (this.mapCeil.crossNeighbors[3].contant === null) {
+          if (this.mapCeil.crossNeighbors[3].contant === null || this.mapCeil.crossNeighbors[3].contant.config.liquid) {
             this.onGravityUpdate = true;
+
+            this.updatedGravityPosition = true;
             const lastMapCeil = this.mapCeil;
             const futureMapCeil = this.mapCeil.crossNeighbors[3];
             this.mapCeil = futureMapCeil;
-            MAIN.game.world.map.moveBlock(lastMapCeil, futureMapCeil);
+
+            let nextGravityReplacedBlock = MAIN.game.world.map.moveBlock(lastMapCeil, futureMapCeil);
+
+
+
+            if (this.gravityReplacedBlock) {
+              if (this.gravityReplacedBlock.mapCeil.contant === null) {
+                this.gravityReplacedBlock.mapCeil.contant = this.gravityReplacedBlock;
+                this.gravityReplacedBlock.addMeshToScene();
+              };
+            };
+            if(nextGravityReplacedBlock){
+              if(nextGravityReplacedBlock.mapCeil.crossNeighbors[2]){
+                if(nextGravityReplacedBlock.mapCeil.crossNeighbors[2].contant === null){
+                  nextGravityReplacedBlock.pushLiqudParticles();
+                };
+              };
+            };
+
+            this.gravityReplacedBlock = nextGravityReplacedBlock;
             this.setPosition({
               x: this.position.x,
               y: this.position.y - 1,
               z: this.position.z
             });
 
-
-            const gravitySpeed = .2;
-            let gravityShift = 0;
-            const gravityShiftMax = 1 / gravitySpeed;
-
-            const that = this;
-
             function moveMesh() {
               gravityShift++;
               that.mesh.position.y -= gravitySpeed;
               that.mouseBox.position.y -= gravitySpeed;
+
+              if (gravityShift === Math.round(gravityShiftMax / 2)) {
+                if (that.mapCeilBeforeGravityUpdate_updated === false) {
+                  that.mapCeilBeforeGravityUpdate_updated = true;
+
+                  lastMapCeil.findLightValue();
+                  lastMapCeil.closeNeighbors.update();
+                };
+              };
+
               if (gravityShift != gravityShiftMax) {
-                setTimeout(function() {
+                requestAnimationFrame(function() {
                   moveMesh();
-                })
+                });
               } else {
                 that.onGravityUpdate = false;
                 that.updateGravity();
@@ -459,10 +524,25 @@ function get(name) {
             };
             moveMesh();
           } else {
-            MAIN.game.world.recalculateAmbientLight();
+            if (this.updatedGravityPosition) {
+              this.updatedGravityPosition = false;
+              this.mapCeilBeforeGravityUpdate_updated = false;
+              MAIN.game.world.recalculateAmbientLight();
+              this.mapCeil.closeNeighbors.update();
+              this.onGravityUpdate = false;
+              this.update();
+            };
           };
-        };
-
+        } else {
+          if (this.updatedGravityPosition) {
+            this.updatedGravityPosition = false;
+            this.mapCeilBeforeGravityUpdate_updated = false;
+            MAIN.game.world.recalculateAmbientLight();
+            this.mapCeil.closeNeighbors.update();
+            this.onGravityUpdate = false;
+            this.update();
+          };
+        }
       };
     };
   };
@@ -1040,7 +1120,7 @@ function get(name) {
                   };
                 };
                 if (that.mapCeil.crossNeighbors[3].contant.config.liquid && that.mapCeil.crossNeighbors[3].contant.config.liquidType === that.config.liquidType) {
-                  if(that.mapCeil.crossNeighbors[3].contant.fluidity < 8){
+                  if (that.mapCeil.crossNeighbors[3].contant.fluidity < 8) {
                     const needUpdateContain = needUpdate.isContain(that.mapCeil.crossNeighbors[3]);
                     if (needUpdateContain === false) {
                       needUpdate.push([that.mapCeil.crossNeighbors[3], {
@@ -1145,15 +1225,15 @@ function get(name) {
                   if (that.mapCeil.crossNeighbors[3].contant) {
                     if (!that.mapCeil.crossNeighbors[3].contant.config.destroyedByLiquid && !that.mapCeil.crossNeighbors[3].contant.config.liquid) {
                       check();
-                    }else{
+                    } else {
                       //баг при колодце в 2 блока.
                       let sourcesNumbers = 0;
                       that.mapCeil.crossNeighbors.forEach((neighbour, i) => {
-                        if(i != 3 && i != 2){
-                          if(neighbour){
-                            if(neighbour.contant){
-                              if(neighbour.contant.config.liquid && neighbour.contant.config.liquidType === that.config.liquidType){
-                                if(neighbour.contant.fluidity === 8){
+                        if (i != 3 && i != 2) {
+                          if (neighbour) {
+                            if (neighbour.contant) {
+                              if (neighbour.contant.config.liquid && neighbour.contant.config.liquidType === that.config.liquidType) {
+                                if (neighbour.contant.fluidity === 8) {
                                   sourcesNumbers++;
                                 };
                               };
@@ -1585,7 +1665,7 @@ function get(name) {
                     onlyGeometryUpdate.length = 0;
                     resolve('childs added');
                   };
-                }, 200);
+                }, 1000);
               });
 
               let result = await promise;
@@ -1685,7 +1765,6 @@ function get(name) {
 
 
   };
-
 
 
 
@@ -2488,6 +2567,82 @@ function get(name) {
     };
 
   };
+  self.pushLiqudParticles = function(){
+    if(this.config.liquid){
+      let particleColor;
+      if(this.config.liquidType === 'water'){
+        particleColor = 0x34a6e7;
+      };
+      if(this.config.liquidType === 'lava'){
+        particleColor =0xff2e00;
+      };
+      //creating
+      const geometry = new THREE.BufferGeometry();
+			const vertices = [];
+      const particles = [];
+
+      for ( let i = 0; i < 10; i ++ ) {
+
+					const x = this.mapCeil.position.x +0.5- Math.random();
+					const y = this.mapCeil.position.y + 1;
+					const z = this.mapCeil.position.z+0.5- Math.random();
+
+					vertices.push( x, y, z );
+
+          const point = {
+            x,y,z,
+            deg: Math.round(Math.random()*360),
+          };
+          particles.push(point);
+			};
+
+
+      geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( vertices, 3 ) );
+
+      const material = new THREE.PointsMaterial({
+          color:particleColor,
+          size:1,
+        });
+      const cloud = new THREE.Points(geometry,material);
+      const array = cloud.geometry.attributes.position.array;
+      MAIN.render.scene.add(cloud);
+
+      let count = 0;
+      function play(){
+        count++;
+        particles.forEach((point, i) => {
+            point.x += Math.sin(point.deg * Math.PI / 180) * count/500;
+            point.z += Math.cos(point.deg * Math.PI / 180) * count/500;
+
+
+            point.y += Math.sin(25/count * 3)/3;
+
+            array[i*3] = point.x;
+            array[i*3+1] = point.y;
+            array[i*3+2] = point.z;
+
+        });
+
+        cloud.geometry.attributes.position.needsUpdate = true;
+
+
+
+
+
+        if(count<20){
+          requestAnimationFrame(play);
+        }else{
+          MAIN.render.scene.remove(cloud);
+        };
+      };
+
+      play();
+
+
+
+    };
+  };
+
 
   self.update = function() {
     this.updateGeometry();
