@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>all game blocks</title>
+    <link rel="stylesheet" href="styles/common.css">
+
+    <link rel="stylesheet" href="styles/gameInterface.css">
+  </head>
+  <body style="position:fixed;width:100vw;height:100vh;margin:0">
+    <section id="render" class="fullscreen">
+
+    </section>
+    <canvas id="canvas" style="position:fixed;left:50vw;border:1px solid black" width="16" height="16"></canvas>
+
+  </body>
+  <script type="module">
+    import * as THREE from './ThreeJsLib/build/three.module.js';
+    import {MAIN} from './scripts/main.js';
+    import {TEXTURES_BASE} from './scripts/modules/bases/textures_base.js';
+    import {MESHES_BASE} from './scripts/modules/bases/meshes_base.js';
+    import {BLOCKS_BASE} from './scripts/modules/bases/blocks_base.js';
+    import {OrbitControls} from './ThreeJsLib/examples/jsm/controls/OrbitControls.js';
+    MAIN.render.init();
+
+    TEXTURES_BASE.init().then(result => {
+      MESHES_BASE.init();
+      BLOCKS_BASE.init();
+      // const canvas = document.querySelector('#canvas');
+      // const ctx = canvas.getContext('2d');
+      // ctx.imageSmoothingEnabled = false;
+      // ctx.filter = 'opacity(100%)';
+      // ctx.drawImage(MESHES_BASE.oak_leaves.M[0].map.image,0,0,16,16);
+
+
+
+
+
+
+
+
+
+
+
+
+
+      const controls = new OrbitControls( MAIN.render.camera, MAIN.render.renderer.domElement );
+      MAIN.render.camera.position.set(10,10,10)
+      MAIN.render.camera.lookAt(0,0,0);
+
+      MAIN.render.render();
+
+    });
+
+
+
+
+
+  </script>
+</html>
