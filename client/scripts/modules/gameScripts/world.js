@@ -123,25 +123,17 @@ map.replaceBlock = async function(block,generation){
 
 
 map.moveBlock = function(fromMapCeil,toMapCeil){
-  toMapCeil.contant = fromMapCeil.contant;
-  fromMapCeil.contant = null;
-
-  recalculateAmbientLight().then(function() {
-  fromMapCeil.closeNeighbors.forEach((neighbour, i) => {
-      if (neighbour != null) {
-        if(neighbour.contant){
-          neighbour.contant.update();
-        };
-      };
-    });
-  toMapCeil.closeNeighbors.forEach((neighbour, i) => {
-      if (neighbour != null) {
-        if(neighbour.contant){
-          neighbour.contant.update();
-        };
-      };
-    });
-  });
+  let replacedBlock = null;
+  if(toMapCeil.contant === null){
+    toMapCeil.contant = fromMapCeil.contant;
+    fromMapCeil.contant = null;
+  }else{
+    replacedBlock = toMapCeil.contant;
+    replacedBlock.removeMeshFromScene();
+    toMapCeil.contant = fromMapCeil.contant;
+    fromMapCeil.contant = null;
+  };
+  return replacedBlock;
 };
 
 
@@ -169,6 +161,17 @@ function mapCeil(x, y, z) {
     ];
 
     this.crossNeighbors = [null, null, null, null, null, null];
+    this.crossNeighbors.update = function(){
+
+      ceil.crossNeighbors.forEach((neighbour, i) => {
+        if(neighbour){
+          if(neighbour.contant){
+            neighbour.contant.update();
+          };
+        };
+      });
+
+    }
     crossNeighborsIndex.forEach((item, i) => {
       const x = item[0];
       const y = item[1];
@@ -231,6 +234,15 @@ function mapCeil(x, y, z) {
 
   ceil.findCloseNeighbors = function() {
     this.closeNeighbors = this.findAroundNeighbors(1);
+    this.closeNeighbors.update = function(){
+      ceil.closeNeighbors.forEach((neighbour, i) => {
+        if(neighbour){
+          if(neighbour.contant){
+            neighbour.contant.update();
+          };
+        };
+      });
+    };
   };
 
   //!!!!!!!
@@ -407,9 +419,41 @@ function mapCeil(x, y, z) {
     });
   };
 
+  ceil.findLightValue = function(){
+    let maxLightValue = 0;
+    let seeSky = false
+    this.crossNeighbors.forEach((neighbour, i) => {
+      if(i === 2){
+        if(neighbour){
+          if(neighbour.seeSky === true){
+            seeSky =true;
+            maxLightValue = 15;
+          };
+        };
+      }else{
+        if(neighbour){
+          if(neighbour.lightValue > maxLightValue){
+            maxLightValue = neighbour.lightValue
+          };
+        };
+      };
+    });
+
+    if(seeSky){
+      this.seeSky = true;
+      this.lightValue = 15;
+    }else{
+      this.seeSky = false;
+      this.lightValue = maxLightValue - 1;
+    };
+
+  };
+
   ceil.contant = null;
   return ceil;
 };
+
+
 
 
 function updateAmbientLight(helpers) {
@@ -515,7 +559,13 @@ async function recalculateAmbientLight() {
               lightValue = mapCeil.contant.config.lightValue;
               airBlocks.push(mapCeil);
             }else{
-              lightValue = 0;
+              if(mapCeil.contant.config.gravity){
+                if(!mapCeil.contant.mapCeilBeforeGravityUpdate_updated){
+                  lightValue = 0;
+                };
+              }else{
+                lightValue = 0;
+              }
             }
           }
         } else {
