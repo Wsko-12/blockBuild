@@ -11,7 +11,7 @@ let renderStarted = false;
 const mouseBoxes = new THREE.Group();
 const blocks = new THREE.Group();
 const renderer = new THREE.WebGLRenderer();
-const camera = new THREE.PerspectiveCamera(10, 2, 1, 1000);
+const camera = new THREE.PerspectiveCamera(10, 2, 0.2, 1000);
 const scene = new THREE.Scene();
 const config = {
   textureSize:16,

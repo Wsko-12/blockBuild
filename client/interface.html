@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="ru" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>UI</title>
+</head>
+
+<body>
+  <section id='render'>
+
+  </section>
+  <section id="interface" class="nonSelectText">
+    <div id="interface_center">
+      <div id="menu_container" class="blur_background">
+        <div id="menu_container-inner">
+          <div id="menu_container-top">
+            <div id="menu_container-tabs">
+              <div class="menu_tab menu_tab-selected">
+                <div class="menu_tab-title">
+                  Blocks
+                </div>
+              </div>
+              <div class="menu_tab">
+                <div class="menu_tab-title">
+                  Settings
+                </div>
+              </div>
+            </div>
+            <div id="menu_container-close">
+
+              <div id="menu_container-closeIcon">✖</div>
+            </div>
+          </div>
+
+          <div id="menu_container-contantContainer">
+            <div id="menu_inventary" class="menu_contant">
+              <div id="menu_inventary-top">
+                <div id="menu_inventary-resent_container">
+                  <!-- <div class="menu_inventary-ceil">
+                    <img class="menu_inventary-ceil-image" src="textures/inventary/grass.png">
+                  </div> -->
+                </div>
+              </div>
+              <div id="menu_inventary-bottom">
+                <div id="menu_inventary-all_container">
+                  <!-- <div class="menu_inventary-ceil">
+                      <img class="menu_inventary-ceil-image" src="textures/inventary/stone.png">
+                  </div> -->
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div id="interface_footer">
+      <div id="current_container" class="blur_background">
+        <div id="current_imagebox">
+          <img id="current_image" src="textures/inventary/grass.png">
+        </div>
+      </div>
+      <div id="camera_container" class="blur_background">
+        <div id="camera_imagebox">
+          <img id="camera_image" src="textures/inventary/cameraCross.png">
+        </div>
+      </div>
+    </div>
+
+
+
+
+  </section>
+
+
+</body>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap');
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0px;
+  }
+
+  .nonSelectText {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+
+  #render {
+    width: 100vw;
+    height: 100vh;
+    background-image: url('screenshot.png');
+    background-size: 100%;
+    position: fixed;
+  }
+
+  .blur_background {
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+  }
+
+  #interface {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+  }
+
+  #interface_footer {
+    width: 100vw;
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    bottom: 10px;
+  }
+
+  #current_container {
+    width: 48px;
+    height: 48px;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    margin: 10px;
+    display: flex;
+  }
+
+  #current_container:hover {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+
+
+  #current_imagebox {
+    width: 32px;
+    height: 32px;
+    margin: auto;
+  }
+
+  #current_image {
+    width: 100%;
+    height: 100%;
+  }
+
+
+
+
+  #camera_container {
+    width: 48px;
+    height: 48px;
+    background-color: rgba(0, 0, 0, 0.2);
+    margin: 10px;
+    border-radius: 10px;
+    display: flex;
+  }
+
+  #camera_container:hover {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+
+
+  #camera_image{
+    width: 32px;
+    height: 32px;
+    margin: auto;
+  }
+
+  #camera_image{
+    width: 100%;
+    height: 100%;
+  }
+
+
+
+
+  #interface_center {
+    width: 100vw;
+    height: 100vh;
+    /* background-color:#32e0b7; */
+    position: fixed;
+    display: flex;
+  }
+
+  #menu_container {
+    width: 500px;
+    height: 450px;
+    background-color: rgba(0, 0, 0, 0.2);
+    margin: auto;
+    display: flex;
+
+  }
+
+  #menu_container-inner {
+    width: 96%;
+    height: 96%;
+    margin: auto;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+  }
+
+ #menu_container-top{
+   width: 100%;
+   height: 10%;
+   display: flex;
+   margin: auto;
+ }
+  #menu_container-tabs {
+    width: 90%;
+    height: 100%;
+    display: flex;
+  }
+  #menu_container-close{
+    width: 10%;
+    height: 100%;
+    color:white;
+    display:flex;
+
+  }
+  #menu_container-closeIcon{
+    margin:auto;
+    position:relative;
+    font-size:2em;
+  }
+
+  .menu_tab {
+    width: 33%;
+    height: 100%;
+    border-radius: 20px 20px 0% 0%;
+    display: flex;
+    color: #b9b9b9;
+    text-shadow: 0px 0px 2px black;
+
+  }
+
+  .menu_tab:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+
+  }
+
+  .menu_tab-title {
+    margin: auto;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1em
+  }
+
+  .menu_tab-selected {
+    color: white;
+    background-color: rgba(0, 0, 0, 0.3);
+  }
+
+  .menu_tab-selected:hover {
+    background-color: rgba(0, 0, 0, 0.3);
+
+  }
+
+
+
+  #menu_container-contantContainer {
+    width: 100%;
+    height: 90%;
+    background-color: rgba(0, 0, 0, 0.3);
+  }
+
+
+
+  .menu_contant {
+    width: 100%;
+    height: 100%;
+  }
+
+
+  #menu_inventary-top {
+    width: 100%;
+    height: 30%;
+    padding-top: 20px;
+    display: flex;
+  }
+
+  #menu_inventary-bottom {
+    width: 100%;
+    height: 70%;
+    display: flex;
+  }
+
+  #menu_inventary-resent_container {
+    width: 380px;
+    height: 40px;
+    margin: auto;
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+    box-sizing:content-box;
+
+    border: 1px solid rgba(255, 255, 255, 0.5)
+  }
+
+  #menu_inventary-resent_container::-webkit-scrollbar {
+    display: none;
+  }
+
+  #menu_inventary-all_container {
+    width: 400px;
+    height: 240px;
+    margin: auto;
+    display: flex;
+    flex-wrap: wrap;
+    -webkit-overflow-scrolling: touch;
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+    overflow-y: auto;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-sizing:content-box;
+    align-content: flex-start;
+    justify-content: flex-start;
+  }
+
+  #menu_inventary-all_container::-webkit-scrollbar {
+    display: none;
+  }
+
+  .menu_inventary-ceil {
+    width: 40px;
+    height: 40px;
+    flex: 0 0 auto;
+    display: flex;
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .menu_inventary-ceil:hover {
+    background-color: rgba(255, 255, 255, 0.5);
+  }
+
+  .menu_inventary-ceil-image {
+    width: 90%;
+    height: 90%;
+    margin: auto;
+  }
+
+
+  @media only screen and (min-device-width : 320px) and (max-device-width : 1024px) and (-webkit-device-pixel-ratio : 2) and (orientation : portrait) {
+
+    /* mobile and tablets portrait*/
+    #inventary_footer {
+      width: 100vw;
+      position: fixed;
+      top: 10px;
+    }
+
+    #current_container {
+      width: 15vw;
+      height: 15vw;
+      position: absolute;
+      right: 10px;
+    }
+
+    #camera_container {
+      width: 10vw;
+      height: 10vw;
+      display: flex;
+    }
+    #camera_imagebox {
+      width: 8vw;
+      height: 8vw;
+      margin: auto;
+    }
+
+    #current_imagebox {
+      width: 96px;
+      height: 96px;
+    }
+
+    #menu_container {
+      width: 90vw;
+      height: 60vh;
+    }
+
+    .menu_tab-title {
+      font-size: 1.5em
+    }
+
+    #menu_inventary-resent_container {
+      width: 75vw;
+      height: 8vw;
+    }
+
+    #menu_inventary-all_container {
+      width: 80vw;
+      height: 35vh;
+    }
+
+    .menu_inventary-ceil {
+      width: 8vw;
+      height: 8vw;
+    }
+  }
+
+  @media only screen and (min-device-width : 320px) and (max-device-width : 1024px) and (-webkit-device-pixel-ratio : 3) and (orientation : portrait) {
+
+    /* mobile and tablets portrait iphone 6plus X*/
+    #interface_footer {
+      width: 100vw;
+      position: fixed;
+      top: 10px;
+    }
+
+    #current_container {
+      width: 15vw;
+      height: 15vw;
+      position: absolute;
+      right: 10px;
+    }
+
+    #current_imagebox {
+      width: 10vw;
+      height: 10vw;
+    }
+
+    #camera_container {
+      width: 10vw;
+      height: 10vw;
+      display: flex;
+    }
+    #camera_imagebox {
+      width: 8vw;
+      height: 8vw;
+      margin: auto;
+    }
+
+
+
+    #menu_container {
+      width: 90vw;
+      height: 60vh;
+    }
+
+    .menu_tab-title {
+      font-size: 1.5em
+    }
+
+
+    #menu_inventary-resent_container {
+      width: 75vw;
+      height: 8vw;
+    }
+
+    #menu_inventary-all_container {
+      width: 80vw;
+      height: 35vh;
+    }
+
+    .menu_inventary-ceil {
+      width: 8vw;
+      height: 8vw;
+    }
+
+  }
+
+  @media only screen and (orientation : portrait) {
+
+    /* portrait window*/
+
+    #interface_footer {
+      width: 100vw;
+      position: fixed;
+      top: 10px;
+    }
+
+    #current_container {
+      width: 15vw;
+      height: 15vw;
+      position: absolute;
+      right: 10px;
+    }
+
+    #current_imagebox {
+      width: 10vw;
+      height: 10vw;
+    }
+
+    #menu_container {
+      width: 90vw;
+      height: 60vh;
+    }
+
+    #camera_container {
+      width: 10vw;
+      height: 10vw;
+      display: flex;
+    }
+    #camera_imagebox {
+      width: 8vw;
+      height: 8vw;
+      margin: auto;
+    }
+
+    /*
+    #menu_inventary-resent_container{
+      width:75vw;
+      height:8vw;
+    }
+    #menu_inventary-all_container{
+      width:80vw;
+      height:35vw;
+    }
+
+    .menu_inventary-ceil{
+      width:8vw;
+      height:8vw;
+    } */
+  }
+
+
+
+  @media only screen and (min-device-width : 320px) and (max-device-width : 1024px) and (-webkit-device-pixel-ratio : 2) and (orientation : landscape) {
+
+    /* mobile and tablets lanscape*/
+    #interface_footer {
+      width: 100vw;
+      position: fixed;
+      top: 10px;
+    }
+
+    #current_container {
+      width: 15vh;
+      height: 15vh;
+      position: absolute;
+      right: 10px;
+    }
+
+    #current_imagebox {
+      width: 48px;
+      height: 48px;
+    }
+
+
+    #camera_container {
+      width: 12vh;
+      height: 12vh;
+      display: flex;
+    }
+
+    #camera_imagebox {
+      width: 10vh;
+      height: 10vh;
+      margin: auto;
+    }
+
+
+
+    #menu_container {
+      width: 70vw;
+      height: 90vh;
+    }
+
+
+
+    .menu_tab-title {
+      font-size: 1.5em
+    }
+
+    #menu_inventary-resent_container {
+      width: 75vh;
+      height: 8vh;
+    }
+
+    #menu_inventary-all_container {
+      width: 80vh;
+      height: 50vh;
+    }
+
+    .menu_inventary-ceil {
+      width: 8vh;
+      height: 8vh;
+    }
+
+
+  }
+
+  @media only screen and (min-device-width : 320px) and (max-device-width : 1024px) and (-webkit-device-pixel-ratio : 3) and (orientation : landscape) {
+
+    /* mobile and tablets landscape iphone 6plus X*/
+    #interface_footer {
+      width: 100vw;
+      position: fixed;
+      top: 10px;
+    }
+
+    #current_container {
+      width: 15vh;
+      height: 15vh;
+      position: absolute;
+      right: 10px;
+    }
+
+    #current_imagebox {
+      width: 10vh;
+      height: 10vh;
+    }
+
+    #camera_container {
+      width: 12vh;
+      height: 12vh;
+      display: flex;
+    }
+
+    #camera_imagebox {
+      width: 10vh;
+      height: 10vh;
+      margin: auto;
+    }
+
+    #menu_container {
+      width: 70vw;
+      height: 90vh;
+    }
+
+    .menu_tab-title {
+      font-size: 1.5em
+    }
+
+    #menu_inventary-resent_container {
+      width: 95vh;
+      height: 10vh;
+    }
+
+    #menu_inventary-all_container {
+      width: 100vh;
+      height: 50vh;
+    }
+
+    .menu_inventary-ceil {
+      width: 10vh;
+      height: 10vh;
+    }
+
+  }
+</style>
+<script type="module">
+  import {
+    MAIN
+  } from './scripts/main.js';
+  import {
+    BLOCKS_BASE
+  } from './scripts/modules/bases/blocks_base.js';
+
+
+
+
+
+
+
+
+  function init() {
+    //init all blocks from BLOCKS_BASE;
+
+    const inventary = document.querySelector('#menu_inventary-all_container');
+    for (let block in BLOCKS_BASE) {
+      // console.log(block);
+      if (block != 'init') {
+        let blockDiv = `
+        <div class="menu_inventary-ceil" id="${block}_inventary">
+          <img class="menu_inventary-ceil-image" src="textures/inventary/${block}.png">
+        </div>`
+        inventary.insertAdjacentHTML('beforeEnd', blockDiv);
+
+
+
+
+
+      };
+    }
+  };
+
+
+  init();
+
+
+
+
+
+
+  const INTERFACE = {
+    init,
+  };
+
+  export {
+    INTERFACE
+  };
+</script>
+
+</html>
