@@ -41,7 +41,8 @@ const BLOCKS_BASE = {
 
 
 
-
+BLOCKS_BASE.camera = {
+};
 
 BLOCKS_BASE.test = {
   meshBase:'test',

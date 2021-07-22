@@ -57,6 +57,11 @@ function init() {
         <img id="current_image" src="textures/inventary/${MAIN.game.userActions.user.selectedBlock}.png">
       </div>
     </div>
+    <div id="staticCamera_container" class="blur_background" style="pointer-events:auto;display:none">
+      <div id="staticCamera_imagebox">
+        <img id="staticCamera_image" src="textures/inventary/cameraCross.png">
+      </div>
+    </div>
   </div>
   `
 
@@ -82,6 +87,9 @@ function init() {
     openMenu(true);
   });
 
+  document.querySelector('#staticCamera_container').addEventListener('click', function() {
+    enableStaticCamera(false);
+  });
 
 
 
@@ -124,8 +132,25 @@ function init() {
 
 
 
+function enableStaticCamera(bool){
+  const button = document.querySelector('#staticCamera_container');
+  if(bool){
+    button.style.display = 'flex';
+    MAIN.render.camera.fov = 80;
+    MAIN.render.camera.updateProjectionMatrix();
+  }else{
+    button.style.display = 'none';
+    MAIN.render.camera.fov = 10;
+    MAIN.render.camera.updateProjectionMatrix();
+    MAIN.game.userActions.user.staticCamera = false;
+    MAIN.game.userActions.updateCameraPosition(0,0);
+  };
+};
+
+
 const GAME_INTERFACE = {
   init,
+  enableStaticCamera,
 
 };
 

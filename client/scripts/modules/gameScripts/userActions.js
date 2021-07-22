@@ -8,6 +8,14 @@ import {BLOCK} from './block.js';
 const user = {
   selectedBlock:'grass',
   mouseOnButtons:false,
+
+
+  staticCamera:false,
+  staticCameraConfig:{
+    position:{x:0,y:0,z:0},
+    horizontalDeg:0,
+    targetY:45,
+  },
 }
 const mouse = {
   x: 0,
@@ -22,7 +30,6 @@ const mouse = {
   touchMoved: false,
   touchShake: 1,
 };
-
 
 
 const init = function() {
@@ -64,6 +71,32 @@ const init = function() {
         const checkedBlock = intersects[0].object.userData.block;
         if(checkedBlock.config.liquid){
           MAIN.game.world.map.removeBlock(checkedBlock);
+        };
+      };
+      return;
+    };
+    if(user.selectedBlock === 'camera'){
+      const mouseRaycast = new THREE.Vector2();
+      mouseRaycast.x = (x / window.innerWidth) * 2 - 1;
+      mouseRaycast.y = -(y / window.innerHeight) * 2 + 1;
+      raycaster.setFromCamera(mouseRaycast, MAIN.render.camera);
+      const intersects = raycaster.intersectObjects(MAIN.render.mouseBoxes.children);
+      if(intersects[0]){
+        for (let i = 0; i < intersects.length; i++) {
+          const checkedBlock = intersects[i].object.userData.block;
+          if (!checkedBlock.config.liquid) {
+            user.staticCamera = true;
+            console.log(checkedBlock)
+            user.staticCameraConfig.position.x = checkedBlock.position.x;
+            user.staticCameraConfig.position.y = checkedBlock.position.y+1.8;
+            user.staticCameraConfig.position.z = checkedBlock.position.z;
+
+            user.staticCameraConfig.horizontalDeg = MAIN.render.cameraPosition.deg;
+            user.staticCameraConfig.targetY = user.staticCameraConfig.position.y+1;
+            MAIN.interface.enableStaticCamera(true);
+            updateCameraPosition(0,0);
+            return;
+          };
         };
       };
       return;
@@ -233,11 +266,13 @@ const init = function() {
   });
 
   MOUSE_CEAPER.addEventListener('wheel', function(event) {
-    if (event.deltaY > 0) {
-      updateCameraZoom(true)
-    } else {
-      updateCameraZoom(false)
-    }
+    if(!user.staticCamera){
+      if (event.deltaY > 0) {
+        updateCameraZoom(true)
+      } else {
+        updateCameraZoom(false)
+      }
+    };
   });
 
 
@@ -340,20 +375,6 @@ const init = function() {
 
     //если касание в левой части экрана (10%), то это зумирование
     if(mouse.touchX < window.innerWidth * 0.1){
-      // function touchZoom(firstY){
-      //   if(mouse.touchDown ){
-      //     setTimeout(function(){
-      //       if(lastY<mouse.touchY){
-      //         updateCameraZoom(true)
-      //       }else{
-      //         updateCameraZoom(false)
-      //       }
-      //       touchZoom(firstY)
-      //     },10);
-      //   }
-      // }
-      // touchZoom(lastY);
-
       function touchZoom2(){
         if(mouse.touchDown){
           setTimeout(function(){
@@ -363,12 +384,9 @@ const init = function() {
           });
         };
       };
-      touchZoom2()
-
-
-
-
-
+      if(!user.staticCamera){
+        touchZoom2();
+      };
     }else{
       setTimeout(function() {
         mouse.touchCount = event.touches.length;
@@ -417,40 +435,7 @@ const init = function() {
 
 
 
-  function updateCameraPosition(xValue, yValue) {
-    //360-значит, что если проведет от начала экрана до конца, то камера прокрутится на 360
-    //xValue*100/window.innerWidth - на сколько сдвинулось: 1 -- от начала до конца экрана
-    const degChange = 360 * xValue / window.innerWidth * window.devicePixelRatio;
 
-    MAIN.render.cameraPosition.deg += degChange;
-    if (MAIN.render.cameraPosition.deg >= 360) {
-      MAIN.render.cameraPosition.deg -= 360;
-    }
-    if (MAIN.render.cameraPosition.deg < 0) {
-      MAIN.render.cameraPosition.deg += 360;
-    }
-    // console.log(MAIN.render.cameraPosition.deg);
-    //MAIN.render.cameraPosition.deg+90 --- +90 чтобы сделать 0 градусов на восток;
-    MAIN.render.camera.position.x = Math.sin((MAIN.render.cameraPosition.deg+90) * Math.PI / 180) * MAIN.render.cameraPosition.radius + 12;
-    MAIN.render.camera.position.z = Math.cos((MAIN.render.cameraPosition.deg+90) * Math.PI / 180) * MAIN.render.cameraPosition.radius + 12;
-
-
-
-    ;
-
-    const heighChange = 64 * (-yValue / window.innerWidth * window.devicePixelRatio);
-    MAIN.render.cameraPosition.heigh += heighChange;
-    if (MAIN.render.cameraPosition.heigh > 64 + MAIN.render.cameraPosition.cameraTargetHeigh) {
-      MAIN.render.cameraPosition.heigh = 64 + MAIN.render.cameraPosition.cameraTargetHeigh;
-    }
-    if (MAIN.render.cameraPosition.heigh < 0) {
-      MAIN.render.cameraPosition.heigh = 0;
-    }
-
-    MAIN.render.camera.position.y = MAIN.render.cameraPosition.heigh;
-
-    MAIN.render.camera.lookAt(MAIN.game.world.size.width/2 - 1, MAIN.render.cameraPosition.heigh - MAIN.render.cameraPosition.cameraTargetHeigh, MAIN.game.world.size.width/2 - 1);
-  };
 
   updateCameraPosition(0, 0);
 
@@ -486,13 +471,77 @@ const init = function() {
   }
 };
 
+function updateCameraPosition(xValue, yValue) {
+  if(user.staticCamera){
+    MAIN.render.camera.position.x = user.staticCameraConfig.position.x;
+    MAIN.render.camera.position.y = user.staticCameraConfig.position.y;
+    MAIN.render.camera.position.z = user.staticCameraConfig.position.z;
 
+    // xValue *=1;
+    const degChange = 360 * xValue / window.innerWidth * window.devicePixelRatio;
+
+    user.staticCameraConfig.horizontalDeg += degChange;
+    if (user.staticCameraConfig.horizontalDeg >= 360) {
+      user.staticCameraConfig.horizontalDeg -= 360;
+    }
+    if (user.staticCameraConfig.horizontalDeg < 0) {
+      user.staticCameraConfig.horizontalDeg += 360;
+    };
+
+    user.staticCameraConfig.targetY += yValue/10;
+
+    let targetX = Math.sin((user.staticCameraConfig.horizontalDeg) * Math.PI / 180) * 10 + MAIN.render.camera.position.x;
+    let targetZ = Math.cos((user.staticCameraConfig.horizontalDeg) * Math.PI / 180) * 10 + MAIN.render.camera.position.z;
+
+    MAIN.render.camera.lookAt(targetX,  user.staticCameraConfig.targetY,targetZ);
+      // MAIN.render.camera.rotation.y += yValue/1000;
+
+
+
+
+  }else{
+    //360-значит, что если проведет от начала экрана до конца, то камера прокрутится на 360
+    //xValue*100/window.innerWidth - на сколько сдвинулось: 1 -- от начала до конца экрана
+    const degChange = 360 * xValue / window.innerWidth * window.devicePixelRatio;
+
+    MAIN.render.cameraPosition.deg += degChange;
+    if (MAIN.render.cameraPosition.deg >= 360) {
+      MAIN.render.cameraPosition.deg -= 360;
+    }
+    if (MAIN.render.cameraPosition.deg < 0) {
+      MAIN.render.cameraPosition.deg += 360;
+    }
+    // console.log(MAIN.render.cameraPosition.deg);
+    //MAIN.render.cameraPosition.deg+90 --- +90 чтобы сделать 0 градусов на восток;
+    MAIN.render.camera.position.x = Math.sin((MAIN.render.cameraPosition.deg+90) * Math.PI / 180) * MAIN.render.cameraPosition.radius + 12;
+    MAIN.render.camera.position.z = Math.cos((MAIN.render.cameraPosition.deg+90) * Math.PI / 180) * MAIN.render.cameraPosition.radius + 12;
+
+
+
+    ;
+
+    const heighChange = 64 * (-yValue / window.innerWidth * window.devicePixelRatio);
+    MAIN.render.cameraPosition.heigh += heighChange;
+    if (MAIN.render.cameraPosition.heigh > 64 + MAIN.render.cameraPosition.cameraTargetHeigh) {
+      MAIN.render.cameraPosition.heigh = 64 + MAIN.render.cameraPosition.cameraTargetHeigh;
+    }
+    if (MAIN.render.cameraPosition.heigh < 0) {
+      MAIN.render.cameraPosition.heigh = 0;
+    }
+
+    MAIN.render.camera.position.y = MAIN.render.cameraPosition.heigh;
+
+    MAIN.render.camera.lookAt(MAIN.game.world.size.width/2 - 1, MAIN.render.cameraPosition.heigh - MAIN.render.cameraPosition.cameraTargetHeigh, MAIN.game.world.size.width/2 - 1);
+  };
+
+};
 
 
 const USER_ACTIONS = {
   mouse,
   init,
   user,
+  updateCameraPosition,
 };
 
 export {

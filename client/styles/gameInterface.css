@@ -3,6 +3,7 @@
   width: 100vw;
   position: fixed;
   display: flex;
+  justify-content: center;
   bottom: 10px;
 }
 
@@ -10,8 +11,8 @@
   width: 48px;
   height: 48px;
   background-color: rgba(0, 0, 0, 0.2);
-  margin: auto;
   border-radius: 10px;
+  margin: 10px;
   display: flex;
 }
 
@@ -27,6 +28,31 @@
 }
 
 #current_image {
+  width: 100%;
+  height: 100%;
+}
+
+#staticCamera_container {
+  width: 48px;
+  height: 48px;
+  background-color: rgba(0, 0, 0, 0.2);
+  margin: 10px;
+  border-radius: 10px;
+  display: flex;
+}
+
+#staticCamera_container:hover {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+
+#staticCamera_imagebox{
+  width: 32px;
+  height: 32px;
+  margin: auto;
+}
+
+#staticCamera_image{
   width: 100%;
   height: 100%;
 }
@@ -221,6 +247,18 @@
     height: 96px;
   }
 
+  #staticCamera_container {
+    width: 10vw;
+    height: 10vw;
+    display: flex;
+  }
+  #staticCamera_imagebox {
+    width: 8vw;
+    height: 8vw;
+    margin: auto;
+  }
+
+
   #menu_container {
     width: 90vw;
     height: 60vh;
@@ -265,6 +303,17 @@
   #current_imagebox {
     width: 10vw;
     height: 10vw;
+  }
+
+  #staticCamera_container {
+    width: 10vw;
+    height: 10vw;
+    display: flex;
+  }
+  #staticCamera_imagebox {
+    width: 8vw;
+    height: 8vw;
+    margin: auto;
   }
 
 
@@ -317,6 +366,17 @@
     height: 10vw;
   }
 
+  #staticCamera_container {
+    width: 10vw;
+    height: 10vw;
+    display: flex;
+  }
+  #staticCamera_imagebox {
+    width: 8vw;
+    height: 8vw;
+    margin: auto;
+  }
+
   #menu_container {
     width: 90vw;
     height: 60vh;
@@ -359,6 +419,19 @@
   #current_imagebox {
     width: 48px;
     height: 48px;
+  }
+
+
+  #staticCamera_container {
+    width: 12vh;
+    height: 12vh;
+    display: flex;
+  }
+
+  #staticCamera_imagebox {
+    width: 10vh;
+    height: 10vh;
+    margin: auto;
   }
 
   #menu_container {
@@ -408,6 +481,21 @@
     width: 10vh;
     height: 10vh;
   }
+
+  #staticCamera_container {
+    width: 12vh;
+    height: 12vh;
+    display: flex;
+  }
+
+  #staticCamera_imagebox {
+    width: 10vh;
+    height: 10vh;
+    margin: auto;
+  }
+
+
+
 
   #menu_container {
     width: 70vw;
