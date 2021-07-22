@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>all game blocks</title>
+    <link rel="stylesheet" href="styles/common.css">
+
+    <link rel="stylesheet" href="styles/gameInterface.css">
+  </head>
+  <body style="position:fixed;width:100vw;height:100vh;margin:0">
+    <section id="render" class="fullscreen">
+
+    </section>
+    <!-- <canvas id="canvas" style="position:fixed;left:50vw;border:1px solid black" width="16" height="16"></canvas> -->
+
+  </body>
+  <script type="module">
+    import * as THREE from './ThreeJsLib/build/three.module.js';
+    import {MAIN} from './scripts/main.js';
+    import {TEXTURES_BASE} from './scripts/modules/bases/textures_base.js';
+    import {MESHES_BASE} from './scripts/modules/bases/meshes_base.js';
+    import {BLOCKS_BASE} from './scripts/modules/bases/blocks_base.js';
+    import {OrbitControls} from './ThreeJsLib/examples/jsm/controls/OrbitControls.js';
+    MAIN.render.init();
+
+    TEXTURES_BASE.init().then(result => {
+      MESHES_BASE.init();
+      BLOCKS_BASE.init();
+      // const canvas = document.querySelector('#canvas');
+      // const ctx = canvas.getContext('2d');
+      // ctx.imageSmoothingEnabled = false;
+      // ctx.filter = 'opacity(100%)';
+      // ctx.drawImage(MESHES_BASE.oak_leaves.M[0].map.image,0,0,16,16);
+
+
+
+
+
+
+
+
+
+
+
+      const geometry = new THREE.BoxGeometry(1,1,1);
+      const vertexShadow = [];
+
+      for(let i = 0;i<geometry.attributes.position.count;i++){
+        vertexShadow.push(1,1,1);
+      }
+      const vertexShadow32 = new Float32Array(
+      	vertexShadow
+       );
+
+      geometry.setAttribute( 'vertexShadow', new THREE.BufferAttribute( vertexShadow32, 3 ) );
+
+
+
+      geometry.attributes.vertexShadow.array[0] = 0;
+      geometry.attributes.vertexShadow.array[1] = 0;
+      geometry.attributes.vertexShadow.array[2] = 0;
+
+      // geometry.attributes.vertexShadow.array[3] = 0;
+      // geometry.attributes.vertexShadow.array[4] = 0;
+      // geometry.attributes.vertexShadow.array[5] = 0;
+
+      // geometry.attributes.vertexShadow.array[6] = 0;
+      // geometry.attributes.vertexShadow.array[7] = 0;
+      // geometry.attributes.vertexShadow.array[8] = 0;
+      //
+      // geometry.attributes.vertexShadow.array[9] = 0;
+      // geometry.attributes.vertexShadow.array[10] = 0;
+      // geometry.attributes.vertexShadow.array[11] = 0;
+      //
+      // geometry.attributes.vertexShadow.array[12] = 0;
+      // geometry.attributes.vertexShadow.array[13] = 0;
+      // geometry.attributes.vertexShadow.array[14] = 0;
+
+
+      // console.log(geometry)
+
+
+
+
+      const material = MESHES_BASE.getMeshMaterial('ground');
+      const mesh = new THREE.Mesh(geometry,material);
+      MAIN.render.scene.add(mesh);
+
+
+      material[0].onBeforeCompile = function(shader){
+
+        const token_vs = `#include <clipping_planes_pars_vertex>`
+        const vs = `
+        #include <clipping_planes_pars_vertex>
+        attribute  vec3 vertexShadow;
+        varying vec3 vShadow;
+        `
+
+        shader.vertexShader = shader.vertexShader.replace(token_vs,vs);
+        const token_vs_2 = `#include <begin_vertex>`
+
+        const vs_2 = `
+        vShadow = vertexShadow;
+        #include <begin_vertex>`
+        shader.vertexShader = shader.vertexShader.replace(token_vs_2,vs_2);
+
+
+
+        const token_fs = `#include <clipping_planes_pars_fragment>`;
+        const fs = `
+          #include <clipping_planes_pars_fragment>
+          varying vec3 vShadow;`
+        shader.fragmentShader = shader.fragmentShader.replace(token_fs,fs);
+
+        const token_fs_2 = `gl_FragColor = vec4( outgoingLight, diffuseColor.a );`;
+        const fs_2 = `gl_FragColor = vec4( outgoingLight, diffuseColor.a )*vec4(vShadow,1);`
+        shader.fragmentShader = shader.fragmentShader.replace(token_fs_2,fs_2);
+
+      };
+
+
+
+      setTimeout(function(){
+        geometry.attributes.vertexShadow.array[0] = 2;
+        geometry.attributes.vertexShadow.array[1] = 0;
+        geometry.attributes.vertexShadow.array[2] = 0;
+        // geometry.attributes.vertexShadow.needsUpdate = true;
+
+        console.log('here')
+      },1000)
+
+
+      const controls = new OrbitControls( MAIN.render.camera, MAIN.render.renderer.domElement );
+      MAIN.render.camera.position.set(10,10,10)
+      MAIN.render.camera.lookAt(0,0,0);
+
+      MAIN.render.render();
+
+    });
+
+
+
+
+
+  </script>
+</html>

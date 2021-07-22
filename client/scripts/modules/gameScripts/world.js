@@ -161,15 +161,43 @@ function mapCeil(x, y, z) {
     ];
 
     this.crossNeighbors = [null, null, null, null, null, null];
-    this.crossNeighbors.update = function(){
+    this.crossNeighbors.update = function(params){
 
-      ceil.crossNeighbors.forEach((neighbour, i) => {
-        if(neighbour){
-          if(neighbour.contant){
-            neighbour.contant.update();
+      if(!params){
+        ceil.closeNeighbors.forEach((neighbour, i) => {
+          if(neighbour){
+            if(neighbour.contant){
+              neighbour.contant.update();
+            };
           };
-        };
-      });
+        });
+      }else{
+        ceil.closeNeighbors.forEach((neighbour, i) => {
+          if(neighbour){
+            if(neighbour.contant){
+              if(params.geometry){
+                neighbour.contant.updateGeometry();
+              }
+              if(params.liquid){
+                neighbour.contant.updateLiquidPhysics();
+              }
+
+              if(params.faces){
+                neighbour.contant.updateInvisibleFaces();
+              }
+              if(params.shadow){
+                neighbour.contant.updateShadow();
+              }
+              if(params.gravity){
+                neighbour.contant.updateGravity();
+              };
+              if (neighbour.contant.config.uniqueUpdate) {
+                neighbour.contant.config.uniqueUpdateFunction(this);
+              };
+            };
+          };
+        });
+      };
 
     }
     crossNeighborsIndex.forEach((item, i) => {
@@ -234,14 +262,42 @@ function mapCeil(x, y, z) {
 
   ceil.findCloseNeighbors = function() {
     this.closeNeighbors = this.findAroundNeighbors(1);
-    this.closeNeighbors.update = function(){
-      ceil.closeNeighbors.forEach((neighbour, i) => {
-        if(neighbour){
-          if(neighbour.contant){
-            neighbour.contant.update();
+    this.closeNeighbors.update = function(params){
+      if(!params){
+        ceil.closeNeighbors.forEach((neighbour, i) => {
+          if(neighbour){
+            if(neighbour.contant){
+              neighbour.contant.update();
+            };
           };
-        };
-      });
+        });
+      }else{
+        ceil.closeNeighbors.forEach((neighbour, i) => {
+          if(neighbour){
+            if(neighbour.contant){
+              if(params.geometry){
+                neighbour.contant.updateGeometry();
+              }
+              if(params.liquid){
+                neighbour.contant.updateLiquidPhysics();
+              }
+
+              if(params.faces){
+                neighbour.contant.updateInvisibleFaces();
+              }
+              if(params.shadow){
+                neighbour.contant.updateShadow();
+              }
+              if(params.gravity){
+                neighbour.contant.updateGravity();
+              };
+              if (neighbour.contant.config.uniqueUpdate) {
+                neighbour.contant.config.uniqueUpdateFunction(this);
+              };
+            };
+          };
+        });
+      };
     };
   };
 
@@ -608,21 +664,21 @@ async function recalculateAmbientLight() {
   });
 
   let blockIndex = -1;
-  async function updateBlockTexture() {
+  async function updateBlockShadow() {
     blockIndex++;
     if (blockIndex < blocks.length) {
       if (blocks[blockIndex].meshAddedToScene) {
         blocks[blockIndex].updateShadow().then(function() {
-          return updateBlockTexture();
+          return updateBlockShadow();
         });
       } else {
-        return updateBlockTexture();
+        return updateBlockShadow();
       };
     } else {
       return true;
     };
   };
-  return updateBlockTexture();
+  return updateBlockShadow();
 };
 
 function generateLandscape(seed) {
