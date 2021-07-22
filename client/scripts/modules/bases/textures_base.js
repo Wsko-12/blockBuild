@@ -1,6 +1,7 @@
 const textureFolder = '../../../textures/';
 import * as THREE from '../../../ThreeJsLib/build/three.module.js';
 const textures = [
+
   {
     textureName:'test',
     file:'test.png',
