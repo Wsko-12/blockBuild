@@ -99,7 +99,6 @@ function get(name) {
   };
 
   self.mesh = MESHES_BASE.getMesh(name);
-  self.shadowsDate = {}
   self.meshAddedToScene = false;
   self.addMeshToScene = function() {
     //если полная геометрия, то сдвиг не нужен
@@ -131,10 +130,7 @@ function get(name) {
     MAIN.render.blocks.add(this.mesh);
     this.meshAddedToScene = true;
   };
-
-
   self.removeMeshFromScene = function() {
-
     if (this.meshAddedToScene) {
       this.meshAddedToScene = false;
       this.mouseBox.parent.remove(this.mouseBox);
@@ -170,7 +166,7 @@ function get(name) {
 
 
 
-        if(!this.config.lightBlock){
+        if (!this.config.lightBlock) {
           for (let corner = 0; corner < 4; corner++) {
             let neighbour_1_indx, neighbour_2_indx, neighbour_corner_indx;
             switch (corner) {
@@ -200,15 +196,15 @@ function get(name) {
               if (neighbours[neighbour_1_indx].contant && neighbours[neighbour_2_indx].contant) {
                 if (neighbours[neighbour_1_indx].contant.config.transparent === 0 && neighbours[neighbour_2_indx].contant.config.transparent === 0) {
                   //(*3) чтобы тень не была такой явной
-                  sideCorners[corner] = Math.round((neighboursLightValues[8]*3 + neighboursLightValues[neighbour_1_indx] + neighboursLightValues[neighbour_2_indx]) / 5);
+                  sideCorners[corner] = Math.round((neighboursLightValues[8] * 3 + neighboursLightValues[neighbour_1_indx] + neighboursLightValues[neighbour_2_indx]) / 5);
                   continue;
                 };
               };
             };
             //(*3) чтобы тень не была такой явной
-            sideCorners[corner] = Math.round((neighboursLightValues[8]*3 + neighboursLightValues[neighbour_1_indx] + neighboursLightValues[neighbour_2_indx] + neighboursLightValues[neighbour_corner_indx]) / 6);
+            sideCorners[corner] = Math.round((neighboursLightValues[8] * 3 + neighboursLightValues[neighbour_1_indx] + neighboursLightValues[neighbour_2_indx] + neighboursLightValues[neighbour_corner_indx]) / 6);
           };
-        }else{
+        } else {
           //if (this.config.lightBlock)
           //для светящихся блоков не надо угловые тени
           sideCorners = [15, 15, 15, 15];
