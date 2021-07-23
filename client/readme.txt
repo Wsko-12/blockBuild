@@ -1,2 +1,10 @@
 new:
-  static camera block
+  snow texture bugFix
+  shadow in cave bugFix
+
+
+
+
+
+plan:
+move camera

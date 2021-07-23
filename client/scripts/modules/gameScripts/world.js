@@ -515,7 +515,6 @@ function mapCeil(x, y, z) {
 function updateAmbientLight(helpers) {
   // if(!map.onUpdateAmbientLight){
   // map.onUpdateAmbientLight = true;
-  const updateID = Math.random();
   const airBlocks = [];
   const blocks = [];
 
@@ -524,7 +523,6 @@ function updateAmbientLight(helpers) {
       let lightValue = 15;
       for (let y = size.height - 1; y >= 0; y--) {
         const mapCeil = map[x][z][y];
-        mapCeil.lightUpdateId = updateID;
         if (mapCeil.contant != null) {
           if (mapCeil.contant.config.transparent != 0) {
             lightValue -= mapCeil.contant.config.lightRefraction;
@@ -597,7 +595,6 @@ function updateWaterGeometry(){
 }
 async function recalculateAmbientLight() {
 
-  const updateID = Math.random();
   const airBlocks = [];
 
   for (let x = 0; x < size.width; x++) {
@@ -605,7 +602,6 @@ async function recalculateAmbientLight() {
       let lightValue = 15;
       for (let y = size.height - 1; y >= 0; y--) {
         const mapCeil = map[x][z][y];
-        mapCeil.lightUpdateId = updateID;
         if (mapCeil.contant != null) {
           if (mapCeil.contant.config.transparent != 0) {
             lightValue -= mapCeil.contant.config.lightRefraction;

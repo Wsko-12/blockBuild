@@ -51,7 +51,7 @@ function updateLiquidBlockBottomGeometry(block, value) {
   const standartGeometry = [...geometry.attributes.position.array];
 
 
-  if(block.mapCeil.crossNeighbors[3]){
+  if (block.mapCeil.crossNeighbors[3]) {
     if (block.mapCeil.crossNeighbors[3].contant) {
       if (block.mapCeil.crossNeighbors[3].contant.config.liquid) {
         if (block.mapCeil.crossNeighbors[3].contant.fluidity === 8) {
@@ -91,9 +91,15 @@ function get(name) {
 
   self.config = BLOCKS_BASE[name];
 
+  self.setPosition = function(position) {
+    this.position = position;
+  };
+  self.rotateBlock = function(rotationConfig) {
+    this.rotationConfig = rotationConfig;
+  };
+
   self.mesh = MESHES_BASE.getMesh(name);
   self.shadowsDate = {}
-
   self.meshAddedToScene = false;
   self.addMeshToScene = function() {
     //если полная геометрия, то сдвиг не нужен
@@ -136,200 +142,96 @@ function get(name) {
     };
   };
 
-  self.setPosition = function(position) {
-    this.position = position;
-  };
 
 
-
-
-
-  // self.drawSideTexture = async function(side, image, lightValue, cornersValues, sidesValue) {
-  //
-  //   function draw() {
-  //     return true;
-  //   };
-  //   draw();
-  // };
-
-
-
-
-
-
-  //
-  // self.updateShadow = async function() {
-  //   // //когда эта функция вернет true, перейдет к другому блоку
-  //   // const that = this;
-  //   // let sideIndex = -1;
-  //   // //сразу прокручиваем текстуру;
-  //   // const originalMaterial = that.rotateSidesTextures();
-  //   // const mapCeil = that.mapCeil;
-  //   // if (this.config.transparent === 0) {
-  //   //   return checkSide();
-  //   // }
-  //   // if (this.config.transparent === 2) {
-  //   //   return checkSide();
-  //   // }
-  //   //
-  //   // function checkSide() {
-  //   //   sideIndex++;
-  //   //   const side = that.mesh.material[sideIndex];
-  //   //   if (side) {
-  //   //     const sideImage = originalMaterial[sideIndex].map.image;
-  //   //     //затемнения углов
-  //   //     const cornersValues = [0, 0, 0, 0];
-  //   //     const sidesValue = [0, 0, 0, 0]; //top, right, bottom, left
-  //   //
-  //   //     let sideGlobalLightValue = 0;
-  //   //
-  //   //
-  //   //     mapCeil.neighborsBySide[sideIndex].forEach((neighbor, neighborIndex) => {
-  //   //       //если не вышли за пределы карты
-  //   //       if (neighbor != null) {
-  //   //         //центр,его не должно быть, но в будущем для прозрачных блоков нужен
-  //   //         if (neighborIndex === 8) {
-  //   //           sideGlobalLightValue = neighbor.lightValue;
-  //   //           if (that.config.transparent === 2) {
-  //   //             //чтобы работал alphaClip, нельзя чтобы градиент рисовался с alpha = 1
-  //   //             //поэтому этот блок смотрит на свой lightValue, если соседский блок непрозрачный
-  //   //             if (sideGlobalLightValue === 0) {
-  //   //               sideGlobalLightValue = that.mapCeil.lightValue;
-  //   //             };
-  //   //           };
-  //   //         };
-  //   //         if (mapCeil.neighborsBySide[sideIndex][neighborIndex].contant) {
-  //   //           if (mapCeil.neighborsBySide[sideIndex][neighborIndex].contant.config.transparent === 0) {
-  //   //             if (!mapCeil.neighborsBySide[sideIndex][neighborIndex].contant.config.lightBlock) {
-  //   //               function setCornersValue() {
-  //   //                 //верхний левый
-  //   //                 if (neighborIndex === 7 || neighborIndex === 0 || neighborIndex === 1) {
-  //   //                   cornersValues[0]++;
-  //   //                 };
-  //   //                 //верхний правый
-  //   //                 if (neighborIndex === 1 || neighborIndex === 2 || neighborIndex === 3) {
-  //   //                   cornersValues[1]++;
-  //   //                 };
-  //   //
-  //   //                 //нижний правый
-  //   //                 if (neighborIndex === 3 || neighborIndex === 4 || neighborIndex === 5) {
-  //   //                   cornersValues[2]++;
-  //   //                 };
-  //   //                 //нижний левый
-  //   //                 if (neighborIndex === 5 || neighborIndex === 6 || neighborIndex === 7) {
-  //   //                   cornersValues[3]++;
-  //   //                 };
-  //   //               };
-  //   //               if (mapCeil.neighborsBySide[sideIndex][neighborIndex].contant.config.gravity) {
-  //   //                 if (!mapCeil.neighborsBySide[sideIndex][neighborIndex].contant.onGravityUpdate) {
-  //   //                   setCornersValue();
-  //   //                 };
-  //   //               } else {
-  //   //                 setCornersValue();
-  //   //               };
-  //   //             };
-  //   //           };
-  //   //         };
-  //   //
-  //   //         // постепенное затемнение
-  //   //         // нужно найти с каких сторон блок воздуха темнее
-  //   //         if (neighbor.lightValue < mapCeil.neighborsBySide[sideIndex][8].lightValue) {
-  //   //           if (neighborIndex === 1) {
-  //   //             sidesValue[0] = 1;
-  //   //           };
-  //   //           if (neighborIndex === 3) {
-  //   //             sidesValue[1] = 1;
-  //   //           };
-  //   //           if (neighborIndex === 5) {
-  //   //             sidesValue[2] = 1;
-  //   //           };
-  //   //           if (neighborIndex === 7) {
-  //   //             sidesValue[3] = 1;
-  //   //           };
-  //   //         };
-  //   //       } else {
-  //   //         //скраю карты
-  //   //         sideGlobalLightValue = 2;
-  //   //       };
-  //   //     });
-  //   //     that.drawSideTexture(side, sideImage, sideGlobalLightValue, cornersValues, sidesValue).then(function() {
-  //   //       return checkSide();
-  //   //     });
-  //   //   } else {
-  //   //     if (sideIndex === 6) {
-  //   //       return true;
-  //   //     } else {
-  //   //       return checkSide();
-  //   //     };
-  //   //   };
-  //   // };
-  //
-  //   return true;
-  // };
-
-  self.updateShadow = async function(){
-    if(this.mesh.geometry.attributes.vertexShadow){
+  self.updateShadow = async function() {
+    if (this.mesh.geometry.attributes.vertexShadow) {
       const mapCeil = this.mapCeil;
-
-
       const allCorners = []
-      for(let sideIndex = 0;sideIndex<6;sideIndex++){
+      for (let sideIndex = 0; sideIndex < 6; sideIndex++) {
         let sideCorners = [];
         const neighbours = mapCeil.neighborsBySide[sideIndex];
 
-          //corners:
-          //0   1
-          //2   3;
-          sideCorners = [0,0,0,0];
+        //corners:
+        //0   1
+        //2   3;
+        sideCorners = [0, 0, 0, 0];
 
         const neighboursLightValues = [];
         neighbours.forEach((neighbour, i) => {
-          if(neighbour){
+          if (neighbour) {
             neighboursLightValues.push(neighbour.lightValue)
-          }else{
+          } else {
             //тень для блоков у края карты
             neighboursLightValues.push(5);
           }
         });
-        sideCorners[0] = Math.round((neighboursLightValues[8]*3 + neighboursLightValues[7] +neighboursLightValues[0]+neighboursLightValues[1])/6);
-        sideCorners[1] = Math.round((neighboursLightValues[8]*3 + neighboursLightValues[1] +neighboursLightValues[2]+neighboursLightValues[3])/6);
-        sideCorners[2] = Math.round((neighboursLightValues[8]*3 + neighboursLightValues[5] +neighboursLightValues[6]+neighboursLightValues[7])/6);
-        sideCorners[3] = Math.round((neighboursLightValues[8]*3 + neighboursLightValues[3] +neighboursLightValues[4]+neighboursLightValues[5])/6);
 
-        // sideCorners[0] = neighboursLightValues[8];
-        // sideCorners[1] = neighboursLightValues[8];
-        // sideCorners[2] = neighboursLightValues[8];
-        // sideCorners[3] =  neighboursLightValues[8];
 
-          if(this.config.lightBlock){
-            sideCorners = [15,15,15,15];
+
+
+        if(!this.config.lightBlock){
+          for (let corner = 0; corner < 4; corner++) {
+            let neighbour_1_indx, neighbour_2_indx, neighbour_corner_indx;
+            switch (corner) {
+              case 0:
+                neighbour_1_indx = 7;
+                neighbour_2_indx = 1;
+                neighbour_corner_indx = 0;
+                break;
+              case 1:
+                neighbour_1_indx = 1;
+                neighbour_2_indx = 3;
+                neighbour_corner_indx = 2;
+                break;
+              case 2:
+                neighbour_1_indx = 5;
+                neighbour_2_indx = 7;
+                neighbour_corner_indx = 6;
+                break;
+              case 3:
+                neighbour_1_indx = 3;
+                neighbour_2_indx = 5;
+                neighbour_corner_indx = 4;
+                break;
+            };
+            // если два соседа по краям, то не учитывать углового
+            if (neighbours[neighbour_1_indx] && neighbours[neighbour_2_indx]) {
+              if (neighbours[neighbour_1_indx].contant && neighbours[neighbour_2_indx].contant) {
+                if (neighbours[neighbour_1_indx].contant.config.transparent === 0 && neighbours[neighbour_2_indx].contant.config.transparent === 0) {
+                  //(*3) чтобы тень не была такой явной
+                  sideCorners[corner] = Math.round((neighboursLightValues[8]*3 + neighboursLightValues[neighbour_1_indx] + neighboursLightValues[neighbour_2_indx]) / 5);
+                  continue;
+                };
+              };
+            };
+            //(*3) чтобы тень не была такой явной
+            sideCorners[corner] = Math.round((neighboursLightValues[8]*3 + neighboursLightValues[neighbour_1_indx] + neighboursLightValues[neighbour_2_indx] + neighboursLightValues[neighbour_corner_indx]) / 6);
           };
+        }else{
+          //if (this.config.lightBlock)
+          //для светящихся блоков не надо угловые тени
+          sideCorners = [15, 15, 15, 15];
+        };
 
-          sideCorners.forEach((lightValue, i) => {
-            allCorners.push(lightValue)
-          });
-
+        sideCorners.forEach((lightValue, i) => {
+          allCorners.push(lightValue)
+        });
       };
-
 
       allCorners.forEach((value, i) => {
         //обрубаем лишние запятые и нормализируем
-        value = Math.round(value/15*100)/100;
+        value = Math.round(value / 15 * 100) / 100;
         const array = this.mesh.geometry.attributes.vertexShadow.array;
-        array[i*3] = value;
-        array[i*3+1] = value;
-        array[i*3+2] = value;
+        array[i * 3] = value;
+        array[i * 3 + 1] = value;
+        array[i * 3 + 2] = value;
       });
       this.mesh.geometry.attributes.vertexShadow.needsUpdate = true;
     };
 
-
-
     return true;
   };
-
-
-
 
   self.updateInvisibleFaces = function() {
     this.mesh.material = this.rotateSidesTextures();
@@ -474,9 +376,9 @@ function get(name) {
                 this.gravityReplacedBlock.addMeshToScene();
               };
             };
-            if(nextGravityReplacedBlock){
-              if(nextGravityReplacedBlock.mapCeil.crossNeighbors[2]){
-                if(nextGravityReplacedBlock.mapCeil.crossNeighbors[2].contant === null){
+            if (nextGravityReplacedBlock) {
+              if (nextGravityReplacedBlock.mapCeil.crossNeighbors[2]) {
+                if (nextGravityReplacedBlock.mapCeil.crossNeighbors[2].contant === null) {
                   nextGravityReplacedBlock.pushLiqudParticles();
                 };
               };
@@ -517,7 +419,11 @@ function get(name) {
               this.updatedGravityPosition = false;
               this.mapCeilBeforeGravityUpdate_updated = false;
               MAIN.game.world.recalculateAmbientLight();
-              this.mapCeil.closeNeighbors.update({shadow:true,faces:true,liquid:true});
+              this.mapCeil.closeNeighbors.update({
+                shadow: true,
+                faces: true,
+                liquid: true
+              });
               this.onGravityUpdate = false;
               this.update();
             };
@@ -527,7 +433,11 @@ function get(name) {
             this.updatedGravityPosition = false;
             this.mapCeilBeforeGravityUpdate_updated = false;
             MAIN.game.world.recalculateAmbientLight();
-            this.mapCeil.closeNeighbors.update({shadow:true,faces:true,liquid:true});
+            this.mapCeil.closeNeighbors.update({
+              shadow: true,
+              faces: true,
+              liquid: true
+            });
             this.onGravityUpdate = false;
             this.update();
           };
@@ -535,8 +445,6 @@ function get(name) {
       };
     };
   };
-
-
 
   self.removeLiquidBlock = function() {
     if (this.config.liquid) {
@@ -937,7 +845,6 @@ function get(name) {
 
 
   };
-
   self.updateLiquidPhysics = async function() {
 
     if (this.config.liquid) {
@@ -1755,13 +1662,6 @@ function get(name) {
 
   };
 
-
-
-
-
-
-
-
   self.updateGeometry = function() {
     const that = this;
     if (this.config.liquid) {
@@ -2334,7 +2234,6 @@ function get(name) {
     };
   };
 
-
   self.rotateSidesTextures = function() {
     let material = MESHES_BASE.getMeshMaterial(this.name);
 
@@ -2429,9 +2328,7 @@ function get(name) {
     };
   };
 
-  self.rotateBlock = function(rotationConfig) {
-    this.rotationConfig = rotationConfig;
-  };
+
 
 
 
@@ -2556,59 +2453,62 @@ function get(name) {
     };
 
   };
-  self.pushLiqudParticles = function(){
-    if(this.config.liquid){
+  self.pushLiqudParticles = function() {
+    if (this.config.liquid) {
       let particleColor;
-      if(this.config.liquidType === 'water'){
+      if (this.config.liquidType === 'water') {
         particleColor = 0x34a6e7;
       };
-      if(this.config.liquidType === 'lava'){
-        particleColor =0xff2e00;
+      if (this.config.liquidType === 'lava') {
+        particleColor = 0xff2e00;
       };
       //creating
       const geometry = new THREE.BufferGeometry();
-			const vertices = [];
+      const vertices = [];
       const particles = [];
 
-      for ( let i = 0; i < 10; i ++ ) {
+      for (let i = 0; i < 10; i++) {
 
-					const x = this.mapCeil.position.x +0.5- Math.random();
-					const y = this.mapCeil.position.y + 1;
-					const z = this.mapCeil.position.z+0.5- Math.random();
+        const x = this.mapCeil.position.x + 0.5 - Math.random();
+        const y = this.mapCeil.position.y + 1;
+        const z = this.mapCeil.position.z + 0.5 - Math.random();
 
-					vertices.push( x, y, z );
+        vertices.push(x, y, z);
 
-          const point = {
-            x,y,z,
-            deg: Math.round(Math.random()*360),
-          };
-          particles.push(point);
-			};
+        const point = {
+          x,
+          y,
+          z,
+          deg: Math.round(Math.random() * 360),
+        };
+        particles.push(point);
+      };
 
 
-      geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( vertices, 3 ) );
+      geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
 
       const material = new THREE.PointsMaterial({
-          color:particleColor,
-          size:1,
-        });
-      const cloud = new THREE.Points(geometry,material);
+        color: particleColor,
+        size: 1,
+      });
+      const cloud = new THREE.Points(geometry, material);
       const array = cloud.geometry.attributes.position.array;
       MAIN.render.scene.add(cloud);
 
       let count = 0;
-      function play(){
+
+      function play() {
         count++;
         particles.forEach((point, i) => {
-            point.x += Math.sin(point.deg * Math.PI / 180) * count/500;
-            point.z += Math.cos(point.deg * Math.PI / 180) * count/500;
+          point.x += Math.sin(point.deg * Math.PI / 180) * count / 500;
+          point.z += Math.cos(point.deg * Math.PI / 180) * count / 500;
 
 
-            point.y += Math.sin(25/count * 3)/3;
+          point.y += Math.sin(25 / count * 3) / 3;
 
-            array[i*3] = point.x;
-            array[i*3+1] = point.y;
-            array[i*3+2] = point.z;
+          array[i * 3] = point.x;
+          array[i * 3 + 1] = point.y;
+          array[i * 3 + 2] = point.z;
 
         });
 
@@ -2618,9 +2518,9 @@ function get(name) {
 
 
 
-        if(count<20){
+        if (count < 20) {
           requestAnimationFrame(play);
-        }else{
+        } else {
           MAIN.render.scene.remove(cloud);
         };
       };
