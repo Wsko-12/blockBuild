@@ -102,16 +102,13 @@ const BOXgeometry =  loader.parse(geomJSON);
 
       let startIndex = 0;
       let countIndex = 0;
-      for(let x = 0;x<256;x++){
-        for(let z = 0;z<256;z++){
-          if(z === 5 && x=== 5){
-          //
-          }else{
+      for(let x = 0;x<32;x++){
+        for(let z = 0;z<32;z++){
+          for(let y =0;y<32;y++){
             const geometry = loader.parse(geomJSON);
             const mesh_1 = new THREE.Mesh(geometry,MESHES_BASE.getMesh('grass').material[0])
             meshes.push(mesh_1);
-            mesh_1.geometry.translate(x+0.5,0.5,z+0.5);
-
+            mesh_1.geometry.translate(x+0.5,y+0.5,z+0.5);
             geometries.push(mesh_1.geometry.clone());
           };
         };
@@ -129,7 +126,7 @@ const BOXgeometry =  loader.parse(geomJSON);
 
 
 
-       
+
 
        document.body.addEventListener('click',function(e){
            const raycaster = new THREE.Raycaster();
@@ -143,30 +140,158 @@ const BOXgeometry =  loader.parse(geomJSON);
 
 
 
+           console.log(normalizedCords)
 
-
-           const meshIndex = normalizedCords.z*100 + normalizedCords.x;
+           const meshIndex = normalizedCords.x + normalizedCords.z + normalizedCords.y;
 
            let startIndex = 0;
            let uvStartIndex = 0;
            function findStartIndex(){
-             console.time("findStartIndex");
+             // console.time("findStartIndex");
              for(let i = 0;i<meshIndex;i++){
                startIndex += meshes[i].geometry.attributes.position.count*meshes[i].geometry.attributes.position.itemSize;
                uvStartIndex += meshes[i].geometry.attributes.uv.count*meshes[i].geometry.attributes.uv.itemSize;
              };
-             console.timeEnd("findStartIndex");
+             // console.timeEnd("findStartIndex");
 
            };
            findStartIndex();
 
-           let new_position_array,new_normal_array,new_uv_array;
+           let new_position_array = [];
+           let new_normal_array = [];
+           let new_uv_array = [];
 
            function copyArrays(){
              console.time("copyArrays");
-             new_position_array = Array.from(chunk.geometry.attributes.position.array);
-             new_normal_array = Array.from(chunk.geometry.attributes.normal.array);
-             new_uv_array = Array.from(chunk.geometry.attributes.uv.array);
+
+             //~2300ms
+             // new_position_array = [...chunk.geometry.attributes.position.array];
+             // new_normal_array = [...chunk.geometry.attributes.normal.array];
+             // new_uv_array = [...chunk.geometry.attributes.uv.array];
+
+
+
+
+             // ~350ms
+             // let posLength = chunk.geometry.attributes.position.array.length;
+             // let posIndex = 0
+             // while (posIndex < posLength) {
+             //     new_position_array.push(chunk.geometry.attributes.position.array[posIndex]);
+             //     posIndex++;
+             //  };
+             //
+             //  let normLength = chunk.geometry.attributes.normal.array.length;
+             //  let normIndex = 0;
+             //  while (normIndex < normLength) {
+             //      new_normal_array.push(chunk.geometry.attributes.normal.array[normIndex]);
+             //      normIndex++;
+             //   };
+             //
+             //   let uvLength = chunk.geometry.attributes.uv.array.length;
+             //   let uvIndex = 0;
+             //   while (uvIndex < uvLength) {
+             //       new_uv_array.push(chunk.geometry.attributes.uv.array[uvIndex]);
+             //       uvIndex++;
+             //    };
+
+
+
+             //~10000ms
+             // Object.assign(new_position_array,chunk.geometry.attributes.position.array);
+             //
+             // Object.assign(new_normal_array,chunk.geometry.attributes.normal.array);
+             //
+             // Object.assign(new_uv_array,chunk.geometry.attributes.uv.array);
+
+
+
+             // вообще повис
+             // let posIndex = chunk.geometry.attributes.position.array.length-1;
+             // while (posIndex >= 0) {
+             //     new_position_array.unshift(chunk.geometry.attributes.position.array[posIndex]);
+             //     posIndex--;
+             //  };
+             //
+             //  let normIndex = chunk.geometry.attributes.normal.array.length-1;
+             //  while (normIndex >= 0) {
+             //      new_normal_array.unshift(chunk.geometry.attributes.normal.array[normIndex]);
+             //      normIndex--;
+             //   };
+             //
+             //   let uvIndex = chunk.geometry.attributes.uv.array.length-1;
+             //   while (uvIndex >= 0) {
+             //       new_uv_array.unshift(chunk.geometry.attributes.uv.array[uvIndex]);
+             //       uvIndex--;
+             //    };
+
+
+              //~800ms
+             // chunk.geometry.attributes.position.array.map((item) =>{
+             //    new_position_array.push(item);
+             // });
+             // chunk.geometry.attributes.normal.array.map((item) => {
+             //   new_normal_array.push(item);
+             // });
+             //
+             // chunk.geometry.attributes.uv.array.map((item) => {
+             //   new_uv_array.push(item);
+             // });
+
+
+
+               //~350ms
+            //  const posLength = chunk.geometry.attributes.position.array.length;
+            //  for(let i=0;i<posLength;i++){
+            //    new_position_array.push(chunk.geometry.attributes.position.array[i]);
+            //  }
+            //
+            // const normLength = chunk.geometry.attributes.normal.array.length;
+            //  for(let i=0;i<normLength;i++){
+            //    new_normal_array.push(chunk.geometry.attributes.normal.array[i]);
+            //  }
+            //  const uvLength = chunk.geometry.attributes.uv.array.length;
+            //  for(let i=0;i<uvLength;i++){
+            //    new_uv_array.push(chunk.geometry.attributes.uv.array[i]);
+            //  }
+
+
+              // ~350ms
+             for(let i=0;i<chunk.geometry.attributes.position.array.length;i++){
+               new_position_array.push(chunk.geometry.attributes.position.array[i]);
+             }
+
+             for(let i=0;i<chunk.geometry.attributes.normal.array.length;i++){
+               new_normal_array.push(chunk.geometry.attributes.normal.array[i]);
+             }
+
+             for(let i=0;i<chunk.geometry.attributes.uv.array.length;i++){
+               new_uv_array.push(chunk.geometry.attributes.uv.array[i]);
+             }
+
+
+
+
+
+
+
+             //~500ms
+             // chunk.geometry.attributes.position.array.forEach((item, i) => {
+             //   new_position_array.push(item);
+             // });
+             //
+             // chunk.geometry.attributes.normal.array.forEach((item, i) => {
+             //   new_normal_array.push(item)
+             // });
+             //
+             // chunk.geometry.attributes.uv.array.forEach((item, i) => {
+             //   new_uv_array.push(item)
+             // });
+
+
+             //~850ms
+             // new_position_array = Array.from(chunk.geometry.attributes.position.array);
+             // new_normal_array = Array.from(chunk.geometry.attributes.normal.array);
+             // new_uv_array = Array.from(chunk.geometry.attributes.uv.array);
              console.timeEnd("copyArrays");
 
            };
@@ -174,24 +299,24 @@ const BOXgeometry =  loader.parse(geomJSON);
 
 
            function spliceArrays(){
-             console.time("spliceArrays");
+             // console.time("spliceArrays");
              new_position_array.splice(startIndex,meshes[meshIndex].geometry.attributes.position.count*meshes[meshIndex].geometry.attributes.position.itemSize);
              new_normal_array.splice(startIndex,meshes[meshIndex].geometry.attributes.normal.count*meshes[meshIndex].geometry.attributes.normal.itemSize);
              new_uv_array.splice(uvStartIndex,meshes[meshIndex].geometry.attributes.uv.count*meshes[meshIndex].geometry.attributes.uv.itemSize);
-             console.timeEnd("spliceArrays");
+             // console.timeEnd("spliceArrays");
 
            }
            spliceArrays();
 
            function applyAttributes(){
-             console.time("applyAttributes");
+             // console.time("applyAttributes");
 
              const geometry = new THREE.BufferGeometry;
              geometry.setAttribute('position',new THREE.BufferAttribute( new Float32Array(new_position_array), 3 ));
              geometry.setAttribute('normal',new THREE.BufferAttribute( new Float32Array(new_normal_array), 3 ));
              geometry.setAttribute('uv',new THREE.BufferAttribute( new Float32Array(new_uv_array), 2 ));
              chunk.geometry = geometry;
-             console.timeEnd("applyAttributes");
+             // console.timeEnd("applyAttributes");
 
            }
            applyAttributes();
