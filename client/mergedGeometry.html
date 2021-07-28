@@ -113,7 +113,7 @@ const BOXgeometry =  loader.parse(geomJSON);
             mesh_1.geometry.translate(x+0.5,0.5,z+0.5);
 
             geometries.push(mesh_1.geometry.clone());
-          }
+          };
         };
       };
 
@@ -129,7 +129,7 @@ const BOXgeometry =  loader.parse(geomJSON);
 
 
 
-
+       
 
        document.body.addEventListener('click',function(e){
            const raycaster = new THREE.Raycaster();
@@ -147,31 +147,61 @@ const BOXgeometry =  loader.parse(geomJSON);
 
            const meshIndex = normalizedCords.z*100 + normalizedCords.x;
 
-
            let startIndex = 0;
-           for(let i = 0;i<meshIndex;i++){
-             startIndex += meshes[i].geometry.attributes.position.count*meshes[i].geometry.attributes.position.itemSize;
-           }
            let uvStartIndex = 0;
-           for(let i = 0;i<meshIndex;i++){
-             uvStartIndex += meshes[i].geometry.attributes.uv.count*meshes[i].geometry.attributes.uv.itemSize;
+           function findStartIndex(){
+             console.time("findStartIndex");
+             for(let i = 0;i<meshIndex;i++){
+               startIndex += meshes[i].geometry.attributes.position.count*meshes[i].geometry.attributes.position.itemSize;
+               uvStartIndex += meshes[i].geometry.attributes.uv.count*meshes[i].geometry.attributes.uv.itemSize;
+             };
+             console.timeEnd("findStartIndex");
+
+           };
+           findStartIndex();
+
+           let new_position_array,new_normal_array,new_uv_array;
+
+           function copyArrays(){
+             console.time("copyArrays");
+             new_position_array = Array.from(chunk.geometry.attributes.position.array);
+             new_normal_array = Array.from(chunk.geometry.attributes.normal.array);
+             new_uv_array = Array.from(chunk.geometry.attributes.uv.array);
+             console.timeEnd("copyArrays");
+
+           };
+           copyArrays();
+
+
+           function spliceArrays(){
+             console.time("spliceArrays");
+             new_position_array.splice(startIndex,meshes[meshIndex].geometry.attributes.position.count*meshes[meshIndex].geometry.attributes.position.itemSize);
+             new_normal_array.splice(startIndex,meshes[meshIndex].geometry.attributes.normal.count*meshes[meshIndex].geometry.attributes.normal.itemSize);
+             new_uv_array.splice(uvStartIndex,meshes[meshIndex].geometry.attributes.uv.count*meshes[meshIndex].geometry.attributes.uv.itemSize);
+             console.timeEnd("spliceArrays");
+
            }
-           // console.log(startIndex)
+           spliceArrays();
 
-           const new_position_array = Array.from(chunk.geometry.attributes.position.array);
-           const new_normal_array = Array.from(chunk.geometry.attributes.normal.array);
-           const new_uv_array = Array.from(chunk.geometry.attributes.uv.array);
+           function applyAttributes(){
+             console.time("applyAttributes");
+
+             const geometry = new THREE.BufferGeometry;
+             geometry.setAttribute('position',new THREE.BufferAttribute( new Float32Array(new_position_array), 3 ));
+             geometry.setAttribute('normal',new THREE.BufferAttribute( new Float32Array(new_normal_array), 3 ));
+             geometry.setAttribute('uv',new THREE.BufferAttribute( new Float32Array(new_uv_array), 2 ));
+             chunk.geometry = geometry;
+             console.timeEnd("applyAttributes");
+
+           }
+           applyAttributes();
 
 
-           new_position_array.splice(startIndex,meshes[meshIndex].geometry.attributes.position.count*meshes[meshIndex].geometry.attributes.position.itemSize);
-           new_normal_array.splice(startIndex,meshes[meshIndex].geometry.attributes.normal.count*meshes[meshIndex].geometry.attributes.normal.itemSize);
-           new_uv_array.splice(uvStartIndex,meshes[meshIndex].geometry.attributes.uv.count*meshes[meshIndex].geometry.attributes.uv.itemSize);
-           const geometry = new THREE.BufferGeometry;
-           geometry.setAttribute('position',new THREE.BufferAttribute( new Float32Array(new_position_array), 3 ));
-           geometry.setAttribute('normal',new THREE.BufferAttribute( new Float32Array(new_normal_array), 3 ));
-           geometry.setAttribute('uv',new THREE.BufferAttribute( new Float32Array(new_uv_array), 2 ));
 
-           // console.log(chunk.geometry = geometry);
+
+
+
+           // console.log();
 
 
            // const new_geometry = new THREE.BufferGeometry();
