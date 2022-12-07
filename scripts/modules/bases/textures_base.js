@@ -3,27 +3,27 @@ import * as THREE from '../../../ThreeJsLib/build/three.module.js';
 const textures = [
   {
     textureName:'east',
-    file:'./east.png',
+    file:'./textures/east.png',
   },
   {
     textureName:'west',
-    file:'./west.png',
+    file:'./textures/west.png',
   },
   {
     textureName:'top',
-    file:'./top.png',
+    file:'./textures/top.png',
   },
   {
     textureName:'bottom',
-    file:'./bottom.png',
+    file:'./textures/bottom.png',
   },
   {
     textureName:'south',
-    file:'./south.png',
+    file:'./textures/south.png',
   },
   {
     textureName:'north',
-    file:'./north.png',
+    file:'./textures/north.png',
   },
 
 
@@ -33,77 +33,77 @@ const textures = [
 
   {
     textureName:'stone',
-    file:'./stone.png',
+    file:'./textures/stone.png',
   },
   {
     textureName:'ground',
-    file:'./ground.png',
+    file:'./textures/ground.png',
   },
   {
     textureName:'sand',
-    file:'./sand.png',
+    file:'./textures/sand.png',
   },
   {
     textureName:'snow',
-    file:'./snow.png',
+    file:'./textures/snow.png',
   },
   {
     textureName:'grass_top',
-    file:'./grass_top.png',
+    file:'./textures/grass_top.png',
   },
   {
     textureName:'grass_side',
-    file:'./grass_side.png',
+    file:'./textures/grass_side.png',
   },
   {
     textureName:'water_0',
-    file:'./water_0.png',
+    file:'./textures/water_0.png',
   },
   {
     textureName:'lava',
-    file:'./lava.png',
+    file:'./textures/lava.png',
   },
   {
     textureName:'cobblestone',
-    file:'./cobblestone.png',
+    file:'./textures/cobblestone.png',
   },
   {
     textureName:'obsidian',
-    file:'./obsidian.png',
+    file:'./textures/obsidian.png',
   },
 
 
   //furnace
   {
     textureName:'furnace_main',
-    file:'./furnace_main.png',
+    file:'./textures/furnace_main.png',
   },
   {
     textureName:'furnace_side',
-    file:'./furnace_side.png',
+    file:'./textures/furnace_side.png',
   },
   {
     textureName:'furnace_top',
-    file:'./furnace_top.png',
+    file:'./textures/furnace_top.png',
   },
 
     //oak_log
     {
       textureName:'oak_log_top',
-      file:'./oak_log_top.png',
+      file:'./textures/oak_log_top.png',
     },
     {
       textureName:'oak_log_side',
-      file:'./oak_log_side.png',
+      file:'./textures/oak_log_side.png',
     },
     {
       textureName:'oak_log_side_rotated',
-      file:'./oak_log_side_rotated.png',
+      file:'./textures/oak_log_side_rotated.png',
     },
 
     {
       textureName:'oak_leaves',
-      file:'./oak_leaves.png',
+      file:'./textures/oak_leaves.png',
     },
 
 
@@ -115,11 +115,11 @@ const textures = [
 
     {
       textureName:'cactus_top',
-      file:'./cactus_top.png',
+      file:'./textures/cactus_top.png',
     },
     {
       textureName:'cactus_side',
-      file:'./cactus_side.png',
+      file:'./textures/cactus_side.png',
     },
 
 
@@ -146,7 +146,7 @@ async function init(){
       function loading(){
         textureIndex++;
         if(textureIndex < textures.length){
-          const link = textureFolder+textures[textureIndex].file;
+          const link = textures[textureIndex].file;
           textureLoader.load(link,function(texture){
             texture.magFilter = THREE.NearestFilter;
             atlas[textures[textureIndex].textureName] = texture;
