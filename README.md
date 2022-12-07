@@ -18,5 +18,5 @@
 
 ![image](https://user-images.githubusercontent.com/63554864/163677770-8482ff3a-1c4f-408d-86b4-0a1b94ada86d.png)
 
-http://blockbuild.herokuapp.com/VERSION.html
+https://wsko-12.github.io/blockBuild/
 
