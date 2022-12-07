@@ -4,31 +4,31 @@ const textures = [
 
   {
     textureName:'test',
-    file:'test.png',
+    file:'./test.png',
   },
   {
     textureName:'east',
-    file:'east.png',
+    file:'./east.png',
   },
   {
     textureName:'west',
-    file:'west.png',
+    file:'./west.png',
   },
   {
     textureName:'top',
-    file:'top.png',
+    file:'./top.png',
   },
   {
     textureName:'bottom',
-    file:'bottom.png',
+    file:'./bottom.png',
   },
   {
     textureName:'south',
-    file:'south.png',
+    file:'./south.png',
   },
   {
     textureName:'north',
-    file:'north.png',
+    file:'./north.png',
   },
 
 
@@ -38,77 +38,77 @@ const textures = [
 
   {
     textureName:'stone',
-    file:'stone.png',
+    file:'./stone.png',
   },
   {
     textureName:'ground',
-    file:'ground.png',
+    file:'./ground.png',
   },
   {
     textureName:'sand',
-    file:'sand.png',
+    file:'./sand.png',
   },
   {
     textureName:'snow',
-    file:'snow.png',
+    file:'./snow.png',
   },
   {
     textureName:'grass_top',
-    file:'grass_top.png',
+    file:'./grass_top.png',
   },
   {
     textureName:'grass_side',
-    file:'grass_side.png',
+    file:'./grass_side.png',
   },
   {
     textureName:'water_0',
-    file:'water_0.png',
+    file:'./water_0.png',
   },
   {
     textureName:'lava',
-    file:'lava.png',
+    file:'./lava.png',
   },
   {
     textureName:'cobblestone',
-    file:'cobblestone.png',
+    file:'./cobblestone.png',
   },
   {
     textureName:'obsidian',
-    file:'obsidian.png',
+    file:'./obsidian.png',
   },
 
 
   //furnace
   {
     textureName:'furnace_main',
-    file:'furnace_main.png',
+    file:'./furnace_main.png',
   },
   {
     textureName:'furnace_side',
-    file:'furnace_side.png',
+    file:'./furnace_side.png',
   },
   {
     textureName:'furnace_top',
-    file:'furnace_top.png',
+    file:'./furnace_top.png',
   },
 
     //oak_log
     {
       textureName:'oak_log_top',
-      file:'oak_log_top.png',
+      file:'./oak_log_top.png',
     },
     {
       textureName:'oak_log_side',
-      file:'oak_log_side.png',
+      file:'./oak_log_side.png',
     },
     {
       textureName:'oak_log_side_rotated',
-      file:'oak_log_side_rotated.png',
+      file:'./oak_log_side_rotated.png',
     },
 
     {
       textureName:'oak_leaves',
-      file:'oak_leaves.png',
+      file:'./oak_leaves.png',
     },
 
 
@@ -120,11 +120,11 @@ const textures = [
 
     {
       textureName:'cactus_top',
-      file:'cactus_top.png',
+      file:'./cactus_top.png',
     },
     {
       textureName:'cactus_side',
-      file:'cactus_side.png',
+      file:'./cactus_side.png',
     },
 
 
